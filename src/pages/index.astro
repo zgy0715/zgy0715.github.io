@@ -8,19 +8,25 @@ const projects = [
     number: '01',
     name: 'AI & ML Learning',
     subtitle: '机器学习练习簿',
+    subtitleEn: 'A machine-learning notebook',
     description: '从 Python 基础和数据科学开始，逐步练习机器学习算法。记录课程、代码练习与阶段进度，让学习过程本身成为可以回看的作品。',
+    descriptionEn: 'Starting from Python basics and data science, working up through machine learning algorithms. Courses, exercises and progress are all logged here — the learning process itself becomes something worth revisiting.',
     tags: ['PYTHON', 'DATA SCIENCE', 'MACHINE LEARNING'],
     href: 'https://github.com/zgy0715/AI-ML-Learning',
-    status: 'IN PROGRESS',
+    status: '进行中',
+    statusEn: 'IN PROGRESS',
   },
   {
     number: '02',
     name: 'YZBZGY.GITHUB.IO',
     subtitle: '你现在看的这个网站',
+    subtitleEn: 'The site you are looking at',
     description: '我的个人据点，用 Astro 手写的单页站点。版式与滚动节奏参考 ANON TOKYO，部署在 GitHub Pages 上，会一直改下去。',
+    descriptionEn: 'My personal base on the internet, a single-page site hand-written with Astro. Layout and scroll rhythm reference ANON TOKYO; deployed on GitHub Pages and constantly evolving.',
     tags: ['ASTRO', 'HTML / CSS / JS', 'GITHUB PAGES'],
     href: 'https://github.com/zgy0715/zgy0715.github.io',
-    status: 'SHIPPED',
+    status: '已上线',
+    statusEn: 'SHIPPED',
   },
 ];
 ---
@@ -32,7 +38,18 @@ const projects = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#3388bb" />
     <meta name="description" content="YZBzgy 的个人网站，记录学习方向、开源项目与正在制作的东西。" />
-    <title>YZBZGY</title>
+    <title>YZBZGY · 个人据点</title>
+    <script is:inline>
+      (function () {
+        try {
+          var lang = localStorage.getItem('site-lang') || 'zh';
+          if (lang === 'en') {
+            document.documentElement.classList.add('lang-en');
+            document.documentElement.lang = 'en';
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -59,17 +76,30 @@ const projects = [
       ::selection { color: #fff; background: var(--blue); }
       :focus-visible { outline: 2px solid var(--blue-light); outline-offset: 4px; }
 
+      /* ===== 双语切换 ===== */
+      .i18n-en { display: none; }
+      html.lang-en .i18n-zh { display: none; }
+      html.lang-en .i18n-en { display: inline; }
+      /* 中文大标题加粗，弥补 Bebas Neue 无中文粗体的落差 */
+      h2 .i18n-zh, .menu-panel nav a .i18n-zh, .flow-label .i18n-zh, .scroll-down .i18n-zh { font-weight: 700; letter-spacing: .06em; }
+
       .skip-link { position: fixed; z-index: 90; top: 12px; left: 12px; padding: 12px 16px; background: #fff; color: #000; font: 12px var(--mono); text-decoration: none; transform: translateY(-180%); }
       .skip-link:focus { transform: none; }
       .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-      /* ===== 顶部栏 ===== */
-      .topbar { position: fixed; z-index: 60; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px var(--pad); transition: transform .45s ease; }
+      /* ===== 顶部栏 =====
+         开场时页面是白底，顶栏文字先为深色，随首屏一起平滑转白 */
+      .topbar { position: fixed; z-index: 60; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px var(--pad); color: #000; transition: transform .45s ease; animation: topbar-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
       .topbar.hidden { transform: translateY(-110%); }
+      @keyframes topbar-ink { to { color: #fff; } }
       .wordmark { display: inline-flex; align-items: baseline; gap: 10px; text-decoration: none; }
       .wordmark b { font: 400 1.5rem var(--display); letter-spacing: .06em; }
       .wordmark span { font: 8px var(--mono); letter-spacing: .22em; opacity: .55; }
-      .topbar-actions { display: flex; align-items: center; gap: 22px; }
+      .topbar-actions { display: flex; align-items: center; gap: 18px; }
+      .lang-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid currentColor; border-radius: 999px; background: none; cursor: pointer; font: 10px var(--mono); letter-spacing: .1em; }
+      .lang-toggle span { opacity: .4; transition: opacity .2s; }
+      html.lang-zh .lang-toggle .lang-zh-mark, html.lang-en .lang-toggle .lang-en-mark { opacity: 1; font-weight: 700; }
+      .lang-toggle i { font-style: normal; opacity: .35; }
       .sound-button { display: inline-flex; align-items: center; gap: 8px; padding: 6px 0; border: 0; background: none; cursor: pointer; font: 9px var(--mono); letter-spacing: .18em; }
       .sound-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .45; }
       .sound-button[aria-pressed='true'] .sound-dot { background: var(--pink); opacity: 1; box-shadow: 0 0 8px var(--pink); }
@@ -82,7 +112,7 @@ const projects = [
       .menu-panel { position: fixed; z-index: 70; inset: 0; display: grid; place-items: center; background: var(--blue); visibility: hidden; opacity: 0; transition: opacity .35s ease, visibility .35s; }
       .menu-panel.open { visibility: visible; opacity: 1; }
       .menu-panel nav { display: grid; gap: 6px; text-align: center; }
-      .menu-panel nav a { font: 400 clamp(3rem, 9vw, 7rem) var(--display); letter-spacing: .04em; line-height: .95; text-decoration: none; opacity: 0; transform: translateY(18px); transition: opacity .4s ease, transform .4s ease, color .2s; }
+      .menu-panel nav a { font: 400 clamp(2.6rem, 8vw, 6.5rem) var(--display); letter-spacing: .04em; line-height: .95; text-decoration: none; opacity: 0; transform: translateY(18px); transition: opacity .4s ease, transform .4s ease, color .2s; }
       .menu-panel.open nav a { opacity: 1; transform: none; }
       .menu-panel.open nav a:nth-child(1) { transition-delay: .05s; }
       .menu-panel.open nav a:nth-child(2) { transition-delay: .1s; }
@@ -92,14 +122,18 @@ const projects = [
       .menu-panel nav a:hover { color: var(--blue-dark); }
       .menu-close { position: absolute; top: 18px; right: var(--pad); width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; background: transparent; cursor: pointer; font: 20px var(--mono); }
 
-      /* ===== Hero 首屏 ===== */
-      .hero { position: relative; min-height: 100lvh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--black); }
-      .hero::before, .hero::after { content: ''; position: absolute; z-index: 0; width: 55vmax; aspect-ratio: 1; border-radius: 50%; filter: blur(90px); opacity: .16; }
+      /* ===== Hero 首屏 =====
+         开场：白底黑字标题逐字母浮现 → 停留 → 整屏平滑过渡为黑底白字。
+         只有一组元素，不存在两层画面的对齐问题。 */
+      .hero { position: relative; min-height: 100lvh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; animation: hero-bg 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      @keyframes hero-bg { to { background: var(--black); } }
+      .hero::before, .hero::after { content: ''; position: absolute; z-index: 0; width: 55vmax; aspect-ratio: 1; border-radius: 50%; filter: blur(90px); opacity: .14; }
       .hero::before { top: -18%; left: -12%; background: var(--blue); animation: drift 16s ease-in-out infinite alternate; }
       .hero::after { bottom: -22%; right: -10%; background: var(--pink); animation: drift 20s ease-in-out infinite alternate-reverse; }
       @keyframes drift { to { transform: translate(6%, 8%) scale(1.15); } }
 
-      .hero-title { position: relative; z-index: 1; margin: 0; padding: 0 4vw; font: 400 clamp(4.6rem, 17vw, 16rem) var(--display); letter-spacing: .04em; line-height: .9; text-align: center; white-space: nowrap; }
+      .hero-title { position: relative; z-index: 1; margin: 0; padding: 0 4vw; font: 400 clamp(4.6rem, 17vw, 16rem) var(--display); letter-spacing: .04em; line-height: .9; text-align: center; white-space: nowrap; color: #000; animation: hero-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      @keyframes hero-ink { to { color: #fff; } }
       .hero-title span { display: inline-block; opacity: 0; animation: letter-in .7s ease forwards; }
       .hero-title span:nth-child(1) { animation-delay: .25s; }
       .hero-title span:nth-child(2) { animation-delay: .34s; }
@@ -109,16 +143,12 @@ const projects = [
       .hero-title span:nth-child(6) { animation-delay: .7s; }
       @keyframes letter-in { from { opacity: 0; transform: translateY(.12em); } to { opacity: 1; transform: none; } }
 
-      .hero-sub { position: relative; z-index: 1; margin: 0 0 .4em; font: 9px var(--mono); letter-spacing: .5em; color: var(--blue-light); opacity: 0; animation: fade-in 1s 1.1s forwards; }
+      .hero-sub { position: relative; z-index: 1; margin: 0 0 .4em; font: 9px var(--mono); letter-spacing: .5em; color: var(--blue-dark); opacity: 0; animation: fade-in 1s 1.1s forwards, sub-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      @keyframes sub-ink { to { color: var(--blue-light); } }
       .hero-stack { position: relative; z-index: 1; display: grid; justify-items: center; gap: 14px; }
-
-      /* 开场白幕：黑字标题盖在白底上，随后淡出露出黑底白字 */
-      .intro { position: absolute; z-index: 5; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; color: #000; pointer-events: none; animation: intro-out .9s ease 2.5s forwards; }
-      .intro .hero-title span { animation-delay: .15s; }
-      @keyframes intro-out { to { opacity: 0; visibility: hidden; } }
       @keyframes fade-in { to { opacity: 1; } }
 
-      .scroll-down { position: absolute; z-index: 2; bottom: 22px; left: 50%; text-decoration: none; font: 400 clamp(1.6rem, 4vw, 2.6rem) var(--display); letter-spacing: .08em; opacity: 0; animation: fade-in 1s 3.1s forwards; transform: translateX(-50%); }
+      .scroll-down { position: absolute; z-index: 2; bottom: 22px; left: 50%; text-decoration: none; font: 400 clamp(1.6rem, 4vw, 2.6rem) var(--display); letter-spacing: .08em; opacity: 0; animation: fade-in 1s 3.4s forwards; transform: translateX(-50%); }
       .scroll-down b { display: block; background-image: linear-gradient(90deg, var(--blue-light), var(--pink), var(--blue-light), var(--pink), var(--blue-light)); background-size: 200%; color: transparent; -webkit-background-clip: text; background-clip: text; animation: gradient-slide 1.2s linear infinite, up-down 2s ease-in-out infinite; }
       @keyframes gradient-slide { to { background-position: 200%; } }
       @keyframes up-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -130,7 +160,7 @@ const projects = [
       .flow-label i { font: 11px var(--sans); font-style: normal; letter-spacing: .2em; vertical-align: super; color: var(--blue); }
       .flow-track { display: flex; align-items: baseline; gap: 7vw; width: max-content; white-space: nowrap; font: 400 clamp(4.5rem, 16vw, 15rem) var(--display); line-height: 1; will-change: transform; }
       .flow-track i { font-style: normal; font-size: .3em; color: var(--blue); align-self: center; }
-      .flow-note { margin: 0; max-width: 420px; font-size: 13px; line-height: 2; color: #333; }
+      .flow-note { margin: 0; max-width: 440px; font-size: 13px; line-height: 2; color: #333; }
       /* 底部渐变过渡到下一屏的蓝色 */
       .flow-fade { position: absolute; inset: auto 0 0; height: 26vh; background: linear-gradient(180deg, transparent, var(--blue)); pointer-events: none; }
 
@@ -146,7 +176,7 @@ const projects = [
       .slide-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
       .slide-name { margin: 0; font: 400 clamp(3.2rem, 7.5vw, 6.2rem) var(--display); letter-spacing: .03em; line-height: .92; }
       .slide-sub { margin: 6px 0 0; font-size: 13px; color: rgba(255, 255, 255, .75); }
-      .slide-desc { max-width: 440px; margin: 0; font-size: 13.5px; line-height: 2.05; color: rgba(255, 255, 255, .88); }
+      .slide-desc { max-width: 460px; margin: 0; font-size: 13.5px; line-height: 2.05; color: rgba(255, 255, 255, .88); }
       .slide-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
       .slide-tags span { padding: 6px 10px; border: 1px solid rgba(255, 255, 255, .4); border-radius: 999px; font: 8px var(--mono); letter-spacing: .14em; }
       .slide-link { display: inline-flex; align-items: center; gap: 10px; width: fit-content; padding-top: 16px; margin-top: auto; border-top: 1px solid rgba(255, 255, 255, .35); font: 10px var(--mono); letter-spacing: .2em; text-decoration: none; transition: color .2s; }
@@ -165,9 +195,10 @@ const projects = [
       .all-repos i { font-style: normal; transition: transform .2s; }
       .all-repos:hover i { transform: translate(4px, -4px); }
 
-      /* ===== Headquarter ===== */
+      /* ===== 据点（原 Headquarter）===== */
       .hq { display: flex; flex-direction: column; justify-content: center; gap: 20px; min-height: 100svh; padding: 90px var(--pad); background: var(--pink); color: #fff; }
       .hq h2 { margin: 0; align-self: flex-end; font: 400 clamp(2.4rem, 5.5vw, 4rem) var(--display); letter-spacing: .05em; text-align: right; }
+      .hq-desc { max-width: 560px; margin: 0; align-self: flex-end; font-size: 13px; line-height: 2; text-align: right; color: rgba(255, 255, 255, .92); }
       .hq-panel { position: relative; display: grid; place-items: center; overflow: hidden; min-height: 420px; background: rgba(0, 0, 0, .82); background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,.07) 49%, rgba(255,255,255,.07) 50%, transparent 51%), linear-gradient(0deg, transparent 49%, rgba(255,255,255,.07) 49%, rgba(255,255,255,.07) 50%, transparent 51%); background-size: 64px 64px; }
       .hq-ring { position: relative; display: grid; place-items: center; width: 190px; aspect-ratio: 1; border: 1px solid rgba(255, 255, 255, .4); border-radius: 50%; }
       .hq-ring::before { content: ''; position: absolute; inset: 26px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 50%; }
@@ -202,15 +233,18 @@ const projects = [
         .flow-track { transform: none !important; }
         .flow-fade { display: none; }
         .slide { min-height: 480px; }
-        .hq h2 { align-self: flex-start; }
+        .hq h2, .hq-desc { align-self: flex-start; text-align: left; }
         .hq-panel { min-height: 330px; }
       }
 
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        .hero { background: var(--black); }
+        .hero-title { color: #fff; }
+        .hero-sub { color: var(--blue-light); opacity: 1; }
+        .topbar { color: #fff; }
         .hero-title span, .hero-sub, .scroll-down { opacity: 1; }
-        .intro { display: none; }
         .reveal { opacity: 1; transform: none; }
         .flow-section { height: auto; }
         .flow-sticky { position: static; height: auto; overflow-x: auto; }
@@ -222,68 +256,65 @@ const projects = [
     <a class="skip-link" href="#interests">跳到主要内容</a>
 
     <header class="topbar" id="topbar">
-      <a class="wordmark" href="#top" aria-label="回到顶部"><b>YZBZGY</b><span>PERSONAL ARCHIVE</span></a>
+      <a class="wordmark" href="#top" aria-label="回到顶部"><b>YZBZGY</b><span><span class="i18n-zh">个人据点</span><span class="i18n-en">PERSONAL ARCHIVE</span></span></a>
       <div class="topbar-actions">
-        <button class="sound-button" id="sound" type="button" aria-pressed="false" aria-label="开启背景音效"><span class="sound-dot" aria-hidden="true"></span><span id="sound-label">SOUND OFF</span></button>
-        <button class="menu-button" id="menu-open" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-lines" aria-hidden="true"></span><span>MENU</span></button>
+        <button class="lang-toggle" id="lang-toggle" type="button" aria-label="切换语言 / Switch language"><span class="lang-zh-mark">中</span><i aria-hidden="true">/</i><span class="lang-en-mark">EN</span></button>
+        <button class="sound-button" id="sound" type="button" aria-pressed="false" aria-label="开启背景音效"><span class="sound-dot" aria-hidden="true"></span><span id="sound-label"><span class="i18n-zh">声音 关</span><span class="i18n-en">SOUND OFF</span></span></button>
+        <button class="menu-button" id="menu-open" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-lines" aria-hidden="true"></span><span><span class="i18n-zh">菜单</span><span class="i18n-en">MENU</span></span></button>
       </div>
     </header>
 
     <div class="menu-panel" id="menu" aria-hidden="true" inert>
       <button class="menu-close" id="menu-close" type="button" aria-label="关闭菜单">×</button>
       <nav aria-label="主导航">
-        <a href="#top">TOP</a>
-        <a href="#interests">INTERESTS</a>
-        <a href="#projects">PROJECTS</a>
-        <a href="#map">HEADQUARTER</a>
-        <a href="#contact">CONTACT</a>
+        <a href="#top"><span class="i18n-zh">主页</span><span class="i18n-en">TOP</span></a>
+        <a href="#interests"><span class="i18n-zh">兴趣</span><span class="i18n-en">INTERESTS</span></a>
+        <a href="#projects"><span class="i18n-zh">项目</span><span class="i18n-en">PROJECTS</span></a>
+        <a href="#map"><span class="i18n-zh">据点</span><span class="i18n-en">HEADQUARTER</span></a>
+        <a href="#contact"><span class="i18n-zh">联系</span><span class="i18n-en">CONTACT</span></a>
       </nav>
     </div>
 
     <main id="main">
-      <!-- 首屏 -->
+      <!-- 首屏：同一组元素完成 白底黑字 → 黑底白字 的平滑过渡 -->
       <section class="hero" id="top" aria-label="首屏">
         <div class="hero-stack">
-          <p class="hero-sub">PERSONAL ARCHIVE — EST. {year}</p>
+          <p class="hero-sub"><span class="i18n-zh">个人据点 — 建于 {year}</span><span class="i18n-en">PERSONAL ARCHIVE — EST. {year}</span></p>
           <h1 class="hero-title" aria-label="YZBZGY"><span aria-hidden="true">Y</span><span aria-hidden="true">Z</span><span aria-hidden="true">B</span><span aria-hidden="true">Z</span><span aria-hidden="true">G</span><span aria-hidden="true">Y</span></h1>
         </div>
-        <a class="scroll-down" href="#interests"><b aria-hidden="true">Scroll down</b><span class="sr-only">向下滚动</span></a>
-        <!-- 开场白幕 -->
-        <div class="intro" aria-hidden="true">
-          <h1 class="hero-title"><span>Y</span><span>Z</span><span>B</span><span>Z</span><span>G</span><span>Y</span></h1>
-        </div>
+        <a class="scroll-down" href="#interests"><b aria-hidden="true"><span class="i18n-zh">往下滚动</span><span class="i18n-en">Scroll down</span></b><span class="sr-only">向下滚动</span></a>
       </section>
 
       <!-- 兴趣横向文字流 -->
       <section class="flow-section" id="interests" aria-label="兴趣方向">
         <div class="flow-sticky">
-          <p class="flow-label">Currently into <i>01</i></p>
+          <p class="flow-label"><span class="i18n-zh">最近在探索 <i>01</i></span><span class="i18n-en">Currently into <i>01</i></span></p>
           <div class="flow-track" id="flow-track">
             {keywords.map((word) => <><span>{word}</span><i aria-hidden="true">✳</i></>)}
           </div>
-          <p class="flow-note">最近在探索这些东西。写 Python、碰数据、学机器学习，顺手用 Java 交作业，剩下的时间都在动手做点小东西。</p>
+          <p class="flow-note"><span class="i18n-zh">最近在探索这些东西。写 Python、碰数据、学机器学习，顺手用 Java 交作业，剩下的时间都在动手做点小东西。</span><span class="i18n-en">Things I've been exploring lately — writing Python, playing with data, learning machine learning, handing in Java homework, and building small stuff with whatever time is left.</span></p>
         </div>
         <div class="flow-fade" aria-hidden="true"></div>
       </section>
 
       <!-- Projects -->
       <section class="projects" id="projects" aria-labelledby="projects-title">
-        <h2 id="projects-title" class="reveal">Projects <i>02</i></h2>
+        <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>02</i></span><span class="i18n-en">Projects <i>02</i></span></h2>
         <div class="slider reveal" id="slider" tabindex="0" aria-label="项目列表，可左右滑动">
           {projects.map((project) => (
             <article class="slide">
-              <div class="slide-meta"><span>PROJECT / {project.number}</span><span class="slide-status">{project.status}</span></div>
+              <div class="slide-meta"><span><span class="i18n-zh">项目 / {project.number}</span><span class="i18n-en">PROJECT / {project.number}</span></span><span class="slide-status"><span class="i18n-zh">{project.status}</span><span class="i18n-en">{project.statusEn}</span></span></div>
               <div>
                 <h3 class="slide-name">{project.name}</h3>
-                <p class="slide-sub">{project.subtitle}</p>
+                <p class="slide-sub"><span class="i18n-zh">{project.subtitle}</span><span class="i18n-en">{project.subtitleEn}</span></p>
               </div>
               <div>
-                <p class="slide-desc">{project.description}</p>
+                <p class="slide-desc"><span class="i18n-zh">{project.description}</span><span class="i18n-en">{project.descriptionEn}</span></p>
                 <div class="slide-tags" aria-label="技术标签">
                   {project.tags.map((tag) => <span>{tag}</span>)}
                 </div>
               </div>
-              <a class="slide-link" href={project.href} target="_blank" rel="noreferrer"><span>VIEW REPOSITORY</span><b aria-hidden="true">↗</b></a>
+              <a class="slide-link" href={project.href} target="_blank" rel="noreferrer"><span><span class="i18n-zh">查看仓库</span><span class="i18n-en">VIEW REPOSITORY</span></span><b aria-hidden="true">↗</b></a>
             </article>
           ))}
         </div>
@@ -294,22 +325,27 @@ const projects = [
           </div>
           <div class="dots" id="dots" aria-label="项目页码"></div>
         </div>
-        <a class="all-repos reveal" href="https://github.com/zgy0715?tab=repositories" target="_blank" rel="noreferrer">ALL REPOSITORIES <i aria-hidden="true">↗</i></a>
+        <a class="all-repos reveal" href="https://github.com/zgy0715?tab=repositories" target="_blank" rel="noreferrer"><span><span class="i18n-zh">全部仓库</span><span class="i18n-en">ALL REPOSITORIES</span></span> <i aria-hidden="true">↗</i></a>
       </section>
 
-      <!-- Headquarter -->
+      <!-- 据点（原 Headquarter）-->
       <section class="hq" id="map" aria-labelledby="hq-title">
-        <h2 id="hq-title" class="reveal">Headquarter</h2>
+        <h2 id="hq-title" class="reveal"><span class="i18n-zh">我的据点</span><span class="i18n-en">Headquarter</span></h2>
+        <p class="hq-desc reveal"><span class="i18n-zh">「据点」指我在互联网上的大本营：这个网站、我的 GitHub、B 站和抖音，都属于这个据点群。下面这块面板是据点的“仪表盘”——它不代表真实地址，只是一个装饰性的在线状态，表示我常年在线。</span><span class="i18n-en">"Headquarter" means my base camp on the internet: this website, my GitHub, Bilibili and Douyin are all part of it. The panel below is its dashboard — not a real address, just a decorative status board that says "always online".</span></p>
         <div class="hq-panel reveal" role="img" aria-label="由网格与同心圆构成的抽象网络据点示意图">
-          <div class="hq-tag">YZBZGY · INTERNET HQ</div>
+          <div class="hq-tag"><span class="i18n-zh">YZBZGY · 网络据点</span><span class="i18n-en">YZBZGY · INTERNET HQ</span></div>
           <div class="hq-ring"><div class="hq-pin">ONLINE</div></div>
-          <div class="hq-meta"><p>LOC — EARTH</p><p>STATUS — ONLINE · EST. {year}</p><p>UPTIME — CONTINUOUS</p></div>
+          <div class="hq-meta">
+            <p><span class="i18n-zh">位置 — 地球</span><span class="i18n-en">LOC — EARTH</span></p>
+            <p><span class="i18n-zh">状态 — 在线 · 自 {year}</span><span class="i18n-en">STATUS — ONLINE · EST. {year}</span></p>
+            <p><span class="i18n-zh">更新 — 持续进行</span><span class="i18n-en">UPTIME — ONGOING</span></p>
+          </div>
         </div>
       </section>
 
       <!-- Contact -->
       <section class="contact" id="contact" aria-labelledby="contact-title">
-        <h2 id="contact-title" class="reveal">Contact</h2>
+        <h2 id="contact-title" class="reveal"><span class="i18n-zh">联系</span><span class="i18n-en">Contact</span></h2>
         <div class="contact-links reveal">
           <a href="https://github.com/zgy0715" target="_blank" rel="noreferrer">
             <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
@@ -317,7 +353,7 @@ const projects = [
           </a>
           <a href="https://github.com/zgy0715?tab=repositories" target="_blank" rel="noreferrer">
             <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5A1.5 1.5 0 0 1 12 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 14.5zM8 13a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5M1.5 3a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0v-6a.5.5 0 0 1 .5-.5m13 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/></svg>
-            <span>ALL REPOS</span>
+            <span><span class="i18n-zh">全部仓库</span><span class="i18n-en">ALL REPOS</span></span>
           </a>
           <a href="https://space.bilibili.com/531846477" target="_blank" rel="noreferrer">
             <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M488.6 104.1c16.7 18.1 24.4 39.7 23.3 65.7v202.4c-.4 26.4-9.2 48.1-26.5 65.1c-17.2 17-39.1 25.9-65.5 26.7H92.02c-26.45-.8-48.21-9.8-65.28-27.2C9.682 419.4.767 396.5 0 368.2V169.8c.767-26 9.682-47.6 26.74-65.7C43.81 87.75 65.57 78.77 92.02 78h29.38L96.05 52.19c-5.75-5.73-8.63-13-8.63-21.79c0-8.8 2.88-16.06 8.63-21.797C101.8 2.868 109.1 0 117.9 0s16.1 2.868 21.9 8.603L213.1 78h88l74.5-69.397C381.7 2.868 389.2 0 398 0c8.8 0 16.1 2.868 21.9 8.603c5.7 5.737 8.6 12.997 8.6 21.797c0 8.79-2.9 16.06-8.6 21.79L394.6 78h29.3c26.4.77 48 9.75 64.7 26.1m-38.8 69.7c-.4-9.6-3.7-17.4-10.7-23.5c-5.2-6.1-14-9.4-22.7-9.8H96.05c-9.59.4-17.45 3.7-23.58 9.8c-6.14 6.1-9.4 13.9-9.78 23.5v194.4c0 9.2 3.26 17 9.78 23.5s14.38 9.8 23.58 9.8H416.4c9.2 0 17-3.3 23.3-9.8c6.3-6.5 9.7-14.3 10.1-23.5zm-264.3 42.7c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2c-6.2 6.3-14 9.5-23.6 9.5c-9.6 0-17.5-3.2-23.6-9.5c-6.1-6.3-9.4-14-9.8-23.2v-33.3c.4-9.1 3.8-16.9 10.1-23.2c6.3-6.3 13.2-9.6 23.3-10c9.2.4 17 3.7 23.3 10m191.5 0c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2c-6.1 6.3-14 9.5-23.6 9.5c-7-6.3-9.4-14-9.7-23.2v-33.3c.3-9.1 3.7-16.9 10-23.2c6.3-6.3 14.1-9.6 23.3-10c9.2.4 17 3.7 23.3 10"/></svg>
@@ -328,13 +364,28 @@ const projects = [
             <span>DOUYIN</span>
           </a>
         </div>
-        <footer>© {year} YZBZGY — MADE ON EARTH · FOUND ONLINE</footer>
+        <footer><span class="i18n-zh">© {year} YZBZGY — 建于地球 · 见于线上</span><span class="i18n-en">© {year} YZBZGY — MADE ON EARTH · FOUND ONLINE</span></footer>
       </section>
     </main>
 
     <a class="top-button" id="top-button" href="#top" aria-label="回到顶部">↑</a>
 
     <script>
+      // ===== 中 / EN 语言切换（默认中文，选择存入 localStorage）=====
+      const rootHtml = document.documentElement;
+      const langToggle = document.querySelector('#lang-toggle');
+      const applyLang = (lang) => {
+        rootHtml.classList.toggle('lang-en', lang === 'en');
+        rootHtml.classList.toggle('lang-zh', lang !== 'en');
+        rootHtml.lang = lang === 'en' ? 'en' : 'zh-CN';
+        document.title = lang === 'en' ? 'YZBZGY · Personal Base' : 'YZBZGY · 个人据点';
+        try { localStorage.setItem('site-lang', lang); } catch (e) {}
+      };
+      applyLang(rootHtml.classList.contains('lang-en') ? 'en' : 'zh');
+      langToggle?.addEventListener('click', () => {
+        applyLang(rootHtml.classList.contains('lang-en') ? 'zh' : 'en');
+      });
+
       // ===== 全屏菜单 =====
       const menu = document.querySelector('#menu');
       const menuOpen = document.querySelector('#menu-open');
@@ -375,7 +426,7 @@ const projects = [
         lastY = y;
       }, { passive: true });
 
-      // ===== 兴趣文字流：滚动驱动横向位移（对应原站的 GSAP scrub）=====
+      // ===== 兴趣文字流：滚动驱动横向位移 =====
       const flowSection = document.querySelector('.flow-section');
       const flowTrack = document.querySelector('#flow-track');
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -434,7 +485,6 @@ const projects = [
 
       // ===== 背景音效（默认关闭）=====
       const sound = document.querySelector('#sound');
-      const soundLabel = document.querySelector('#sound-label');
       let audioContext;
       let voices = [];
       sound?.addEventListener('click', async () => {
@@ -461,7 +511,6 @@ const projects = [
         }
         sound.setAttribute('aria-pressed', String(enabled));
         sound.setAttribute('aria-label', enabled ? '关闭背景音效' : '开启背景音效');
-        if (soundLabel) soundLabel.textContent = enabled ? 'SOUND ON' : 'SOUND OFF';
       });
     </script>
   </body>
