@@ -1,0 +1,340 @@
+---
+const year = new Date().getFullYear();
+
+const projects = [
+  {
+    number: '01',
+    name: 'AI & ML Learning',
+    description: '从 Python 基础和数据科学开始，逐步练习机器学习算法。记录课程、代码练习与阶段进度，让学习过程也成为可以回看的作品。',
+    tags: ['PYTHON', 'DATA SCIENCE', 'MACHINE LEARNING'],
+    href: 'https://github.com/zgy0715/AI-ML-Learning',
+    status: 'IN PROGRESS',
+  },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#d9d4cc" />
+    <meta name="description" content="YZBzgy 的个人网站，记录学习方向、开源项目与正在制作的东西。" />
+    <title>YZBzgy — Personal Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <style is:global>
+      :root {
+        color-scheme: light;
+        --paper: #dedad2;
+        --paper-light: #e9e5de;
+        --ink: #171817;
+        --muted: #686762;
+        --line: rgba(23, 24, 23, .25);
+        --accent: #ef4a31;
+        --sage: #a9bfba;
+        --mono: 'DM Mono', monospace;
+        --sans: 'Manrope', 'Noto Sans SC', sans-serif;
+        --gutter: clamp(22px, 5.2vw, 84px);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; background: var(--paper); scroll-padding-top: 78px; }
+      body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+      body::after { content: ''; position: fixed; inset: 0; z-index: 20; pointer-events: none; opacity: .11; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
+      a { color: inherit; }
+      button { color: inherit; font: inherit; }
+      ::selection { color: white; background: var(--accent); }
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+      .mono, .eyebrow { font: 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+      .skip-link { position: fixed; z-index: 60; top: 12px; left: 12px; padding: 12px 16px; color: var(--paper); background: var(--ink); transform: translateY(-160%); }
+      .skip-link:focus { transform: none; }
+
+      .topbar { position: fixed; z-index: 40; inset: 0 0 auto; height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); border-bottom: 1px solid var(--line); background: rgba(222, 218, 210, .88); backdrop-filter: blur(16px); }
+      .wordmark { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font: 10px var(--mono); letter-spacing: .1em; }
+      .wordmark-mark { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--ink); border-radius: 50%; font-size: 13px; }
+      .topbar-actions { display: flex; align-items: center; gap: 25px; }
+      .sound-button, .menu-button { min-height: 44px; display: inline-flex; align-items: center; gap: 10px; padding: 8px 0; border: 0; background: none; cursor: pointer; font: 9px var(--mono); letter-spacing: .11em; }
+      .sound-dot { width: 7px; height: 7px; border-radius: 50%; background: #827f79; }
+      .sound-button[aria-pressed='true'] .sound-dot { background: var(--accent); box-shadow: 0 0 9px var(--accent); }
+      .menu-lines { position: relative; width: 22px; height: 13px; border-block: 1px solid; }
+      .menu-lines::after { content: ''; position: absolute; inset: 5px 0 auto; border-top: 1px solid; }
+      .menu-panel { position: fixed; z-index: 41; inset: 0; display: grid; place-items: center; color: var(--ink); background: var(--accent); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility .35s; }
+      .menu-panel.open { opacity: 1; visibility: visible; }
+      .menu-panel nav { display: grid; gap: 10px; text-align: center; }
+      .menu-panel nav a { font-size: clamp(2.6rem, 8vw, 6.7rem); font-weight: 700; line-height: .98; letter-spacing: -.075em; text-decoration: none; transition: transform .25s ease; }
+      .menu-panel nav a:hover { transform: skewX(-7deg); }
+      .menu-close { position: absolute; top: 19px; right: var(--gutter); width: 44px; height: 44px; border: 1px solid var(--ink); border-radius: 50%; background: transparent; cursor: pointer; font: 20px var(--mono); }
+      body.menu-open { overflow: hidden; }
+
+      .hero { position: relative; min-height: min(900px, 100svh); height: 100svh; max-height: 1120px; display: grid; place-items: center; overflow: hidden; border-bottom: 1px solid var(--line); isolation: isolate; }
+      .hero::before { content: ''; position: absolute; z-index: -2; inset: 9% 8% 8%; border: 1px solid rgba(23,24,23,.2); border-radius: 50%; transform: rotate(-10deg) scaleX(1.1); }
+      .hero::after { content: ''; position: absolute; z-index: -2; width: min(48vw, 650px); aspect-ratio: 1; border-radius: 50%; background: var(--sage); opacity: .78; filter: blur(1px); mix-blend-mode: multiply; transform: translate(19%, 1%); }
+      .orbit { position: absolute; z-index: -1; width: min(69vw, 820px); aspect-ratio: 1; border: 1px solid rgba(23,24,23,.38); border-radius: 50%; transform: rotate(27deg) scaleY(.51); animation: orbit 34s linear infinite; }
+      .orbit::before, .orbit::after { content: ''; position: absolute; inset: 9%; border: 1px solid rgba(23,24,23,.28); border-radius: 50%; transform: rotate(-61deg) scaleY(.72); }
+      .orbit::after { inset: 19%; transform: rotate(83deg) scaleY(.58); }
+      @keyframes orbit { to { transform: rotate(387deg) scaleY(.51); } }
+      .hero-stamp { position: absolute; top: 17%; left: var(--gutter); display: grid; gap: 7px; }
+      .hero-stamp strong { font: 12px var(--mono); letter-spacing: .1em; }
+      .hero-stamp span, .hero-year { color: var(--muted); font: 9px var(--mono); letter-spacing: .15em; }
+      .hero-year { position: absolute; top: 19%; right: var(--gutter); writing-mode: vertical-rl; }
+      .hero-title { position: relative; margin: 0; transform: translateY(-3%); font-size: clamp(5.2rem, 18.4vw, 17.5rem); font-weight: 800; line-height: .78; letter-spacing: -.115em; white-space: nowrap; }
+      .hero-title::before { content: attr(data-outline); position: absolute; z-index: -1; inset: 8px auto auto 8px; color: transparent; -webkit-text-stroke: 1px var(--ink); opacity: .53; }
+      .hero-title em { color: var(--accent); font-style: normal; }
+      .hero-bottom { position: absolute; right: var(--gutter); bottom: 8%; left: var(--gutter); display: flex; align-items: end; justify-content: space-between; }
+      .hero-caption { margin: 0; font-size: 13px; line-height: 1.9; }
+      .scroll-link { display: inline-flex; align-items: center; gap: 13px; text-decoration: none; font: 9px var(--mono); letter-spacing: .13em; }
+      .scroll-arrow { width: 41px; height: 41px; display: grid; place-items: center; border: 1px solid var(--ink); border-radius: 50%; font: 17px var(--mono); transition: color .2s, background .2s, transform .2s; }
+      .scroll-link:hover .scroll-arrow { color: var(--paper); background: var(--ink); transform: translateY(3px); }
+
+      .ticker-section { overflow: hidden; padding: 35px 0 39px; color: var(--paper); background: var(--ink); }
+      .ticker-label { padding: 0 var(--gutter) 21px; color: #aaa79f; font: 9px var(--mono); letter-spacing: .15em; }
+      .ticker-window { overflow: hidden; }
+      .ticker-track { display: flex; width: max-content; animation: marquee 28s linear infinite; }
+      .ticker-section:hover .ticker-track { animation-play-state: paused; }
+      .ticker-group { display: flex; align-items: center; gap: 30px; padding-right: 30px; white-space: nowrap; font-size: clamp(2.25rem, 5.6vw, 5rem); font-weight: 600; letter-spacing: -.07em; }
+      .ticker-group span:nth-of-type(even) { color: var(--accent); }
+      .ticker-group i { color: var(--sage); font: normal 22px var(--mono); }
+      @keyframes marquee { to { transform: translateX(-50%); } }
+
+      .section { padding: clamp(82px, 10vw, 145px) var(--gutter); }
+      .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 45px; }
+      .eyebrow { color: #55544f; }
+      .section-heading h2 { margin: 15px 0 0; font-size: clamp(3rem, 8.7vw, 8rem); font-weight: 700; line-height: .82; letter-spacing: -.09em; }
+      .section-note { max-width: 330px; margin: 0 0 3px; color: var(--muted); font-size: 12px; line-height: 1.9; }
+      .projects { padding-top: 120px; padding-bottom: 125px; }
+      .project-list { display: grid; gap: 16px; }
+      .project-card { display: grid; grid-template-columns: minmax(280px, .9fr) 1.1fr; min-height: 440px; border: 1px solid var(--ink); background: var(--paper-light); }
+      .project-art { position: relative; min-height: 365px; display: grid; place-items: center; overflow: hidden; background: var(--accent); isolation: isolate; }
+      .project-art::before { content: ''; position: absolute; z-index: -1; width: 68%; aspect-ratio: 1; border: 1px solid rgba(23,24,23,.65); border-radius: 50%; box-shadow: 0 0 0 27px rgba(222,218,210,.16), 0 0 0 76px rgba(222,218,210,.13), 0 0 0 134px rgba(222,218,210,.1); transform: scaleX(1.12) rotate(-22deg); transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+      .project-card:hover .project-art::before { transform: scaleX(1.12) rotate(4deg) scale(1.07); }
+      .project-art::after { content: 'AI / ML'; color: var(--paper); font: clamp(3rem, 7vw, 7rem) var(--mono); letter-spacing: -.12em; mix-blend-mode: difference; }
+      .project-index { position: absolute; top: 20px; left: 21px; font: 9px var(--mono); letter-spacing: .12em; }
+      .project-status { position: absolute; right: 20px; bottom: 20px; display: flex; align-items: center; gap: 8px; font: 9px var(--mono); letter-spacing: .1em; }
+      .project-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+      .project-content { display: flex; flex-direction: column; justify-content: space-between; padding: clamp(25px, 4vw, 48px); }
+      .project-title { margin: 17px 0 15px; font-size: clamp(2.4rem, 4.6vw, 4.8rem); line-height: .95; letter-spacing: -.075em; }
+      .project-description { max-width: 470px; margin: 0; color: #56544f; font-size: 13px; line-height: 1.95; }
+      .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+      .project-tag { padding: 7px 9px; border: 1px solid var(--line); border-radius: 999px; font: 8px var(--mono); letter-spacing: .08em; }
+      .project-footer { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin-top: 35px; padding-top: 17px; border-top: 1px solid var(--line); font: 9px var(--mono); letter-spacing: .08em; }
+      .project-link { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+      .project-link b { font: 18px var(--mono); transition: transform .2s; }
+      .project-link:hover b { transform: translate(3px, -3px); }
+      .all-projects { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--line); text-decoration: none; font: 10px var(--mono); letter-spacing: .1em; }
+      .all-projects span:last-child { font-size: 17px; transition: transform .2s; }
+      .all-projects:hover span:last-child { transform: translate(4px, -4px); }
+
+      .about { display: grid; grid-template-columns: 1fr 1fr; min-height: 470px; border-block: 1px solid var(--line); background: var(--sage); }
+      .about-copy { display: flex; flex-direction: column; justify-content: space-between; padding: 45px var(--gutter); }
+      .about-copy h2 { margin: 17px 0; font-size: clamp(3.2rem, 7vw, 6.8rem); line-height: .86; letter-spacing: -.085em; }
+      .about-copy p { max-width: 380px; margin: 30px 0 0; color: #414a47; font-size: 13px; line-height: 1.95; }
+      .map-art { position: relative; min-height: 390px; overflow: hidden; background-color: #9fb4af; background-image: linear-gradient(34deg, transparent 48%, rgba(255,255,255,.5) 49%, rgba(255,255,255,.5) 50%, transparent 51%), linear-gradient(143deg, transparent 48%, rgba(255,255,255,.42) 49%, rgba(255,255,255,.42) 50%, transparent 51%), linear-gradient(90deg, transparent 49%, rgba(44,75,69,.15) 50%, transparent 51%), linear-gradient(0deg, transparent 49%, rgba(44,75,69,.15) 50%, transparent 51%); background-size: 100% 100%, 100% 100%, 72px 72px, 72px 72px; }
+      .map-ring { position: absolute; top: 50%; left: 50%; width: 210px; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid rgba(23,24,23,.46); border-radius: 50%; transform: translate(-50%,-50%); }
+      .map-ring::before, .map-ring::after { content: ''; position: absolute; inset: 24px; border: 1px solid rgba(23,24,23,.3); border-radius: 50%; }
+      .map-ring::after { inset: -25px; }
+      .map-pin { position: relative; z-index: 1; width: 50px; height: 50px; display: grid; place-items: center; border: 1px solid var(--ink); border-radius: 50%; background: var(--accent); font: 9px var(--mono); }
+      .map-label { position: absolute; right: 8%; bottom: 9%; padding: 11px 13px; background: var(--paper); font: 8px var(--mono); letter-spacing: .1em; }
+
+      .contact { padding-top: 115px; padding-bottom: 24px; }
+      .contact-title { margin: 16px 0 48px; font-size: clamp(4rem, 12vw, 11rem); line-height: .8; letter-spacing: -.1em; }
+      .contact-title span { color: var(--accent); }
+      .social-links { display: flex; flex-wrap: wrap; gap: 10px; }
+      .social-links a { min-width: 200px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px; border: 1px solid var(--ink); text-decoration: none; font: 9px var(--mono); letter-spacing: .1em; transition: color .2s, background .2s; }
+      .social-links a:hover { color: var(--paper); background: var(--ink); }
+      .social-links a span:last-child { font: 17px var(--mono); }
+      .footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 90px; padding: 19px 0; border-top: 1px solid var(--line); color: var(--muted); font: 9px var(--mono); letter-spacing: .08em; }
+      .top-button { position: fixed; z-index: 30; right: 24px; bottom: 24px; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--ink); border-radius: 50%; background: var(--paper); text-decoration: none; font: 17px var(--mono); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s, transform .2s, color .2s, background .2s; }
+      .top-button.visible { opacity: 1; pointer-events: auto; transform: none; }
+      .top-button:hover { color: var(--paper); background: var(--ink); }
+      .reveal { opacity: 0; transform: translateY(22px); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.7,.2,1); }
+      .reveal.visible { opacity: 1; transform: none; }
+
+      @media (max-width: 760px) {
+        html { scroll-padding-top: 65px; }
+        .topbar { height: 64px; }
+        .topbar-actions { gap: 18px; }
+        .sound-button > span:last-child { display: none; }
+        .hero { min-height: 680px; }
+        .hero::before { inset: 18% -16% 17%; transform: rotate(-14deg); }
+        .hero::after { width: 75vw; transform: translate(11%, 0); }
+        .orbit { width: 95vw; }
+        .hero-title { font-size: clamp(4.35rem, 18.5vw, 8.6rem); letter-spacing: -.12em; }
+        .hero-title::before { inset: 5px auto auto 5px; }
+        .hero-stamp { top: 17%; }
+        .hero-year { top: 17%; }
+        .hero-bottom { bottom: 7%; align-items: end; }
+        .hero-caption { max-width: 180px; font-size: 11px; }
+        .scroll-link { gap: 8px; font-size: 8px; }
+        .scroll-arrow { width: 36px; height: 36px; }
+        .ticker-section { padding: 28px 0 31px; }
+        .ticker-group { gap: 20px; padding-right: 20px; font-size: 2.35rem; }
+        .ticker-group i { font-size: 17px; }
+        .section-heading { display: block; margin-bottom: 30px; }
+        .section-note { margin-top: 22px; }
+        .projects { padding-top: 88px; padding-bottom: 92px; }
+        .project-card { grid-template-columns: 1fr; }
+        .project-art { min-height: 290px; }
+        .project-content { min-height: 350px; padding: 27px; }
+        .project-title { font-size: 2.65rem; }
+        .project-footer { align-items: start; flex-direction: column; }
+        .about { grid-template-columns: 1fr; }
+        .about-copy { min-height: 350px; padding: 36px var(--gutter); }
+        .map-art { min-height: 300px; }
+        .contact-title { font-size: clamp(4rem, 15vw, 7.5rem); }
+        .social-links a { flex: 1 1 44%; min-width: 150px; }
+        .footer { flex-direction: column; margin-top: 62px; }
+        .top-button { right: 14px; bottom: 14px; }
+      }
+      @media (max-width: 390px) {
+        .wordmark { gap: 8px; font-size: 8px; }
+        .wordmark-mark { width: 29px; height: 29px; }
+        .topbar-actions { gap: 13px; }
+        .hero-title { font-size: 18vw; }
+        .hero-caption { max-width: 145px; }
+        .scroll-link { letter-spacing: .06em; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        .reveal { opacity: 1; transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="topbar" id="top">
+      <a class="wordmark" href="#top" aria-label="YZBzgy 首页"><span class="wordmark-mark" aria-hidden="true">Y</span><span>YZBZGY / PERSONAL ARCHIVE</span></a>
+      <div class="topbar-actions">
+        <button class="sound-button" id="sound" type="button" aria-pressed="false" aria-label="开启背景音效"><span class="sound-dot" aria-hidden="true"></span><span id="sound-label">SOUND OFF</span></button>
+        <button class="menu-button" id="menu-open" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-lines" aria-hidden="true"></span><span>MENU</span></button>
+      </div>
+    </header>
+    <div class="menu-panel" id="menu" aria-hidden="true" inert>
+      <button class="menu-close" id="menu-close" type="button" aria-label="关闭菜单">×</button>
+      <nav aria-label="主导航"><a href="#top">HOME</a><a href="#interests">INTERESTS</a><a href="#projects">PROJECTS</a><a href="#about">ABOUT</a><a href="#contact">CONTACT</a></nav>
+    </div>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="orbit" aria-hidden="true"></div>
+        <div class="hero-stamp"><strong>YZBzgy</strong><span>PERSONAL ARCHIVE</span></div>
+        <div class="hero-year">EST. {year} — ONLINE</div>
+        <h1 class="hero-title" id="hero-title" data-outline="YZBzgy">YZB<em>z</em>gy</h1>
+        <div class="hero-bottom"><p class="hero-caption">你好，欢迎来到我的小小互联网据点。<br />学习、制作、持续更新中。</p><a class="scroll-link" href="#interests"><span>SCROLL DOWN</span><span class="scroll-arrow" aria-hidden="true">↓</span></a></div>
+      </section>
+
+      <section class="ticker-section" id="interests" aria-label="兴趣方向">
+        <div class="ticker-label">CURRENTLY INTO / 最近在探索</div>
+        <div class="ticker-window"><div class="ticker-track" aria-hidden="true">
+          <div class="ticker-group"><span>PYTHON</span><i>✳</i><span>DATA</span><i>✳</i><span>MACHINE LEARNING</span><i>✳</i><span>JAVA</span><i>✳</i><span>BUILDING THINGS</span><i>✳</i></div>
+          <div class="ticker-group"><span>PYTHON</span><i>✳</i><span>DATA</span><i>✳</i><span>MACHINE LEARNING</span><i>✳</i><span>JAVA</span><i>✳</i><span>BUILDING THINGS</span><i>✳</i></div>
+        </div></div>
+      </section>
+
+      <section class="section projects reveal" id="projects" aria-labelledby="projects-title">
+        <div class="section-heading"><div><div class="eyebrow">01 / OPEN NOTEBOOK</div><h2 id="projects-title">Selected<br />Projects</h2></div><p class="section-note">把学习过程变成可以运行、可以分享的东西。这里展示我正在制作和持续更新的项目。</p></div>
+        <div class="project-list">
+          {projects.map((project) => (
+            <article class="project-card">
+              <div class="project-art" aria-hidden="true"><span class="project-index">PROJECT / {project.number}</span><span class="project-status">{project.status}</span></div>
+              <div class="project-content">
+                <div><div class="eyebrow">GITHUB · ZGY0715</div><h3 class="project-title">{project.name}</h3><p class="project-description">{project.description}</p><div class="project-tags" aria-label="项目技术标签">{project.tags.map((tag) => <span class="project-tag">{tag}</span>)}</div></div>
+                <div class="project-footer"><span>LEARNING IN PUBLIC</span><a class="project-link" href={project.href} target="_blank" rel="noreferrer"><span>VIEW REPOSITORY</span><b aria-hidden="true">↗</b></a></div>
+              </div>
+            </article>
+          ))}
+        </div>
+        <a class="all-projects" href="https://github.com/zgy0715?tab=repositories" target="_blank" rel="noreferrer"><span>探索我的其他公开仓库</span><span aria-hidden="true">↗</span></a>
+      </section>
+
+      <section class="about reveal" id="about" aria-labelledby="about-title">
+        <div class="about-copy"><div><div class="eyebrow">02 / ABOUT THIS PLACE</div><h2 id="about-title">My<br />Headquarter</h2></div><p>这里是一个在线据点，用来收藏正在学习的技术、分享代码，也记录下一个想动手做的东西。</p></div>
+        <div class="map-art" role="img" aria-label="由网格、道路和同心圆构成的抽象数字地图"><div class="map-ring"><div class="map-pin">ONLINE</div></div><div class="map-label">YZBZGY · INTERNET HQ</div></div>
+      </section>
+
+      <section class="section contact reveal" id="contact" aria-labelledby="contact-title">
+        <div class="eyebrow">03 / CONTACT</div><h2 class="contact-title" id="contact-title">Let’s<br /><span>connect.</span></h2>
+        <div class="social-links"><a href="https://github.com/zgy0715" target="_blank" rel="noreferrer"><span>GITHUB PROFILE</span><span aria-hidden="true">↗</span></a><a href="https://github.com/zgy0715?tab=repositories" target="_blank" rel="noreferrer"><span>ALL REPOSITORIES</span><span aria-hidden="true">↗</span></a></div>
+        <footer class="footer"><span>© {year} YZBZGY</span><span>MADE ON EARTH · FOUND ONLINE</span></footer>
+      </section>
+    </main>
+    <a class="top-button" id="top-button" href="#top" aria-label="回到顶部">↑</a>
+
+    <script>
+      const menu = document.querySelector('#menu');
+      const menuOpen = document.querySelector('#menu-open');
+      const menuClose = document.querySelector('#menu-close');
+      const menuLinks = [...(menu?.querySelectorAll('a') ?? [])];
+      const setMenuOpen = (open) => {
+        menu?.classList.toggle('open', open);
+        menu?.setAttribute('aria-hidden', String(!open));
+        if (menu) menu.inert = !open;
+        menuOpen?.setAttribute('aria-expanded', String(open));
+        document.body.classList.toggle('menu-open', open);
+        if (open) menuClose?.focus();
+        else menuOpen?.focus();
+      };
+      menuOpen?.addEventListener('click', () => setMenuOpen(true));
+      menuClose?.addEventListener('click', () => setMenuOpen(false));
+      menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menu?.classList.contains('open')) setMenuOpen(false);
+        if (event.key === 'Tab' && menu?.classList.contains('open')) {
+          const focusables = [menuClose, ...menuLinks].filter(Boolean);
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+        }
+      });
+
+      const sound = document.querySelector('#sound');
+      const soundLabel = document.querySelector('#sound-label');
+      let audioContext;
+      let voices = [];
+      sound?.addEventListener('click', async () => {
+        const enabled = sound.getAttribute('aria-pressed') !== 'true';
+        if (enabled) {
+          audioContext ??= new AudioContext();
+          if (audioContext.state === 'suspended') await audioContext.resume();
+          voices = [110, 164.81, 220].map((frequency, index) => {
+            const oscillator = audioContext.createOscillator();
+            const volume = audioContext.createGain();
+            oscillator.type = index === 1 ? 'triangle' : 'sine';
+            oscillator.frequency.value = frequency;
+            volume.gain.value = 0.004;
+            oscillator.connect(volume).connect(audioContext.destination);
+            oscillator.start();
+            return { oscillator, volume };
+          });
+        } else {
+          voices.forEach(({ oscillator, volume }) => {
+            volume.gain.setTargetAtTime(0, audioContext.currentTime, .08);
+            oscillator.stop(audioContext.currentTime + .35);
+          });
+          voices = [];
+        }
+        sound.setAttribute('aria-pressed', String(enabled));
+        sound.setAttribute('aria-label', enabled ? '关闭背景音效' : '开启背景音效');
+        if (soundLabel) soundLabel.textContent = enabled ? 'SOUND ON' : 'SOUND OFF';
+      });
+
+      const topButton = document.querySelector('#top-button');
+      const updateTopButton = () => topButton?.classList.toggle('visible', window.scrollY > 420);
+      window.addEventListener('scroll', updateTopButton, { passive: true });
+      updateTopButton();
+
+      const revealElements = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const revealObserver = new IntersectionObserver((entries, observer) => entries.forEach((entry) => {
+          if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+        }), { threshold: .1 });
+        revealElements.forEach((element) => revealObserver.observe(element));
+      } else {
+        revealElements.forEach((element) => element.classList.add('visible'));
+      }
+    </script>
+  </body>
+</html>
+
