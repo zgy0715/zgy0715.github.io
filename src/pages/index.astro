@@ -199,12 +199,8 @@ const projects = [
       .hq { display: flex; flex-direction: column; justify-content: center; gap: 20px; min-height: 100svh; padding: 90px var(--pad); background: var(--pink); color: #fff; }
       .hq h2 { margin: 0; align-self: flex-end; font: 400 clamp(2.4rem, 5.5vw, 4rem) var(--display); letter-spacing: .05em; text-align: right; }
       .hq-desc { max-width: 560px; margin: 0; align-self: flex-end; font-size: 13px; line-height: 2; text-align: right; color: rgba(255, 255, 255, .92); }
-      .hq-panel { position: relative; display: grid; place-items: center; overflow: hidden; min-height: 420px; background: rgba(0, 0, 0, .82); background-image: linear-gradient(90deg, transparent 49%, rgba(255,255,255,.07) 49%, rgba(255,255,255,.07) 50%, transparent 51%), linear-gradient(0deg, transparent 49%, rgba(255,255,255,.07) 49%, rgba(255,255,255,.07) 50%, transparent 51%); background-size: 64px 64px; }
-      .hq-ring { position: relative; display: grid; place-items: center; width: 190px; aspect-ratio: 1; border: 1px solid rgba(255, 255, 255, .4); border-radius: 50%; }
-      .hq-ring::before { content: ''; position: absolute; inset: 26px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 50%; }
-      .hq-ring::after { content: ''; position: absolute; inset: -22px; border: 1px dashed rgba(255, 255, 255, .22); border-radius: 50%; animation: spin 26s linear infinite; }
-      @keyframes spin { to { transform: rotate(360deg); } }
-      .hq-pin { display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid #fff; border-radius: 50%; background: var(--blue); font: 9px var(--mono); letter-spacing: .14em; }
+      .hq-panel { position: relative; overflow: hidden; min-height: 440px; background: #05070d; }
+      #space-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
       .hq-meta { position: absolute; left: 18px; bottom: 16px; display: grid; gap: 4px; margin: 0; font: 9px var(--mono); letter-spacing: .16em; color: rgba(255, 255, 255, .65); }
       .hq-tag { position: absolute; right: 18px; top: 16px; font: 9px var(--mono); letter-spacing: .16em; color: rgba(255, 255, 255, .65); }
 
@@ -331,12 +327,12 @@ const projects = [
       <!-- 据点（原 Headquarter）-->
       <section class="hq" id="map" aria-labelledby="hq-title">
         <h2 id="hq-title" class="reveal"><span class="i18n-zh">我的据点</span><span class="i18n-en">Headquarter</span></h2>
-        <p class="hq-desc reveal"><span class="i18n-zh">「据点」指我在互联网上的大本营：这个网站、我的 GitHub、B 站和抖音，都属于这个据点群。下面这块面板是据点的“仪表盘”——它不代表真实地址，只是一个装饰性的在线状态，表示我常年在线。</span><span class="i18n-en">"Headquarter" means my base camp on the internet: this website, my GitHub, Bilibili and Douyin are all part of it. The panel below is its dashboard — not a real address, just a decorative status board that says "always online".</span></p>
-        <div class="hq-panel reveal" role="img" aria-label="由网格与同心圆构成的抽象网络据点示意图">
+        <p class="hq-desc reveal"><span class="i18n-zh">「据点」指我在互联网上的大本营：这个网站、我的 GitHub、B 站和抖音都属于这个据点群。下面是一张会动的太阳系示意图——第三轨道上的蓝色星球就是地球，我的据点就在那里。</span><span class="i18n-en">"Headquarter" means my base camp on the internet: this website, my GitHub, Bilibili and Douyin all belong to it. Below is a live solar system — the blue planet on the third orbit is Earth, and that's where my base sits.</span></p>
+        <div class="hq-panel reveal" role="img" aria-label="太阳系动态示意图：太阳居中，行星沿轨道公转，地球位于第三轨道并标记为据点所在地">
+          <canvas id="space-canvas" aria-hidden="true"></canvas>
           <div class="hq-tag"><span class="i18n-zh">YZBZGY · 网络据点</span><span class="i18n-en">YZBZGY · INTERNET HQ</span></div>
-          <div class="hq-ring"><div class="hq-pin">ONLINE</div></div>
           <div class="hq-meta">
-            <p><span class="i18n-zh">位置 — 地球</span><span class="i18n-en">LOC — EARTH</span></p>
+            <p><span class="i18n-zh">位置 — 地球 · 太阳系第三行星</span><span class="i18n-en">LOC — EARTH · 3RD PLANET</span></p>
             <p><span class="i18n-zh">状态 — 在线 · 自 {year}</span><span class="i18n-en">STATUS — ONLINE · EST. {year}</span></p>
             <p><span class="i18n-zh">更新 — 持续进行</span><span class="i18n-en">UPTIME — ONGOING</span></p>
           </div>
@@ -481,6 +477,143 @@ const projects = [
         revealElements.forEach((element) => revealObserver.observe(element));
       } else {
         revealElements.forEach((element) => element.classList.add('visible'));
+      }
+
+      // ===== 太阳系（Canvas 渲染）：地球在第三轨道，标记为据点 =====
+      const spaceCanvas = document.querySelector('#space-canvas');
+      if (spaceCanvas) {
+        const sctx = spaceCanvas.getContext('2d');
+        const STAR_COUNT = 130;
+        const stars = Array.from({ length: STAR_COUNT }, () => ({
+          x: Math.random(), y: Math.random(), r: Math.random() * 1.1 + .3, tw: Math.random() * Math.PI * 2,
+        }));
+        // orbit: 相对面板短边的半径比例；period: 相对地球公转周期的倍数（开普勒近似）
+        const planets = [
+          { name: 'MERCURY', orbit: .16, size: 2.4, period: .24, color: '#9aa0a6' },
+          { name: 'VENUS',   orbit: .26, size: 3.8, period: .62, color: '#d9b38c' },
+          { name: 'EARTH',   orbit: .40, size: 6.0, period: 1,   color: '#3388bb', hq: true },
+          { name: 'MARS',    orbit: .52, size: 3.4, period: 1.88, color: '#c96a4a' },
+          { name: 'JUPITER', orbit: .68, size: 9.0, period: 4.5, color: '#cfa678' },
+          { name: 'SATURN',  orbit: .86, size: 7.6, period: 7.4, color: '#d8c690', ring: true },
+        ].map((p, i) => ({ ...p, ang: i * 1.7 }));
+        const EARTH_YEAR_MS = 24000; // 地球公转一圈 24 秒
+        let panelW = 0, panelH = 0;
+        const resizeSpace = () => {
+          const dpr = window.devicePixelRatio || 1;
+          const rect = spaceCanvas.getBoundingClientRect();
+          panelW = rect.width; panelH = rect.height;
+          spaceCanvas.width = panelW * dpr;
+          spaceCanvas.height = panelH * dpr;
+          sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        };
+        resizeSpace();
+        window.addEventListener('resize', resizeSpace);
+        const drawSpace = (t) => {
+          const cx = panelW / 2, cy = panelH / 2;
+          const unit = Math.min(panelW, panelH) * .47;
+          sctx.clearRect(0, 0, panelW, panelH);
+          // 星空（缓慢闪烁）
+          for (const s of stars) {
+            sctx.globalAlpha = .25 + .5 * Math.abs(Math.sin(t * .0004 + s.tw));
+            sctx.fillStyle = '#fff';
+            sctx.beginPath();
+            sctx.arc(s.x * panelW, s.y * panelH, s.r, 0, Math.PI * 2);
+            sctx.fill();
+          }
+          sctx.globalAlpha = 1;
+          // 太阳（暖色光晕）
+          const sunR = Math.max(9, unit * .07);
+          const glow = sctx.createRadialGradient(cx, cy, 0, cx, cy, sunR * 3.2);
+          glow.addColorStop(0, 'rgba(255, 210, 140, .85)');
+          glow.addColorStop(.35, 'rgba(255, 170, 90, .25)');
+          glow.addColorStop(1, 'rgba(255, 170, 90, 0)');
+          sctx.fillStyle = glow;
+          sctx.beginPath();
+          sctx.arc(cx, cy, sunR * 3.2, 0, Math.PI * 2);
+          sctx.fill();
+          sctx.fillStyle = '#ffdca8';
+          sctx.beginPath();
+          sctx.arc(cx, cy, sunR, 0, Math.PI * 2);
+          sctx.fill();
+          // 行星
+          for (const p of planets) {
+            const orbitR = unit * p.orbit;
+            sctx.strokeStyle = 'rgba(255, 255, 255, .10)';
+            sctx.lineWidth = 1;
+            sctx.beginPath();
+            sctx.arc(cx, cy, orbitR, 0, Math.PI * 2);
+            sctx.stroke();
+            const ang = p.ang + (t / (EARTH_YEAR_MS * p.period)) * Math.PI * 2;
+            const x = cx + Math.cos(ang) * orbitR;
+            const y = cy + Math.sin(ang) * orbitR * .96; // 轻微压扁，透视感
+            if (p.ring) { // 土星环
+              sctx.strokeStyle = 'rgba(216, 198, 144, .55)';
+              sctx.beginPath();
+              sctx.ellipse(x, y, p.size * 2.1, p.size * .8, ang, 0, Math.PI * 2);
+              sctx.stroke();
+            }
+            if (p.hq) { // 地球：蓝色光晕 + 据点标记
+              sctx.shadowColor = '#3388bb';
+              sctx.shadowBlur = 18;
+              sctx.fillStyle = '#3f97cc';
+              sctx.beginPath();
+              sctx.arc(x, y, p.size, 0, Math.PI * 2);
+              sctx.fill();
+              sctx.shadowBlur = 0;
+              sctx.fillStyle = 'rgba(255, 255, 255, .55)';
+              sctx.beginPath();
+              sctx.arc(x - p.size * .3, y - p.size * .3, p.size * .32, 0, Math.PI * 2);
+              sctx.fill(); // 高光
+              const moonAng = ang * 13.4; // 月球：一年约 13.4 个朔望月
+              const moonR = p.size * 2.6;
+              sctx.fillStyle = '#c7c9cc';
+              sctx.beginPath();
+              sctx.arc(x + Math.cos(moonAng) * moonR, y + Math.sin(moonAng) * moonR, 1.8, 0, Math.PI * 2);
+              sctx.fill();
+              // 据点标记环（粉色虚线）+ 标签
+              sctx.strokeStyle = '#ff8899';
+              sctx.setLineDash([3, 4]);
+              sctx.beginPath();
+              sctx.arc(x, y, p.size + 7, 0, Math.PI * 2);
+              sctx.stroke();
+              sctx.setLineDash([]);
+              sctx.fillStyle = 'rgba(255, 255, 255, .75)';
+              sctx.font = '8px ui-monospace, Menlo, monospace';
+              sctx.textAlign = 'center';
+              sctx.fillText('EARTH · HQ', x, y + p.size + 20);
+            } else {
+              sctx.fillStyle = p.color;
+              sctx.beginPath();
+              sctx.arc(x, y, p.size, 0, Math.PI * 2);
+              sctx.fill();
+            }
+          }
+        };
+        let spaceRunning = false, spaceRafId = 0;
+        const spaceLoop = (t) => {
+          drawSpace(t);
+          if (spaceRunning) spaceRafId = requestAnimationFrame(spaceLoop);
+        };
+        const setSpaceRunning = (run) => {
+          if (run && !spaceRunning) {
+            spaceRunning = true;
+            spaceRafId = requestAnimationFrame(spaceLoop);
+          } else if (!run && spaceRunning) {
+            spaceRunning = false;
+            cancelAnimationFrame(spaceRafId);
+          }
+        };
+        if (reducedMotion) {
+          drawSpace(0); // 静态帧
+        } else {
+          // 面板滚出视口时暂停动画，省电
+          if ('IntersectionObserver' in window) {
+            new IntersectionObserver((entries) => setSpaceRunning(entries[0].isIntersecting), { threshold: .05 })
+              .observe(spaceCanvas);
+          } else {
+            setSpaceRunning(true);
+          }
+        }
       }
 
       // ===== 背景音效（默认关闭）=====
