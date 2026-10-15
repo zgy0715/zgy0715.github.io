@@ -9,6 +9,9 @@ export async function getStaticPaths() {
 const { note } = Astro.props;
 const { Content } = await render(note);
 const dateStr = note.data.date.toISOString().slice(0, 10);
+const updatedStr = note.data.updated ? note.data.updated.toISOString().slice(0, 10) : null;
+// 阅读时长：按正文字符数估算（中文约 400 字/分钟）
+const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').length / 400));
 ---
 
 <!doctype html>
@@ -105,6 +108,8 @@ const dateStr = note.data.date.toISOString().slice(0, 10);
       <main>
         <p class="article-meta">
           <time datetime={dateStr}>{dateStr}</time>
+          {updatedStr && updatedStr !== dateStr && <span><span class="i18n-zh">更新</span><span class="i18n-en">EDITED</span> {updatedStr}</span>}
+          <span>≈ {minutes} <span class="i18n-zh">分钟</span><span class="i18n-en">MIN</span></span>
           {note.data.tags.map((tag) => <span>{tag}</span>)}
         </p>
         <h1 class="article-title">{note.data.title}</h1>

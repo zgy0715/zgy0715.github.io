@@ -1,6 +1,7 @@
 ---
 title: GitHub 直连抽风时的三种部署兜底
 date: 2026-10-15
+updated: 2026-10-15
 tags: [GITHUB, GIT, DEPLOYMENT]
 summary: 这个网站部署在 GitHub Pages 上，而 GitHub 直连时好时坏。记录三种真实用过的兜底方案：重试、Git Data API、Pages 模式修复。
 ---

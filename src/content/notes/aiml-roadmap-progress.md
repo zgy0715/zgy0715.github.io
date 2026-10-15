@@ -1,7 +1,9 @@
 ---
 title: AI-ML-Learning 的路线图与真实进度
 date: 2026-10-15
+updated: 2026-10-15
 tags: [AI-ML-LEARNING, MACHINE LEARNING, PYTHON]
+star: true
 summary: 解读自己仓库里的四阶段路线图和 PROGRESS.md：Phase 1-2 已完成，Phase 3 推进到第 10 课 KNN。数据全部来自仓库文件。
 ---
 

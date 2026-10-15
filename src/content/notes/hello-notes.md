@@ -1,7 +1,9 @@
 ---
 title: 开个笔记角落
 date: 2026-10-15
+updated: 2026-10-15
 tags: [META]
+star: true
 summary: 这个板块的定位改过一次：只写能落到具体提交、具体文件、具体报错的内容。
 ---
 

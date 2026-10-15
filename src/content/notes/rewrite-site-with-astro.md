@@ -1,6 +1,7 @@
 ---
 title: 用 Astro 重写个人网站
 date: 2026-09-28
+updated: 2026-10-15
 tags: [ASTRO, HTML, CSS, GITHUB PAGES]
 summary: 把 anontokyo.com 的前端打包产物逆向了一遍：269KB CSS、Tailwind 工具类、蓝粉渐变动画，然后全用原生实现。记录三次改版的决策。
 ---

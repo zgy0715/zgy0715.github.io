@@ -1,8 +1,32 @@
 ---
 import { getCollection } from 'astro:content';
 
-const notes = (await getCollection('notes'))
+const raw = (await getCollection('notes'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// 站点色板：标签颜色按标签名哈希稳定映射，重要笔记固定用粉色
+const PALETTE = ['#3388bb', '#ff8899', '#287aac', '#77bbdd'];
+const tagColor = (tag) => PALETTE[[...tag].reduce((h, c) => h + c.charCodeAt(0), 0) % PALETTE.length];
+
+// 阅读时长：按正文字符数估算（中文约 400 字/分钟），构建期计算的真实数据
+const notes = raw.map((note) => {
+  const chars = (note.body ?? '').replace(/\s/g, '').length;
+  return {
+    ...note,
+    minutes: Math.max(1, Math.ceil(chars / 400)),
+    color: note.data.star ? '#ff8899' : tagColor(note.data.title),
+  };
+});
+
+const tagCounts = {};
+notes.forEach((n) => n.data.tags.forEach((t) => { tagCounts[t] = (tagCounts[t] ?? 0) + 1; }));
+const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+const starredCount = notes.filter((n) => n.data.star).length;
+const lastUpdated = notes.reduce((m, n) => {
+  const d = (n.data.updated ?? n.data.date);
+  return d.valueOf() > m.valueOf() ? d : m;
+}, notes[0]?.data.date ?? new Date());
+const fmt = (d) => d.toISOString().slice(0, 10);
 ---
 
 <!doctype html>
@@ -45,71 +69,188 @@ const notes = (await getCollection('notes'))
       html { scroll-behavior: smooth; }
       body { margin: 0; background: var(--white); color: var(--black); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
       a { color: inherit; }
+      button { color: inherit; font: inherit; }
       ::selection { color: #fff; background: var(--blue); }
       :focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
       .i18n-en { display: none; }
       html.lang-en .i18n-zh { display: none; }
       html.lang-en .i18n-en { display: inline; }
-      h1 .i18n-zh, h2 .i18n-zh { font-weight: 700; letter-spacing: .06em; }
+      h1 .i18n-zh { font-weight: 700; letter-spacing: .06em; }
 
-      .page { min-height: 100svh; display: flex; flex-direction: column; padding: 96px var(--pad) 60px; }
-      .page-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 40px; }
+      .page { min-height: 100svh; display: flex; flex-direction: column; padding: 90px var(--pad) 50px; }
+
+      /* ===== 页头 ===== */
+      .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 26px; }
       .page-head h1 { margin: 0; font: 400 clamp(3.4rem, 10vw, 8rem) var(--display); letter-spacing: .04em; line-height: .9; }
-      .back-home { font: 10px var(--mono); letter-spacing: .2em; text-decoration: none; transition: color .2s; }
+      .head-meta { margin: 10px 0 0; font: 10px var(--mono); letter-spacing: .18em; color: #777; }
+      .head-meta b { color: var(--blue); font-weight: 700; }
+      .back-home { font: 10px var(--mono); letter-spacing: .2em; text-decoration: none; transition: color .2s; white-space: nowrap; }
       .back-home:hover { color: var(--blue); }
 
-      .note-list { list-style: none; margin: 0; padding: 0; }
-      .note-list li { border-top: 1px solid rgba(0, 0, 0, .2); }
-      .note-list li:last-child { border-bottom: 1px solid rgba(0, 0, 0, .2); }
-      .note-list a { display: block; padding: clamp(20px, 3.5vw, 34px) 0; text-decoration: none; transition: padding-left .25s cubic-bezier(.2, .7, .2, 1); }
-      .note-list a:hover { padding-left: 14px; }
-      .note-list a:hover .note-title { color: var(--blue); }
-      .note-meta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 0 0 8px; font: 9px var(--mono); letter-spacing: .18em; color: #666; }
-      .note-title { margin: 0; font: 700 clamp(1.5rem, 4vw, 2.6rem)/1.15 var(--sans); letter-spacing: .02em; transition: color .2s; }
-      .note-summary { margin: 10px 0 0; max-width: 620px; font-size: 13.5px; line-height: 2; color: #444; }
-      .note-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-      .note-tags span { padding: 6px 10px; border: 1px solid rgba(0, 0, 0, .35); border-radius: 999px; font: 8px var(--mono); letter-spacing: .14em; }
+      /* ===== 工具栏：标签筛选 + 视图切换 ===== */
+      .toolbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 12px 0; margin-bottom: 6px; background: var(--white); border-bottom: 1px solid rgba(0, 0, 0, .15); }
+      .tag-filter { display: flex; flex-wrap: wrap; gap: 8px; }
+      .chip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border: 1px solid rgba(0, 0, 0, .3); border-radius: 999px; background: none; cursor: pointer; font: 9px var(--mono); letter-spacing: .12em; transition: background .2s, color .2s, border-color .2s; }
+      .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--chip, #999); }
+      .chip .star-mark { color: var(--pink); font-size: 11px; }
+      .chip:hover { border-color: #000; }
+      .chip.active { background: var(--black); border-color: var(--black); color: #fff; }
+      .chip.active .dot { background: #fff; }
+      .chip.active .star-mark { color: #fff; }
+      .view-toggle { display: inline-flex; border: 1px solid rgba(0, 0, 0, .3); }
+      .view-toggle button { width: 40px; height: 36px; border: 0; background: none; cursor: pointer; font-size: 15px; line-height: 1; opacity: .4; transition: background .2s, opacity .2s; }
+      .view-toggle button + button { border-left: 1px solid rgba(0, 0, 0, .3); }
+      .view-toggle button.active { background: var(--black); color: #fff; opacity: 1; }
+      .view-toggle button:hover { opacity: 1; }
+
+      /* ===== 笔记列表（三种视图共用骨架）===== */
+      .note-list { display: grid; list-style: none; margin: 14px 0 0; padding: 0; }
+      .note-item { position: relative; }
+      .note-item .accent { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent-color, var(--blue)); }
+      .note-star { color: var(--pink); font-size: 13px; }
+      .note-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0; font: 9px var(--mono); letter-spacing: .16em; color: #777; }
+      .note-title { margin: 0; font: 700 1.35rem/1.3 var(--sans); letter-spacing: .02em; transition: color .2s; }
+      .note-summary { margin: 9px 0 0; font-size: 13px; line-height: 1.95; color: #444; }
+      .note-tags { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0 0; }
+      .note-tags span { padding: 4px 9px; border: 1px solid; border-radius: 999px; font: 8px var(--mono); letter-spacing: .12em; }
+      .note-foot { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; font: 9px var(--mono); letter-spacing: .14em; color: #999; }
+
+      /* —— 列表视图：紧凑行 —— */
+      .view-list { gap: 0; }
+      .view-list .note-item { border-bottom: 1px solid rgba(0, 0, 0, .18); }
+      .view-list .note-item:first-child { border-top: 1px solid rgba(0, 0, 0, .18); }
+      .view-list a { position: relative; display: block; padding: 24px 0 24px 22px; text-decoration: none; transition: padding-left .25s cubic-bezier(.2, .7, .2, 1); }
+      .view-list a:hover { padding-left: 32px; }
+      .view-list a:hover .note-title { color: var(--blue); }
+      .view-list .note-summary { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 760px; }
+      .view-list .note-title { font-size: 1.45rem; }
+
+      /* —— 卡片视图：大卡 + 摘要全显 —— */
+      .view-cards { gap: 20px; }
+      .view-cards .note-item { border: 1px solid rgba(0, 0, 0, .25); background: var(--white); transition: border-color .2s, transform .25s cubic-bezier(.2, .7, .2, 1); }
+      .view-cards .note-item:hover { border-color: var(--accent-color, var(--blue)); transform: translateY(-3px); }
+      .view-cards a { display: block; padding: 26px 28px 24px 32px; text-decoration: none; }
+      .view-cards a:hover .note-title { color: var(--blue); }
+      .view-cards .note-title { font-size: 1.6rem; }
+      .view-cards .note-summary { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+      .view-cards .note-foot { border-top: 1px solid rgba(0, 0, 0, .12); padding-top: 13px; }
+
+      /* —— 网格视图：高密度磁贴 —— */
+      .view-grid { grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 16px; align-items: stretch; }
+      .view-grid .note-item { border: 1px solid rgba(0, 0, 0, .25); display: flex; flex-direction: column; transition: border-color .2s, transform .25s cubic-bezier(.2, .7, .2, 1); }
+      .view-grid .note-item:hover { border-color: var(--accent-color, var(--blue)); transform: translateY(-3px); }
+      .view-grid a { display: flex; flex-direction: column; flex: 1; padding: 20px 20px 18px 24px; text-decoration: none; }
+      .view-grid a:hover .note-title { color: var(--blue); }
+      .view-grid .note-title { font-size: 1.15rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .view-grid .note-summary { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 12px; }
+      .view-grid .note-tags { margin-top: auto; padding-top: 16px; }
+      .view-grid .note-foot { margin-top: 12px; }
+
       .empty { padding: 60px 0; color: #666; font-size: 14px; line-height: 2; }
 
       .page-footer { margin-top: auto; padding-top: 50px; font: 9px var(--mono); letter-spacing: .2em; color: #999; }
 
       @media (max-width: 760px) {
         .page { padding-top: 72px; }
-        .page-head { flex-direction: column; gap: 10px; }
+        .page-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .toolbar { position: static; }
+        .view-grid { grid-template-columns: 1fr; }
       }
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
-        .note-list a { transition: none; }
+        .note-list a, .note-item { transition: none; }
       }
     </style>
   </head>
   <body>
     <div class="page">
       <header class="page-head">
-        <h1><span class="i18n-zh">学习笔记</span><span class="i18n-en">NOTES</span></h1>
+        <div>
+          <h1><span class="i18n-zh">学习笔记</span><span class="i18n-en">NOTES</span></h1>
+          <p class="head-meta">
+            <b>{notes.length}</b> <span class="i18n-zh">篇</span><span class="i18n-en">posts</span>
+            · <span class="i18n-zh">最后更新</span><span class="i18n-en">last updated</span> {fmt(lastUpdated)}
+          </p>
+        </div>
         <a class="back-home" href="/"><span aria-hidden="true">←</span> <span class="i18n-zh">回主页</span><span class="i18n-en">BACK HOME</span></a>
       </header>
+
+      <div class="toolbar">
+        <div class="tag-filter" id="tag-filter" aria-label="按标签筛选">
+          <button class="chip active" type="button" data-tag="__all__"><span class="i18n-zh">全部</span><span class="i18n-en">ALL</span> {notes.length}</button>
+          {starredCount > 0 && <button class="chip" type="button" data-tag="__star__"><span class="star-mark">★</span> <span class="i18n-zh">重要</span><span class="i18n-en">KEY</span> {starredCount}</button>}
+          {tags.map(([tag, count]) => (
+            <button class="chip" type="button" data-tag={tag} style={`--chip:${tagColor(tag)}`}><i class="dot" aria-hidden="true"></i>{tag} {count}</button>
+          ))}
+        </div>
+        <div class="view-toggle" id="view-toggle" role="group" aria-label="切换视图">
+          <button type="button" data-view="list" class="active" aria-label="列表视图" title="列表">≡</button>
+          <button type="button" data-view="cards" aria-label="卡片视图" title="卡片">▣</button>
+          <button type="button" data-view="grid" aria-label="网格视图" title="网格">▦</button>
+        </div>
+      </div>
+
       <main>
-        {notes.length === 0 ? (
-          <p class="empty">还没有笔记，第一篇正在路上。</p>
-        ) : (
-          <ul class="note-list">
-            {notes.map((note) => (
-              <li>
-                <a href={`/notes/${note.id}/`}>
-                  <p class="note-meta">
-                    <time datetime={note.data.date.toISOString().slice(0, 10)}>{note.data.date.toISOString().slice(0, 10)}</time>
-                    {note.data.tags.map((tag) => <span>{tag}</span>)}
-                  </p>
-                  <h2 class="note-title">{note.data.title}</h2>
-                  {note.data.summary && <p class="note-summary">{note.data.summary}</p>}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul class="note-list view-list" id="note-list">
+          {notes.map((note) => (
+            <li class="note-item" style={`--accent-color:${note.color}`} data-tags={note.data.tags.join('|')} data-star={note.data.star ? '1' : '0'}>
+              <a href={`/notes/${note.id}/`}>
+                <i class="accent" aria-hidden="true"></i>
+                <p class="note-meta">
+                  <time datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+                  {note.data.updated && note.data.updated.valueOf() !== note.data.date.valueOf() && <span><span class="i18n-zh">更新</span><span class="i18n-en">edited</span> {fmt(note.data.updated)}</span>}
+                  <span>≈ {note.minutes} <span class="i18n-zh">分钟</span><span class="i18n-en">min</span></span>
+                </p>
+                <h2 class="note-title">{note.data.star && <span class="note-star" title="重要" aria-label="重要">★ </span>}{note.data.title}</h2>
+                {note.data.summary && <p class="note-summary">{note.data.summary}</p>}
+                <p class="note-tags" aria-label="标签">
+                  {note.data.tags.map((tag) => <span style={`color:${tagColor(tag)};border-color:${tagColor(tag)}`}>{tag}</span>)}
+                </p>
+                <p class="note-foot"><span class="i18n-zh">阅读全文</span><span class="i18n-en">READ</span> <span aria-hidden="true">→</span></p>
+              </a>
+            </li>
+          ))}
+        </ul>
       </main>
+
       <footer class="page-footer"><span class="i18n-zh">© 2026 YZBZGY — 建于地球 · 见于线上</span><span class="i18n-en">© 2026 YZBZGY — MADE ON EARTH · FOUND ONLINE</span></footer>
     </div>
+
+    <script>
+      // ===== 视图切换（记忆到 localStorage）=====
+      const list = document.querySelector('#note-list');
+      const viewBox = document.querySelector('#view-toggle');
+      const applyView = (view) => {
+        list.classList.remove('view-list', 'view-cards', 'view-grid');
+        list.classList.add('view-' + view);
+        [...viewBox.querySelectorAll('button')].forEach((b) => b.classList.toggle('active', b.dataset.view === view));
+        try { localStorage.setItem('notes-view', view); } catch (e) {}
+      };
+      viewBox?.addEventListener('click', (event) => {
+        const btn = event.target.closest('button');
+        if (btn) applyView(btn.dataset.view);
+      });
+      applyView((() => { try { return localStorage.getItem('notes-view') || 'list'; } catch (e) { return 'list'; } })());
+
+      // ===== 标签筛选 =====
+      const items = [...list.querySelectorAll('.note-item')];
+      const filterBox = document.querySelector('#tag-filter');
+      let activeTag = '__all__';
+      const applyFilter = () => {
+        items.forEach((item) => {
+          const ok = activeTag === '__all__'
+            || (activeTag === '__star__' ? item.dataset.star === '1' : item.dataset.tags.split('|').includes(activeTag));
+          item.style.display = ok ? '' : 'none';
+        });
+        filterBox.querySelectorAll('.chip').forEach((chip) => chip.classList.toggle('active', chip.dataset.tag === activeTag));
+      };
+      filterBox?.addEventListener('click', (event) => {
+        const chip = event.target.closest('.chip');
+        if (!chip) return;
+        activeTag = chip.dataset.tag;
+        applyFilter();
+      });
+      applyFilter();
+    </script>
   </body>
 </html>
