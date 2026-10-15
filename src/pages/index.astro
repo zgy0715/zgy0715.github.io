@@ -12,12 +12,12 @@ const keywords = ['PYTHON', 'DATA', 'MACHINE LEARNING', 'JAVA', 'BUILDING THINGS
 const projects = [
   {
     number: '01',
-    name: 'AI & ML LEARNING',
-    subtitle: '公开学习仓库',
-    subtitleEn: 'Learning in public',
-    description: '从 Python 和 NumPy 补起的机器学习练习簿，按周推进。每个算法都坚持"先手写、再看库"：线性回归先写双重 for 循环再向量化，跑通那一刻才知道差了一个数量级。每周日志和踩坑记录一起提交，学习过程本身就能回看。',
-    descriptionEn: 'A ML practice repo starting from Python and NumPy, pushed weekly. Every algorithm gets hand-written first, then compared with the library version — linear regression went from double for-loops to vectorized code, a 10x speedup I did not expect. Weekly logs included.',
-    tags: ['PYTHON', 'NUMPY', 'MACHINE LEARNING', 'MATPLOTLIB'],
+    name: 'AI-ML-LEARNING',
+    subtitle: '从零到独立完成 AI 项目',
+    subtitleEn: 'From zero to real AI projects',
+    description: '按四阶段路线图推进的学习仓库：Python 基础 → NumPy/Pandas/Matplotlib 数据科学 → 机器学习算法（线性回归、KNN、决策树、朴素贝叶斯、逻辑回归）→ PyTorch 深度学习。PROGRESS.md 逐课追踪：Phase 1-2 已完成，Phase 3 推进到第 10 课 KNN，另附 7 课 Java 专题。',
+    descriptionEn: 'A learning repo on a four-phase roadmap: Python basics → NumPy/Pandas/Matplotlib → ML algorithms (linear regression, KNN, decision tree, Naive Bayes, logistic regression) → PyTorch. Tracked lesson-by-lesson in PROGRESS.md: Phases 1-2 done, Phase 3 at lesson 10 (KNN), plus a 7-lesson Java track.',
+    tags: ['PYTHON', 'NUMPY', 'PANDAS', 'PYTORCH'],
     href: 'https://github.com/zgy0715/AI-ML-Learning',
     status: '进行中',
     statusEn: 'IN PROGRESS',
@@ -27,8 +27,8 @@ const projects = [
     name: 'YZBZGY.GITHUB.IO',
     subtitle: '你现在看的这个网站',
     subtitleEn: 'The site you are looking at',
-    description: 'Astro 手写的单页站，改到第三代。为了一比一复刻 anontokyo.com 的版式，我把它的前端打包产物抓下来逆向：269KB 的 CSS 里翻出 Tailwind 工具类和蓝粉渐变动画，GSAP 的横向文字流用 20 行原生 JS 等价实现。全程零运行时依赖。',
-    descriptionEn: 'My hand-written Astro site, now in its third generation. To replicate anontokyo.com faithfully, I pulled its built assets apart: dug Tailwind utilities and the blue-pink gradient out of 269KB of CSS, and replaced GSAP with 20 lines of vanilla JS. Zero runtime dependencies.',
+    description: 'Astro 手写的单页站，改到第三代：逆向 anontokyo.com 的 269KB CSS 拿到版式与配色，GSAP/Swiper 全部换成原生 JS，"据点"面板是纯 Canvas 手绘的太阳系。零运行时依赖。',
+    descriptionEn: 'My hand-written Astro site, third generation: layout and colors extracted from anontokyo.com\'s 269KB of CSS, GSAP/Swiper replaced with vanilla JS, and the HQ panel is a solar system drawn in pure Canvas. Zero runtime dependencies.',
     tags: ['ASTRO', 'HTML / CSS / JS', 'CANVAS', 'GITHUB PAGES'],
     href: 'https://github.com/zgy0715/zgy0715.github.io',
     status: '已上线',
@@ -36,54 +36,116 @@ const projects = [
   },
   {
     number: '03',
-    name: 'LIBRARY SYSTEM',
-    subtitle: 'Java 课程设计',
-    subtitleEn: 'Java course project',
-    description: '大三 Java 课设：JDBC + MySQL 的图书馆管理系统。动手前以为增删改查没什么，真写起来全是细节——借书和还书必须同一事务、逾期罚款的日期边界要处理时分秒、三层结构（界面/逻辑/数据访问）重构了三版才理顺。演示拿了课程前列。',
-    descriptionEn: 'Junior-year Java course project: a library management system on JDBC + MySQL. CRUD sounded trivial until transactions, date-boundary edge cases in overdue fines, and three rounds of restructuring the 3-layer architecture. Demo landed near the top of the class.',
-    tags: ['JAVA', 'JDBC', 'MYSQL', 'OOP'],
-    status: '已完成',
-    statusEn: 'COURSE DONE',
-    note: { zh: '课程项目 · 代码随课提交', en: 'Course project · code submitted in class' },
+    name: 'DEEPAGENT',
+    subtitle: '多智能体协作开发平台',
+    subtitleEn: 'Multi-agent dev platform',
+    description: '基于大语言模型的多智能体协作开发平台（v0.2.1，MIT）：让 AI Agent 像真正的开发团队一样分工构建软件。C++17 内核 + Python 3.11 + Java 21 + TypeScript 四种语言混合，是所有仓库里语言栈最杂的一个。',
+    descriptionEn: 'An LLM-based multi-agent collaborative development platform (v0.2.1, MIT): AI agents building software like a real dev team. A C++17 core mixed with Python 3.11, Java 21 and TypeScript — the widest language stack of all my repos.',
+    tags: ['C++', 'PYTHON', 'JAVA', 'TYPESCRIPT'],
+    href: 'https://github.com/zgy0715/zgy_project',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
   },
   {
     number: '04',
-    name: 'GRADE-VIZ',
-    subtitle: '成绩单数据小工具',
-    subtitleEn: 'A tiny transcript tool',
-    description: '起因是想看清自己绩点的走势，用 pandas 读教务系统导出的 CSV，算加权平均分和每学期绩点，matplotlib 画趋势图。本来是一次性脚本，写着写着加上了科目筛选和图表导出，最后宿舍人手一份。处理了三学期的成绩数据。',
-    descriptionEn: 'Started as a one-off script: pandas reads the CSV exported from our grading system, computes weighted averages and per-semester GPA trends, matplotlib draws the charts. It grew subject filters and chart export, and ended up on every roommate\'s laptop. Three semesters processed.',
-    tags: ['PYTHON', 'PANDAS', 'MATPLOTLIB', 'CSV'],
-    status: '自用工具',
-    statusEn: 'IN HOUSE',
-    note: { zh: '自用小工具 · 未开源', en: 'Personal tool · not open-sourced' },
+    name: 'NEXUS INTELLIGENCE AGENT',
+    subtitle: '智能体应用',
+    subtitleEn: 'An agent application',
+    description: 'NIA：React 18 + TypeScript 5.8 + Vite 6.4 + Tailwind CSS 的前端，配 FastAPI 后端的智能体应用。TypeScript 写了约 10 万字节，是我 TS 工程实践最多的仓库。',
+    descriptionEn: 'NIA: a React 18 + TypeScript 5.8 + Vite 6.4 + Tailwind CSS frontend over a FastAPI backend. With ~100KB of TypeScript, this is where I have practiced TS engineering the most.',
+    tags: ['REACT 18', 'TYPESCRIPT', 'VITE', 'FASTAPI'],
+    href: 'https://github.com/zgy0715/Nexus-Intelligence-Agent-zgy',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
   },
   {
     number: '05',
-    name: 'SOLAR CANVAS',
-    subtitle: '据点面板的技术拆解',
-    subtitleEn: 'The HQ panel, explained',
-    description: '本站"据点"面板的独立技术拆解：纯 Canvas 2D 手绘太阳系，行星公转周期按开普勒近似缩放（地球一圈 24 秒，月球一年 13.4 个朔望月），devicePixelRatio 适配高清屏，面板滚出视口时 IntersectionObserver 自动暂停 requestAnimationFrame 省电。零依赖，可单独抽走复用。',
-    descriptionEn: 'The HQ panel as a standalone piece: a solar system drawn in pure Canvas 2D, orbital periods scaled by Kepler approximation (Earth: 24s per lap, Moon: 13.4 synodic months per year), DPR-aware rendering, and rAF auto-paused off-screen via IntersectionObserver. Zero dependencies.',
-    tags: ['CANVAS 2D', 'JAVASCRIPT', 'ANIMATION', 'PERFORMANCE'],
-    href: 'https://zgy0715.github.io/#map',
-    status: '已上线',
-    statusEn: 'SHIPPED',
+    name: 'A3 LEARNING-AGENT',
+    subtitle: '大模型个性化学习系统',
+    subtitleEn: 'LLM learning system',
+    description: '基于大模型的个性化学习多智能体系统：FastAPI + MongoDB 后端，Vue 3 + Pinia + ECharts 前端，Python 与 Vue 的代码量几乎对半——前后端都按真实项目的规模来写。',
+    descriptionEn: 'An LLM-powered personalized learning multi-agent system: FastAPI + MongoDB backend, Vue 3 + Pinia + ECharts frontend, with Python and Vue each at roughly half the codebase — built at real-project scale on both ends.',
+    tags: ['FASTAPI', 'MONGODB', 'VUE 3', 'ECHARTS'],
+    href: 'https://github.com/zgy0715/learning-agent',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
+  },
+  {
+    number: '06',
+    name: 'HRMS 员工管理系统',
+    subtitle: 'Spring Boot 3 + Vue 3 全栈',
+    subtitleEn: 'Spring Boot 3 + Vue 3 full stack',
+    description: '企业员工管理系统（HRMS）：Spring Boot 3 后端 22 个领域实体、15 个 REST 控制器，Vue 3 + Element Plus 前端 12 个业务页面，RBAC 四角色贯穿，内置 61 名员工演示数据，start.sh 一键启动。',
+    descriptionEn: 'An HR management system: Spring Boot 3 backend with 22 domain entities and 15 REST controllers, Vue 3 + Element Plus frontend with 12 business pages, RBAC across 4 roles, 61 demo employees, one-command start.sh.',
+    tags: ['SPRING BOOT 3', 'VUE 3', 'ELEMENT PLUS', 'RBAC'],
+    href: 'https://github.com/zgy0715/renliguanli',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
+  },
+  {
+    number: '07',
+    name: 'FILL-A-PIX 像素填空',
+    subtitle: 'Android + 鸿蒙双端游戏',
+    subtitleEn: 'Android + HarmonyOS game',
+    description: '康思像素填空解谜游戏的联网版：Android（Kotlin + Jetpack Compose）与鸿蒙（ArkTS + ArkUI）双端同构，共用 Python FastAPI + SQLite 服务端，关卡由服务端即时生成并校验唯一解，支持同房对战。',
+    descriptionEn: 'A networked Fill-a-Pix logic puzzle: Android (Kotlin + Jetpack Compose) and HarmonyOS (ArkTS + ArkUI) clients sharing one Python FastAPI + SQLite server, which generates levels on the fly and verifies unique solutions.',
+    tags: ['KOTLIN', 'COMPOSE', 'ARKTS', 'FASTAPI'],
+    href: 'https://github.com/zgy0715/xiangsuGame',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
+  },
+  {
+    number: '08',
+    name: 'TECH HOTSPOT',
+    subtitle: '技术热点数据平台',
+    subtitleEn: 'Tech trends platform',
+    description: '多源技术热点采集与分析平台：Scrapy 自动爬取 GitHub Trending / Hacker News / arXiv / Reddit，Flask 统一 API，Streamlit 看板 + ECharts 仪表盘可视化，集成 DeepSeek 挖掘技术趋势。',
+    descriptionEn: 'A multi-source tech-trends platform: Scrapy crawls GitHub Trending / Hacker News / arXiv / Reddit, Flask serves a unified API, Streamlit + ECharts visualize the data, with DeepSeek-powered trend analysis.',
+    tags: ['SCRAPY', 'FLASK', 'STREAMLIT', 'DEEPSEEK'],
+    href: 'https://github.com/zgy0715/py',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
+  },
+  {
+    number: '09',
+    name: 'GUILIN CLIMATE',
+    subtitle: '气候与旅游数据分析',
+    subtitleEn: 'Climate & tourism analysis',
+    description: '桂林气候舒适度与旅游影响分析：Pandas/NumPy/SciPy/scikit-learn 的完整数据分析链，pyecharts 可视化，Jupyter Notebook 与 HTML 报告双形态输出。',
+    descriptionEn: 'An analysis of Guilin\'s climate comfort and its tourism impact: a full Pandas/NumPy/SciPy/scikit-learn pipeline, pyecharts visualizations, output as both Jupyter notebooks and HTML reports.',
+    tags: ['PANDAS', 'SCIPY', 'SCIKIT-LEARN', 'PYECHARTS'],
+    href: 'https://github.com/zgy0715/guilin-climate-tourism',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
+  },
+  {
+    number: '10',
+    name: 'SKY TAKEOUT',
+    subtitle: '苍穹外卖自学复刻',
+    subtitleEn: 'Sky Take-Out, self-taught',
+    description: '苍穹外卖的自学复刻：基于 Spring Boot 的餐饮外卖管理平台，Maven 多模块（sky-common / sky-pojo / sky-server），经典三层架构 + JWT 拦截器，README 里连请求处理流程图都画全了。',
+    descriptionEn: 'My re-implementation of Sky Take-Out: a Spring Boot food-delivery backend in Maven multi-modules (sky-common / sky-pojo / sky-server), classic 3-layer architecture with JWT interceptor, full request-flow diagrams in the README.',
+    tags: ['SPRING BOOT', 'MAVEN', 'JWT', 'MYBATIS'],
+    href: 'https://github.com/zgy0715/sky-takeout',
+    status: '已开源',
+    statusEn: 'OPEN-SOURCED',
   },
 ];
 
+// 技能条数据 = GitHub API /languages 对全部 22 个公开仓库的真实字节统计（2026-10-15 拉取）
 const skills = [
-  { name: 'PYTHON', level: .75, zh: '主力语言，数据与 ML 练习', en: 'Main language, for data & ML practice' },
-  { name: 'MACHINE LEARNING', level: .55, zh: '课程 + AI-ML-Learning 仓库练习中', en: 'Coursework + repo exercises in progress' },
-  { name: 'JAVA', level: .50, zh: '课程作业主力', en: 'My coursework workhorse' },
-  { name: 'HTML / CSS / JS', level: .65, zh: '本站就是手写出来的', en: 'This site is hand-written with these' },
-  { name: 'GIT', level: .60, zh: '日常版本管理', en: 'Daily version control' },
+  { name: 'PYTHON', share: 27.7, zh: '全部仓库语言占比 27.7%：数据分析、爬虫、FastAPI 后端', en: '27.7% of all repo code: data analysis, crawlers, FastAPI' },
+  { name: 'JAVA', share: 23.6, zh: '占比 23.6%：苍穹外卖、HRMS、课设与 AI-ML 的 Java 专题', en: '23.6%: Sky Take-Out, HRMS, coursework, AI-ML Java track' },
+  { name: 'VUE', share: 11.2, zh: '占比 11.2%：HRMS / learning-agent / Tech Hotspot 的前端', en: '11.2%: frontends of HRMS, learning-agent, Tech Hotspot' },
+  { name: 'KOTLIN', share: 9.3, zh: '占比 9.3%：像素填空 Android 端（Jetpack Compose）', en: '9.3%: the Android side of Fill-a-Pix (Jetpack Compose)' },
+  { name: 'C++', share: 9.1, zh: '占比 9.1%：大一大二代码合集与 DeepAgent 内核', en: '9.1%: freshman/sophomore archive and the DeepAgent core' },
+  { name: 'TYPESCRIPT', share: 8.4, zh: '占比 8.4%：NIA 的 React 前端与 DeepAgent', en: '8.4%: NIA\'s React frontend and DeepAgent' },
 ];
 
 const plans = [
-  { zh: '啃完机器学习课程并更新仓库', en: 'Finish the ML course and keep the repo updated' },
-  { zh: '给本站继续加内容板块', en: 'Keep adding sections to this site' },
-  { zh: '试一个 Java 后端小项目', en: 'Try a small Java backend project' },
+  { zh: 'AI-ML-Learning 推进 Phase 3（第 11-14 课：模型评估 / 决策树 / 朴素贝叶斯 / 逻辑回归）', en: 'Push AI-ML-Learning Phase 3 (lessons 11-14: evaluation, decision tree, Naive Bayes, logistic regression)' },
+  { zh: '进入 Phase 4：神经网络本质与 PyTorch 入门', en: 'Reach Phase 4: neural network fundamentals and PyTorch' },
+  { zh: 'Phase 5 项目实战：独立完成一个 AI 项目', en: 'Phase 5 capstone: finish an AI project independently' },
 ];
 
 const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'GALGAME', 'NOVEL'];
@@ -405,7 +467,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
 
       <!-- Projects -->
       <section class="projects" id="projects" aria-labelledby="projects-title">
-        <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>05</i></span><span class="i18n-en">Projects <i>05</i></span></h2>
+        <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>10</i></span><span class="i18n-en">Projects <i>10</i></span></h2>
         <div class="slider reveal" id="slider" tabindex="0" aria-label="项目列表，可左右滑动">
           {projects.map((project) => (
             <article class="slide">
@@ -441,11 +503,11 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
       <!-- 关于我 -->
       <section class="about" id="about" aria-labelledby="about-title">
         <h2 id="about-title" class="reveal"><span class="i18n-zh">关于我</span><span class="i18n-en">About Me</span></h2>
-        <p class="about-intro reveal"><span class="i18n-zh">大三在读，正在往数据和机器学习的方向走。写 Python、碰数据、用 Java 交作业，课余时间做了这个网站——因为喜欢的东西，就该自己动手造。这里是我在互联网上的自留地，所有内容都在持续更新。</span><span class="i18n-en">A junior undergrad heading toward data and machine learning. I write Python, play with data, submit Java homework, and built this site in my spare time — because if you love something, you should build it yourself. This is my own patch of the internet, always under construction.</span></p>
-        <ul class="skill-list reveal" aria-label="技能进度">
+        <p class="about-intro reveal"><span class="i18n-zh">在读本科生，大一从 C/C++ 起步（大一大二的代码至今留着专门的仓库），后来一路写到 Java 和 Python。GitHub 上现有 22 个公开仓库，语言占比最大的是 Python（27.7%）和 Java（23.6%），最近集中在大模型智能体方向。本页列出的项目全部来自这些仓库的真实数据。</span><span class="i18n-en">An undergrad who started with C/C++ in freshman year (that code still lives in its own repo), later moving through Java into Python. 22 public repos on GitHub so far, dominated by Python (27.7%) and Java (23.6%); lately focused on LLM agent projects. Every project on this page comes from those repos' real data.</span></p>
+        <ul class="skill-list reveal" aria-label="语言占比（数据来源：GitHub API）">
           {skills.map((skill, i) => (
-            <li class="skill-row" style={`--level:${skill.level}; --d:${i * 90}ms`}>
-              <div class="skill-head"><b>{skill.name}</b><span>{Math.round(skill.level * 100)}%</span></div>
+            <li class="skill-row" style={`--level:${(skill.share / 27.7).toFixed(3)}; --d:${i * 90}ms`}>
+              <div class="skill-head"><b>{skill.name}</b><span>{skill.share}%</span></div>
               <div class="skill-track"><i class="skill-fill"></i></div>
               <p class="skill-note"><span class="i18n-zh">{skill.zh}</span><span class="i18n-en">{skill.en}</span></p>
             </li>
