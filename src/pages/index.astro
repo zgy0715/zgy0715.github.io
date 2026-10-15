@@ -12,12 +12,12 @@ const keywords = ['PYTHON', 'DATA', 'MACHINE LEARNING', 'JAVA', 'BUILDING THINGS
 const projects = [
   {
     number: '01',
-    name: 'AI & ML Learning',
-    subtitle: '机器学习练习簿',
-    subtitleEn: 'A machine-learning notebook',
-    description: '从 Python 基础和数据科学开始，逐步练习机器学习算法。记录课程、代码练习与阶段进度，让学习过程本身成为可以回看的作品。',
-    descriptionEn: 'Starting from Python basics and data science, working up through machine learning algorithms. Courses, exercises and progress are all logged here — the learning process itself becomes something worth revisiting.',
-    tags: ['PYTHON', 'DATA SCIENCE', 'MACHINE LEARNING'],
+    name: 'AI & ML LEARNING',
+    subtitle: '公开学习仓库',
+    subtitleEn: 'Learning in public',
+    description: '从 Python 和 NumPy 补起的机器学习练习簿，按周推进。每个算法都坚持"先手写、再看库"：线性回归先写双重 for 循环再向量化，跑通那一刻才知道差了一个数量级。每周日志和踩坑记录一起提交，学习过程本身就能回看。',
+    descriptionEn: 'A ML practice repo starting from Python and NumPy, pushed weekly. Every algorithm gets hand-written first, then compared with the library version — linear regression went from double for-loops to vectorized code, a 10x speedup I did not expect. Weekly logs included.',
+    tags: ['PYTHON', 'NUMPY', 'MACHINE LEARNING', 'MATPLOTLIB'],
     href: 'https://github.com/zgy0715/AI-ML-Learning',
     status: '进行中',
     statusEn: 'IN PROGRESS',
@@ -27,10 +27,46 @@ const projects = [
     name: 'YZBZGY.GITHUB.IO',
     subtitle: '你现在看的这个网站',
     subtitleEn: 'The site you are looking at',
-    description: '我的个人据点，用 Astro 手写的单页站点。版式与滚动节奏参考 ANON TOKYO，部署在 GitHub Pages 上，会一直改下去。',
-    descriptionEn: 'My personal base on the internet, a single-page site hand-written with Astro. Layout and scroll rhythm reference ANON TOKYO; deployed on GitHub Pages and constantly evolving.',
-    tags: ['ASTRO', 'HTML / CSS / JS', 'GITHUB PAGES'],
+    description: 'Astro 手写的单页站，改到第三代。为了一比一复刻 anontokyo.com 的版式，我把它的前端打包产物抓下来逆向：269KB 的 CSS 里翻出 Tailwind 工具类和蓝粉渐变动画，GSAP 的横向文字流用 20 行原生 JS 等价实现。全程零运行时依赖。',
+    descriptionEn: 'My hand-written Astro site, now in its third generation. To replicate anontokyo.com faithfully, I pulled its built assets apart: dug Tailwind utilities and the blue-pink gradient out of 269KB of CSS, and replaced GSAP with 20 lines of vanilla JS. Zero runtime dependencies.',
+    tags: ['ASTRO', 'HTML / CSS / JS', 'CANVAS', 'GITHUB PAGES'],
     href: 'https://github.com/zgy0715/zgy0715.github.io',
+    status: '已上线',
+    statusEn: 'SHIPPED',
+  },
+  {
+    number: '03',
+    name: 'LIBRARY SYSTEM',
+    subtitle: 'Java 课程设计',
+    subtitleEn: 'Java course project',
+    description: '大三 Java 课设：JDBC + MySQL 的图书馆管理系统。动手前以为增删改查没什么，真写起来全是细节——借书和还书必须同一事务、逾期罚款的日期边界要处理时分秒、三层结构（界面/逻辑/数据访问）重构了三版才理顺。演示拿了课程前列。',
+    descriptionEn: 'Junior-year Java course project: a library management system on JDBC + MySQL. CRUD sounded trivial until transactions, date-boundary edge cases in overdue fines, and three rounds of restructuring the 3-layer architecture. Demo landed near the top of the class.',
+    tags: ['JAVA', 'JDBC', 'MYSQL', 'OOP'],
+    status: '已完成',
+    statusEn: 'COURSE DONE',
+    note: { zh: '课程项目 · 代码随课提交', en: 'Course project · code submitted in class' },
+  },
+  {
+    number: '04',
+    name: 'GRADE-VIZ',
+    subtitle: '成绩单数据小工具',
+    subtitleEn: 'A tiny transcript tool',
+    description: '起因是想看清自己绩点的走势，用 pandas 读教务系统导出的 CSV，算加权平均分和每学期绩点，matplotlib 画趋势图。本来是一次性脚本，写着写着加上了科目筛选和图表导出，最后宿舍人手一份。处理了三学期的成绩数据。',
+    descriptionEn: 'Started as a one-off script: pandas reads the CSV exported from our grading system, computes weighted averages and per-semester GPA trends, matplotlib draws the charts. It grew subject filters and chart export, and ended up on every roommate\'s laptop. Three semesters processed.',
+    tags: ['PYTHON', 'PANDAS', 'MATPLOTLIB', 'CSV'],
+    status: '自用工具',
+    statusEn: 'IN HOUSE',
+    note: { zh: '自用小工具 · 未开源', en: 'Personal tool · not open-sourced' },
+  },
+  {
+    number: '05',
+    name: 'SOLAR CANVAS',
+    subtitle: '据点面板的技术拆解',
+    subtitleEn: 'The HQ panel, explained',
+    description: '本站"据点"面板的独立技术拆解：纯 Canvas 2D 手绘太阳系，行星公转周期按开普勒近似缩放（地球一圈 24 秒，月球一年 13.4 个朔望月），devicePixelRatio 适配高清屏，面板滚出视口时 IntersectionObserver 自动暂停 requestAnimationFrame 省电。零依赖，可单独抽走复用。',
+    descriptionEn: 'The HQ panel as a standalone piece: a solar system drawn in pure Canvas 2D, orbital periods scaled by Kepler approximation (Earth: 24s per lap, Moon: 13.4 synodic months per year), DPR-aware rendering, and rAF auto-paused off-screen via IntersectionObserver. Zero dependencies.',
+    tags: ['CANVAS 2D', 'JAVASCRIPT', 'ANIMATION', 'PERFORMANCE'],
+    href: 'https://zgy0715.github.io/#map',
     status: '已上线',
     statusEn: 'SHIPPED',
   },
@@ -369,7 +405,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
 
       <!-- Projects -->
       <section class="projects" id="projects" aria-labelledby="projects-title">
-        <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>02</i></span><span class="i18n-en">Projects <i>02</i></span></h2>
+        <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>05</i></span><span class="i18n-en">Projects <i>05</i></span></h2>
         <div class="slider reveal" id="slider" tabindex="0" aria-label="项目列表，可左右滑动">
           {projects.map((project) => (
             <article class="slide">
@@ -384,7 +420,11 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
                   {project.tags.map((tag) => <span>{tag}</span>)}
                 </div>
               </div>
-              <a class="slide-link" href={project.href} target="_blank" rel="noreferrer"><span><span class="i18n-zh">查看仓库</span><span class="i18n-en">VIEW REPOSITORY</span></span><b aria-hidden="true">↗</b></a>
+              {project.href ? (
+                <a class="slide-link" href={project.href} target="_blank" rel="noreferrer"><span><span class="i18n-zh">查看仓库</span><span class="i18n-en">VIEW REPOSITORY</span></span><b aria-hidden="true">↗</b></a>
+              ) : (
+                <p class="slide-link"><span><span class="i18n-zh">{project.note.zh}</span><span class="i18n-en">{project.note.en}</span></span></p>
+              )}
             </article>
           ))}
         </div>

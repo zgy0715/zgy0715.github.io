@@ -2,34 +2,36 @@
 title: 用 Astro 重写个人网站
 date: 2026-09-28
 tags: [ASTRO, HTML, CSS, GITHUB PAGES]
-summary: 从第一版"AI 杂志风"到现在的 anontokyo 风格，这个网站三次改版的决策记录。
+summary: 把 anontokyo.com 的前端打包产物逆向了一遍：269KB CSS、Tailwind 工具类、蓝粉渐变动画，然后全用原生实现。记录三次改版的决策。
 ---
 
 # 用 Astro 重写个人网站
 
-你现在看到的这个网站，已经是第三代了。
+你现在看到的这个网站，已经是第三代了。第一代是典型的"AI 生成风"：米色纸质感、噪点纹理、卡片加边框，我盯着看了两分钟就删了。目标风格从一开始就定了：[anontokyo.com](https://www.anontokyo.com)，MyGO!!!!! 服装设计公司的官网。
 
-## 第一代：典型的"AI 生成风"
+## 逆向它的打包产物
 
-米色纸质感背景、噪点纹理、卡片加边框——拿到手我就觉得不对，太"杂志模板"了，没有人的气息。当时想参考的是 [anontokyo.com](https://www.anontokyo.com)（MyGO!!!!! 服装设计公司的官网），于是干脆把它的前端打包产物抓下来逆向分析。
+直接抓 `index.html` 引用的 CSS 和 JS 文件分析，几个发现：
 
-## 逆向出来的设计语言
+- CSS 有 **269KB**，里面是 Tailwind 工具类。真正用到的颜色就四个：`#3388bb`、`#287aac`、`#77bbdd`、`#ff8899`——全是整屏整块地铺，几乎看不到边框和圆角
+- 字体只有两个：标题 **Bebas Neue**（超窄大写体），正文 IBM Plex Sans SC
+- 签名式的"Scroll down"是蓝粉渐变动画：`linear-gradient(90deg, #7bd, #f89, ...)` 配合 `background-clip: text`，1.2s 无限循环
+- 动效全靠 GSAP：ScrollSmoother 平滑滚动、ScrollTrigger 驱动巨大人名横移、Swiper 做产品轮播
 
-- 标题全部 **Bebas Neue**（超窄大写体），正文 IBM Plex Sans SC
-- 配色只有四个：MyGO 蓝 `#3388bb`、深蓝、浅蓝、粉 `#ff8899`，整屏整块地铺
-- 每屏 100lvh，巨大字号，没有卡片没有圆角
-- 开场是白底黑字标题逐字母浮现，再过渡成黑底
+## 哪些用原生等价实现
 
-## 技术取舍
+原站 Vue + GSAP + Swiper 一堆依赖，我全部零依赖：
 
-原站是 Vue + GSAP + Swiper。我**一个依赖都没加**：
+- 横向文字流 → 滚动监听 + `translateX`，20 行（后来据点面板还做了个时间驱动的镜像版）
+- 轮播 → CSS `scroll-snap` + 原生滚动事件
+- 开场动画 → 纯 CSS keyframes，字母逐个浮现
 
-- GSAP 的横向文字流 → 用滚动监听 + `translateX` 等价实现，20 行
-- Swiper 轮播 → CSS `scroll-snap` + 原生滚动事件
-- 开场动画 → 纯 CSS keyframes（后来还修掉了两层画面不对齐的问题：改成同一组元素做颜色过渡）
+## 踩过的坑
 
-静态站本来就该轻。最后构建出来就一个 HTML 文件加少量 CSS/JS。
+1. **开场动画两层错位**：第一版用"白幕黑字淡出 + 黑底白字"两层 DOM 叠加，字体加载时序稍有差异就对不齐。第二版改成同一组元素做 background/color 过渡，物理上不可能错位
+2. **Git 的 CRLF 警告**：Windows 上每次提交都提示 `LF will be replaced by CRLF`，查了才知道 `core.autocrlf` 的机制，最后决定不管它—— warning 不影响内容
+3. **GitHub 直连时断时续**：有一次推送重试了 6 次才成功，后来学会用 Git Data API 兜底，这个值得单独写一篇
 
-## 现在的结论
+## 结论
 
-好网站的核心不是堆功能，是**统一**：字体、颜色、节奏全部服从一个语言。这个站以后还会改，但大方向定了。
+好网站的核心不是堆功能，是**统一**：字体、颜色、节奏全部服从一个语言。第三代上线后我大概率还会继续改，但方向已经锁死了。
