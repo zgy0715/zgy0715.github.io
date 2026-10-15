@@ -37,6 +37,13 @@ const fmt = (d) => d.toISOString().slice(0, 10);
     <meta name="theme-color" content="#3388bb" />
     <meta name="description" content="YZBzgy 的学习笔记：机器学习、编程、造物记录。" />
     <title>NOTES · YZBZGY</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233388bb'/%3E%3Ctext x='32' y='45' font-family='sans-serif' font-size='38' font-weight='bold' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E" />
+    <link rel="alternate" type="application/rss+xml" title="学习笔记 RSS" href="/rss.xml" />
+    <link rel="canonical" href="https://zgy0715.github.io/notes/" />
+    <meta property="og:title" content="YZBZGY · 学习笔记" />
+    <meta property="og:description" content="机器学习、编程、造物记录。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://zgy0715.github.io/notes/" />
     <script is:inline>
       (function () {
         try {
@@ -86,6 +93,13 @@ const fmt = (d) => d.toISOString().slice(0, 10);
       .head-meta b { color: var(--blue); font-weight: 700; }
       .back-home { font: 10px var(--mono); letter-spacing: .2em; text-decoration: none; transition: color .2s; white-space: nowrap; }
       .back-home:hover { color: var(--blue); }
+      .head-actions { display: flex; align-items: center; gap: 16px; }
+      .lang-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid rgba(0, 0, 0, .4); border-radius: 999px; background: none; cursor: pointer; font: 10px var(--mono); letter-spacing: .1em; }
+      .lang-toggle span { opacity: .4; transition: opacity .2s; }
+      html.lang-zh .lang-toggle .lang-zh-mark, html.lang-en .lang-toggle .lang-en-mark { opacity: 1; font-weight: 700; }
+      .lang-toggle i { font-style: normal; opacity: .35; }
+      .skip-link { position: fixed; z-index: 90; top: 12px; left: 12px; padding: 12px 16px; background: var(--black); color: #fff; font: 12px var(--mono); text-decoration: none; transform: translateY(-180%); }
+      .skip-link:focus { transform: none; }
 
       /* ===== 工具栏：标签筛选 + 视图切换 ===== */
       .toolbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 12px 0; margin-bottom: 6px; background: var(--white); border-bottom: 1px solid rgba(0, 0, 0, .15); }
@@ -163,6 +177,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#notes-main">跳到主要内容</a>
     <div class="page">
       <header class="page-head">
         <div>
@@ -172,7 +187,10 @@ const fmt = (d) => d.toISOString().slice(0, 10);
             · <span class="i18n-zh">最后更新</span><span class="i18n-en">last updated</span> {fmt(lastUpdated)}
           </p>
         </div>
-        <a class="back-home" href="/"><span aria-hidden="true">←</span> <span class="i18n-zh">回主页</span><span class="i18n-en">BACK HOME</span></a>
+        <div class="head-actions">
+          <button class="lang-toggle" id="lang-toggle" type="button" aria-label="切换语言 / Switch language"><span class="lang-zh-mark">中</span><i>/</i><span class="lang-en-mark">EN</span></button>
+          <a class="back-home" href="/"><span aria-hidden="true">←</span> <span class="i18n-zh">回主页</span><span class="i18n-en">BACK HOME</span></a>
+        </div>
       </header>
 
       <div class="toolbar">
@@ -190,7 +208,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
         </div>
       </div>
 
-      <main>
+      <main id="notes-main">
         <ul class="note-list view-list" id="note-list">
           {notes.map((note) => (
             <li class="note-item" style={`--accent-color:${note.color}`} data-tags={note.data.tags.join('|')} data-star={note.data.star ? '1' : '0'}>
@@ -251,6 +269,21 @@ const fmt = (d) => d.toISOString().slice(0, 10);
         applyFilter();
       });
       applyFilter();
+
+      // ===== 中 / EN 语言切换（与主页共享 localStorage）=====
+      const rootHtml = document.documentElement;
+      const langToggle = document.querySelector('#lang-toggle');
+      const applyLang = (lang) => {
+        rootHtml.classList.toggle('lang-en', lang === 'en');
+        rootHtml.classList.toggle('lang-zh', lang !== 'en');
+        rootHtml.lang = lang === 'en' ? 'en' : 'zh-CN';
+        document.title = lang === 'en' ? 'NOTES · YZBZGY' : '学习笔记 · YZBZGY';
+        try { localStorage.setItem('site-lang', lang); } catch (e) {}
+      };
+      applyLang(rootHtml.classList.contains('lang-en') ? 'en' : 'zh');
+      langToggle?.addEventListener('click', () => {
+        applyLang(rootHtml.classList.contains('lang-en') ? 'zh' : 'en');
+      });
     </script>
   </body>
 </html>
