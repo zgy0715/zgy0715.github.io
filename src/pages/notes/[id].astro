@@ -27,8 +27,7 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#3388bb" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115" />
+    <meta name="theme-color" content="#3388bb" />
     <meta name="description" content={note.data.summary ?? note.data.title} />
     <title>{note.data.title} · YZBZGY</title>
     <meta property="og:image" content="https://zgy0715.github.io/og-image.png" />
@@ -41,13 +40,21 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
     <meta property="og:url" content={`https://zgy0715.github.io/notes/${note.id}/`} />
     <script is:inline>
       (function () {
+        var theme;
         try {
+          theme = localStorage.getItem('site-theme');
           var lang = localStorage.getItem('site-lang') || 'zh';
           if (lang === 'en') {
             document.documentElement.classList.add('lang-en');
             document.documentElement.lang = 'en';
           }
         } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.content = theme === 'dark' ? '#0f1115' : '#3388bb';
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -84,6 +91,8 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       .lang-toggle span { opacity: .4; transition: opacity .2s; }
       html.lang-zh .lang-toggle .lang-zh-mark, html.lang-en .lang-toggle .lang-en-mark { opacity: 1; font-weight: 700; }
       .lang-toggle i { font-style: normal; opacity: .35; }
+      .theme-toggle { width: 33px; height: 33px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 1px solid rgba(0, 0, 0, .4); border-radius: 50%; background: none; cursor: pointer; font-size: 14px; line-height: 1; transition: transform .3s ease, border-color .2s; }
+      .theme-toggle:hover { border-color: #000; transform: rotate(24deg); }
       .skip-link { position: fixed; z-index: 90; top: 12px; left: 12px; padding: 12px 16px; background: var(--black); color: #fff; font: 12px var(--mono); text-decoration: none; transform: translateY(-180%); }
       .skip-link:focus { transform: none; }
       .note-top .brand { font: 400 1.5rem var(--display); letter-spacing: .06em; text-decoration: none; }
@@ -129,24 +138,24 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       }
 
       /* ===== 暗色模式（跟随系统）===== */
-      @media (prefers-color-scheme: dark) {
-        body { background: #0f1115; color: #e8e8e8; }
-        .article-meta { color: #999; }
-        .article-meta span { border-color: rgba(255, 255, 255, .4); }
-        .prose p { color: #c9c9c9; }
-        .prose a { color: var(--blue-light); }
-        .prose a:hover { color: #a5d3ea; }
-        .prose code { background: rgba(119, 187, 221, .12); color: var(--blue-light); }
-        .prose blockquote { color: #999; border-color: var(--pink); }
-        .prose pre { border: 1px solid rgba(255, 255, 255, .2); }
-        .note-top .back:hover { color: var(--blue-light); }
-        .note-footer, .note-prevnext a { border-color: rgba(255, 255, 255, .22); }
-        .note-prevnext a:hover { border-color: var(--blue-light); color: var(--blue-light); }
-        .note-footer a:hover { color: var(--blue-light); }
-        .note-footer .copyright { color: #666; }
-        .lang-toggle { border-color: rgba(255, 255, 255, .4); }
-        .skip-link { background: #fff; color: #000; }
-      }
+      /* ===== 暗色主题（手动切换，首次跟随系统）===== */
+      [data-theme="dark"] body { background: #0f1115; color: #e8e8e8; }
+      [data-theme="dark"] .article-meta { color: #999; }
+      [data-theme="dark"] .article-meta span { border-color: rgba(255, 255, 255, .4); }
+      [data-theme="dark"] .prose p { color: #c9c9c9; }
+      [data-theme="dark"] .prose a { color: var(--blue-light); }
+      [data-theme="dark"] .prose a:hover { color: #a5d3ea; }
+      [data-theme="dark"] .prose code { background: rgba(119, 187, 221, .12); color: var(--blue-light); }
+      [data-theme="dark"] .prose blockquote { color: #999; border-color: var(--pink); }
+      [data-theme="dark"] .prose pre { border: 1px solid rgba(255, 255, 255, .2); }
+      [data-theme="dark"] .note-top .back:hover { color: var(--blue-light); }
+      [data-theme="dark"] .note-footer, [data-theme="dark"] .note-prevnext a { border-color: rgba(255, 255, 255, .22); }
+      [data-theme="dark"] .note-prevnext a:hover { border-color: var(--blue-light); color: var(--blue-light); }
+      [data-theme="dark"] .note-footer a:hover { color: var(--blue-light); }
+      [data-theme="dark"] .note-footer .copyright { color: #666; }
+      [data-theme="dark"] .lang-toggle, [data-theme="dark"] .theme-toggle { border-color: rgba(255, 255, 255, .4); }
+      [data-theme="dark"] .theme-toggle:hover { border-color: #fff; }
+      [data-theme="dark"] .skip-link { background: #fff; color: #000; }
     </style>
   </head>
   <body>
@@ -155,6 +164,7 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       <header class="note-top">
         <a class="brand" href="/">YZBZGY</a>
         <div class="top-actions">
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换明暗主题">☾</button>
           <button class="lang-toggle" id="lang-toggle" type="button" aria-label="切换语言 / Switch language"><span class="lang-zh-mark">中</span><i>/</i><span class="lang-en-mark">EN</span></button>
           <a class="back" href="/notes/"><span aria-hidden="true">←</span> <span class="i18n-zh">全部笔记</span><span class="i18n-en">ALL NOTES</span></a>
         </div>
@@ -193,6 +203,23 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       applyLang(rootHtml.classList.contains('lang-en') ? 'en' : 'zh');
       langToggle?.addEventListener('click', () => {
         applyLang(rootHtml.classList.contains('lang-en') ? 'zh' : 'en');
+      });
+
+      // ===== 明暗主题切换（与全站共享 localStorage）=====
+      const themeToggle = document.querySelector('#theme-toggle');
+      const applyTheme = (theme) => {
+        rootHtml.dataset.theme = theme;
+        if (themeToggle) {
+          themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
+          themeToggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色模式' : '切换到深色模式');
+        }
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) themeMeta.content = theme === 'dark' ? '#0f1115' : '#3388bb';
+        try { localStorage.setItem('site-theme', theme); } catch (e) {}
+      };
+      applyTheme(rootHtml.dataset.theme === 'dark' ? 'dark' : 'light');
+      themeToggle?.addEventListener('click', () => {
+        applyTheme(rootHtml.dataset.theme === 'dark' ? 'light' : 'dark');
       });
     </script>
   </body>

@@ -156,8 +156,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#3388bb" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
+    <meta name="theme-color" content="#0a0a0a" />
     <meta name="description" content="YZBzgy 的个人据点：学习方向、开源项目、学习笔记与正在制作的东西。" />
     <title>YZBZGY · 个人据点</title>
     <meta property="og:image" content="https://zgy0715.github.io/og-image.png" />
@@ -171,13 +170,19 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
     <meta property="og:url" content="https://zgy0715.github.io/" />
     <script is:inline>
       (function () {
+        var theme;
         try {
+          theme = localStorage.getItem('site-theme');
           var lang = localStorage.getItem('site-lang') || 'zh';
           if (lang === 'en') {
             document.documentElement.classList.add('lang-en');
             document.documentElement.lang = 'en';
           }
         } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -226,6 +231,8 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
       .wordmark b { font: 400 1.5rem var(--display); letter-spacing: .06em; }
       .wordmark span { font: 8px var(--mono); letter-spacing: .22em; opacity: .55; }
       .topbar-actions { display: flex; align-items: center; gap: 18px; }
+      .theme-toggle { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; font-size: 16px; line-height: 1; transition: transform .3s ease; }
+      .theme-toggle:hover { transform: rotate(24deg); }
       .lang-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid currentColor; border-radius: 999px; background: none; cursor: pointer; font: 10px var(--mono); letter-spacing: .1em; }
       .lang-toggle span { opacity: .4; transition: opacity .2s; }
       html.lang-zh .lang-toggle .lang-zh-mark, html.lang-en .lang-toggle .lang-en-mark { opacity: 1; font-weight: 700; }
@@ -422,21 +429,24 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
         .flow-fade { display: none; }
       }
 
-      /* ===== 暗色模式（跟随系统）===== */
-      @media (prefers-color-scheme: dark) {
-        .flow-section { background: #101214; color: #eee; }
-        .flow-label i { color: var(--blue-light); }
-        .flow-track i { color: var(--blue-light); }
-        .flow-note { color: #999; }
-        .flow-fade { background: linear-gradient(180deg, transparent, rgba(51, 136, 187, .55)); }
-        .about { background: #101214; color: #eee; }
-        .about-intro { color: #bbb; }
-        .skill-track { background: rgba(255, 255, 255, .16); }
-        .skill-head span, .skill-note { color: #999; }
-        .next-steps ol { color: #bbb; }
-        .notes-preview li { border-color: rgba(255, 255, 255, .22); }
-        .notes-preview time { color: #999; }
-      }
+      /* ===== 暗色主题（手动切换，首次跟随系统）===== */
+      [data-theme="dark"] .flow-section { background: #101214; color: #eee; }
+      [data-theme="dark"] .flow-label i { color: var(--blue-light); }
+      [data-theme="dark"] .flow-track i { color: var(--blue-light); }
+      [data-theme="dark"] .flow-note { color: #999; }
+      [data-theme="dark"] .flow-fade { background: linear-gradient(180deg, transparent, rgba(51, 136, 187, .55)); }
+      [data-theme="dark"] .about { background: #101214; color: #eee; }
+      [data-theme="dark"] .about-intro { color: #bbb; }
+      [data-theme="dark"] .skill-track { background: rgba(255, 255, 255, .16); }
+      [data-theme="dark"] .skill-head span, [data-theme="dark"] .skill-note { color: #999; }
+      [data-theme="dark"] .next-steps ol { color: #bbb; }
+      [data-theme="dark"] .notes-preview li { border-color: rgba(255, 255, 255, .22); }
+      [data-theme="dark"] .notes-preview time { color: #999; }
+      /* 暗色下首屏开场直接用深色形态，不走白幕动画 */
+      [data-theme="dark"] .hero { animation: none; background: var(--black); }
+      [data-theme="dark"] .hero-title { animation: none; color: #fff; }
+      [data-theme="dark"] .hero-sub { animation: fade-in 1s 1.1s forwards; color: var(--blue-light); }
+      [data-theme="dark"] .topbar { animation: none; color: #fff; }
     </style>
   </head>
   <body>
@@ -445,6 +455,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
     <header class="topbar" id="topbar">
       <a class="wordmark" href="#top" aria-label="回到顶部"><b>YZBZGY</b><span><span class="i18n-zh">个人据点</span><span class="i18n-en">PERSONAL ARCHIVE</span></span></a>
       <div class="topbar-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换明暗主题">☾</button>
         <button class="lang-toggle" id="lang-toggle" type="button" aria-label="切换语言 / Switch language"><span class="lang-zh-mark">中</span><i aria-hidden="true">/</i><span class="lang-en-mark">EN</span></button>
         <button class="sound-button" id="sound" type="button" aria-pressed="false" aria-label="开启背景音效"><span class="sound-dot" aria-hidden="true"></span><span id="sound-label"><span class="i18n-zh">声音 关</span><span class="i18n-en">SOUND OFF</span></span></button>
         <button class="menu-button" id="menu-open" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-lines" aria-hidden="true"></span><span><span class="i18n-zh">菜单</span><span class="i18n-en">MENU</span></span></button>
@@ -620,6 +631,28 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
       applyLang(rootHtml.classList.contains('lang-en') ? 'en' : 'zh');
       langToggle?.addEventListener('click', () => {
         applyLang(rootHtml.classList.contains('lang-en') ? 'zh' : 'en');
+      });
+
+      // ===== 明暗主题切换（记忆到 localStorage，首次跟随系统）=====
+      const themeToggle = document.querySelector('#theme-toggle');
+      const applyTheme = (theme) => {
+        rootHtml.dataset.theme = theme;
+        if (themeToggle) {
+          themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
+          themeToggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色模式' : '切换到深色模式');
+        }
+        let themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (!themeMeta) {
+          themeMeta = document.createElement('meta');
+          themeMeta.name = 'theme-color';
+          document.head.appendChild(themeMeta);
+        }
+        themeMeta.content = theme === 'dark' ? '#0a0a0a' : '#3388bb';
+        try { localStorage.setItem('site-theme', theme); } catch (e) {}
+      };
+      applyTheme(rootHtml.dataset.theme === 'dark' ? 'dark' : 'light');
+      themeToggle?.addEventListener('click', () => {
+        applyTheme(rootHtml.dataset.theme === 'dark' ? 'light' : 'dark');
       });
 
       // ===== 全屏菜单 =====

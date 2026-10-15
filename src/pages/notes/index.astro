@@ -34,8 +34,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#3388bb" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115" />
+    <meta name="theme-color" content="#3388bb" />
     <meta name="description" content="YZBzgy 的学习笔记：机器学习、编程、造物记录。" />
     <title>NOTES · YZBZGY</title>
     <meta property="og:image" content="https://zgy0715.github.io/og-image.png" />
@@ -49,13 +48,21 @@ const fmt = (d) => d.toISOString().slice(0, 10);
     <meta property="og:url" content="https://zgy0715.github.io/notes/" />
     <script is:inline>
       (function () {
+        var theme;
         try {
+          theme = localStorage.getItem('site-theme');
           var lang = localStorage.getItem('site-lang') || 'zh';
           if (lang === 'en') {
             document.documentElement.classList.add('lang-en');
             document.documentElement.lang = 'en';
           }
         } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.content = theme === 'dark' ? '#0f1115' : '#3388bb';
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -101,6 +108,8 @@ const fmt = (d) => d.toISOString().slice(0, 10);
       .lang-toggle span { opacity: .4; transition: opacity .2s; }
       html.lang-zh .lang-toggle .lang-zh-mark, html.lang-en .lang-toggle .lang-en-mark { opacity: 1; font-weight: 700; }
       .lang-toggle i { font-style: normal; opacity: .35; }
+      .theme-toggle { width: 33px; height: 33px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 1px solid rgba(0, 0, 0, .4); border-radius: 50%; background: none; cursor: pointer; font-size: 14px; line-height: 1; transition: transform .3s ease, border-color .2s; }
+      .theme-toggle:hover { border-color: #000; transform: rotate(24deg); }
       .skip-link { position: fixed; z-index: 90; top: 12px; left: 12px; padding: 12px 16px; background: var(--black); color: #fff; font: 12px var(--mono); text-decoration: none; transform: translateY(-180%); }
       .skip-link:focus { transform: none; }
 
@@ -179,32 +188,32 @@ const fmt = (d) => d.toISOString().slice(0, 10);
       }
 
       /* ===== 暗色模式（跟随系统）===== */
-      @media (prefers-color-scheme: dark) {
-        body { background: #0f1115; color: #e8e8e8; }
-        .toolbar { background: #0f1115; border-color: rgba(255, 255, 255, .22); }
-        .chip { border-color: rgba(255, 255, 255, .4); }
-        .chip:hover { border-color: #fff; }
-        .chip.active { background: #fff; border-color: #fff; color: #000; }
-        .chip.active .dot { background: #000; }
-        .chip.active .star-mark { color: #000; }
-        .view-toggle { border-color: rgba(255, 255, 255, .4); }
-        .view-toggle button + button { border-color: rgba(255, 255, 255, .4); }
-        .view-toggle button.active { background: #fff; color: #000; }
-        .view-list .note-item { border-color: rgba(255, 255, 255, .22); }
-        .view-list .note-item:first-child { border-color: rgba(255, 255, 255, .22); }
-        .view-cards .note-item, .view-grid .note-item { border-color: rgba(255, 255, 255, .3); }
-        .view-cards .note-item:hover, .view-grid .note-item:hover { border-color: var(--accent-color, var(--blue-light)); }
-        .view-cards .note-foot { border-color: rgba(255, 255, 255, .18); }
-        a:hover .note-title { color: var(--blue-light); }
-        .note-summary { color: #b5b5b5; }
-        .note-meta, .note-foot { color: #999; }
-        .note-star { color: var(--pink); }
-        .head-meta, .back-home { color: #999; }
-        .back-home:hover { color: var(--blue-light); }
-        .lang-toggle { border-color: rgba(255, 255, 255, .4); }
-        .skip-link { background: #fff; color: #000; }
-        .page-footer { color: #777; }
-      }
+      /* ===== 暗色主题（手动切换，首次跟随系统）===== */
+      [data-theme="dark"] body { background: #0f1115; color: #e8e8e8; }
+      [data-theme="dark"] .toolbar { background: #0f1115; border-color: rgba(255, 255, 255, .22); }
+      [data-theme="dark"] .chip { border-color: rgba(255, 255, 255, .4); }
+      [data-theme="dark"] .chip:hover { border-color: #fff; }
+      [data-theme="dark"] .chip.active { background: #fff; border-color: #fff; color: #000; }
+      [data-theme="dark"] .chip.active .dot { background: #000; }
+      [data-theme="dark"] .chip.active .star-mark { color: #000; }
+      [data-theme="dark"] .view-toggle { border-color: rgba(255, 255, 255, .4); }
+      [data-theme="dark"] .view-toggle button + button { border-color: rgba(255, 255, 255, .4); }
+      [data-theme="dark"] .view-toggle button.active { background: #fff; color: #000; }
+      [data-theme="dark"] .view-list .note-item { border-color: rgba(255, 255, 255, .22); }
+      [data-theme="dark"] .view-list .note-item:first-child { border-color: rgba(255, 255, 255, .22); }
+      [data-theme="dark"] .view-cards .note-item, [data-theme="dark"] .view-grid .note-item { border-color: rgba(255, 255, 255, .3); }
+      [data-theme="dark"] .view-cards .note-item:hover, [data-theme="dark"] .view-grid .note-item:hover { border-color: var(--accent-color, var(--blue-light)); }
+      [data-theme="dark"] .view-cards .note-foot { border-color: rgba(255, 255, 255, .18); }
+      [data-theme="dark"] a:hover .note-title { color: var(--blue-light); }
+      [data-theme="dark"] .note-summary { color: #b5b5b5; }
+      [data-theme="dark"] .note-meta, [data-theme="dark"] .note-foot { color: #999; }
+      [data-theme="dark"] .note-star { color: var(--pink); }
+      [data-theme="dark"] .head-meta, [data-theme="dark"] .back-home { color: #999; }
+      [data-theme="dark"] .back-home:hover { color: var(--blue-light); }
+      [data-theme="dark"] .lang-toggle, [data-theme="dark"] .theme-toggle { border-color: rgba(255, 255, 255, .4); }
+      [data-theme="dark"] .theme-toggle:hover { border-color: #fff; }
+      [data-theme="dark"] .skip-link { background: #fff; color: #000; }
+      [data-theme="dark"] .page-footer { color: #777; }
     </style>
   </head>
   <body>
@@ -219,6 +228,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
           </p>
         </div>
         <div class="head-actions">
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换明暗主题">☾</button>
           <button class="lang-toggle" id="lang-toggle" type="button" aria-label="切换语言 / Switch language"><span class="lang-zh-mark">中</span><i>/</i><span class="lang-en-mark">EN</span></button>
           <a class="back-home" href="/"><span aria-hidden="true">←</span> <span class="i18n-zh">回主页</span><span class="i18n-en">BACK HOME</span></a>
         </div>
@@ -314,6 +324,23 @@ const fmt = (d) => d.toISOString().slice(0, 10);
       applyLang(rootHtml.classList.contains('lang-en') ? 'en' : 'zh');
       langToggle?.addEventListener('click', () => {
         applyLang(rootHtml.classList.contains('lang-en') ? 'zh' : 'en');
+      });
+
+      // ===== 明暗主题切换（与主页共享 localStorage）=====
+      const themeToggle = document.querySelector('#theme-toggle');
+      const applyTheme = (theme) => {
+        rootHtml.dataset.theme = theme;
+        if (themeToggle) {
+          themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
+          themeToggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色模式' : '切换到深色模式');
+        }
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) themeMeta.content = theme === 'dark' ? '#0f1115' : '#3388bb';
+        try { localStorage.setItem('site-theme', theme); } catch (e) {}
+      };
+      applyTheme(rootHtml.dataset.theme === 'dark' ? 'dark' : 'light');
+      themeToggle?.addEventListener('click', () => {
+        applyTheme(rootHtml.dataset.theme === 'dark' ? 'light' : 'dark');
       });
     </script>
   </body>
