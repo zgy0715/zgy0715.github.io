@@ -27,9 +27,12 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#3388bb" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#3388bb" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115" />
     <meta name="description" content={note.data.summary ?? note.data.title} />
     <title>{note.data.title} · YZBZGY</title>
+    <meta property="og:image" content="https://zgy0715.github.io/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233388bb'/%3E%3Ctext x='32' y='45' font-family='sans-serif' font-size='38' font-weight='bold' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E" />
     <link rel="canonical" href={`https://zgy0715.github.io/notes/${note.id}/`} />
     <meta property="og:title" content={note.data.title} />
@@ -123,6 +126,26 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       }
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
+      }
+
+      /* ===== 暗色模式（跟随系统）===== */
+      @media (prefers-color-scheme: dark) {
+        body { background: #0f1115; color: #e8e8e8; }
+        .article-meta { color: #999; }
+        .article-meta span { border-color: rgba(255, 255, 255, .4); }
+        .prose p { color: #c9c9c9; }
+        .prose a { color: var(--blue-light); }
+        .prose a:hover { color: #a5d3ea; }
+        .prose code { background: rgba(119, 187, 221, .12); color: var(--blue-light); }
+        .prose blockquote { color: #999; border-color: var(--pink); }
+        .prose pre { border: 1px solid rgba(255, 255, 255, .2); }
+        .note-top .back:hover { color: var(--blue-light); }
+        .note-footer, .note-prevnext a { border-color: rgba(255, 255, 255, .22); }
+        .note-prevnext a:hover { border-color: var(--blue-light); color: var(--blue-light); }
+        .note-footer a:hover { color: var(--blue-light); }
+        .note-footer .copyright { color: #666; }
+        .lang-toggle { border-color: rgba(255, 255, 255, .4); }
+        .skip-link { background: #fff; color: #000; }
       }
     </style>
   </head>

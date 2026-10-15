@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <circle cx="1060" cy="60" r="280" fill="#3388bb" opacity="0.16"/>
+  <circle cx="130" cy="580" r="250" fill="#ff8899" opacity="0.13"/>
+  <text x="84" y="290" font-family="Arial, Helvetica, sans-serif" font-size="148" font-weight="bold" fill="#ffffff" letter-spacing="6">YZBZGY</text>
+  <rect x="88" y="330" width="130" height="10" fill="#3388bb"/>
+  <rect x="234" y="330" width="66" height="10" fill="#ff8899"/>
+  <text x="88" y="412" font-family="Arial, Helvetica, sans-serif" font-size="36" fill="#b5b5b5">PERSONAL BASE · NOTES · OPEN SOURCE</text>
+  <text x="88" y="470" font-family="Courier New, monospace" font-size="26" fill="#77bbdd">zgy0715.github.io</text>
+  <circle cx="1010" cy="330" r="56" fill="none" stroke="#3388bb" stroke-width="2" opacity="0.7"/>
+  <circle cx="1010" cy="330" r="30" fill="#3388bb"/>
+  <text x="1010" y="340" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle">HQ</text>
+</svg>

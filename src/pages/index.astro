@@ -156,9 +156,12 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#3388bb" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#3388bb" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
     <meta name="description" content="YZBzgy 的个人据点：学习方向、开源项目、学习笔记与正在制作的东西。" />
     <title>YZBZGY · 个人据点</title>
+    <meta property="og:image" content="https://zgy0715.github.io/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233388bb'/%3E%3Ctext x='32' y='45' font-family='sans-serif' font-size='38' font-weight='bold' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E" />
     <link rel="alternate" type="application/rss+xml" title="学习笔记 RSS" href="/rss.xml" />
     <link rel="canonical" href="https://zgy0715.github.io/" />
@@ -417,6 +420,22 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
         .flow-section { height: auto; }
         .flow-sticky { position: static; height: auto; overflow-x: auto; }
         .flow-fade { display: none; }
+      }
+
+      /* ===== 暗色模式（跟随系统）===== */
+      @media (prefers-color-scheme: dark) {
+        .flow-section { background: #101214; color: #eee; }
+        .flow-label i { color: var(--blue-light); }
+        .flow-track i { color: var(--blue-light); }
+        .flow-note { color: #999; }
+        .flow-fade { background: linear-gradient(180deg, transparent, rgba(51, 136, 187, .55)); }
+        .about { background: #101214; color: #eee; }
+        .about-intro { color: #bbb; }
+        .skill-track { background: rgba(255, 255, 255, .16); }
+        .skill-head span, .skill-note { color: #999; }
+        .next-steps ol { color: #bbb; }
+        .notes-preview li { border-color: rgba(255, 255, 255, .22); }
+        .notes-preview time { color: #999; }
       }
     </style>
   </head>

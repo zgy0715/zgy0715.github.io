@@ -34,9 +34,12 @@ const fmt = (d) => d.toISOString().slice(0, 10);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#3388bb" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#3388bb" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115" />
     <meta name="description" content="YZBzgy 的学习笔记：机器学习、编程、造物记录。" />
     <title>NOTES · YZBZGY</title>
+    <meta property="og:image" content="https://zgy0715.github.io/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233388bb'/%3E%3Ctext x='32' y='45' font-family='sans-serif' font-size='38' font-weight='bold' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E" />
     <link rel="alternate" type="application/rss+xml" title="学习笔记 RSS" href="/rss.xml" />
     <link rel="canonical" href="https://zgy0715.github.io/notes/" />
@@ -173,6 +176,34 @@ const fmt = (d) => d.toISOString().slice(0, 10);
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         .note-list a, .note-item { transition: none; }
+      }
+
+      /* ===== 暗色模式（跟随系统）===== */
+      @media (prefers-color-scheme: dark) {
+        body { background: #0f1115; color: #e8e8e8; }
+        .toolbar { background: #0f1115; border-color: rgba(255, 255, 255, .22); }
+        .chip { border-color: rgba(255, 255, 255, .4); }
+        .chip:hover { border-color: #fff; }
+        .chip.active { background: #fff; border-color: #fff; color: #000; }
+        .chip.active .dot { background: #000; }
+        .chip.active .star-mark { color: #000; }
+        .view-toggle { border-color: rgba(255, 255, 255, .4); }
+        .view-toggle button + button { border-color: rgba(255, 255, 255, .4); }
+        .view-toggle button.active { background: #fff; color: #000; }
+        .view-list .note-item { border-color: rgba(255, 255, 255, .22); }
+        .view-list .note-item:first-child { border-color: rgba(255, 255, 255, .22); }
+        .view-cards .note-item, .view-grid .note-item { border-color: rgba(255, 255, 255, .3); }
+        .view-cards .note-item:hover, .view-grid .note-item:hover { border-color: var(--accent-color, var(--blue-light)); }
+        .view-cards .note-foot { border-color: rgba(255, 255, 255, .18); }
+        a:hover .note-title { color: var(--blue-light); }
+        .note-summary { color: #b5b5b5; }
+        .note-meta, .note-foot { color: #999; }
+        .note-star { color: var(--pink); }
+        .head-meta, .back-home { color: #999; }
+        .back-home:hover { color: var(--blue-light); }
+        .lang-toggle { border-color: rgba(255, 255, 255, .4); }
+        .skip-link { background: #fff; color: #000; }
+        .page-footer { color: #777; }
       }
     </style>
   </head>
