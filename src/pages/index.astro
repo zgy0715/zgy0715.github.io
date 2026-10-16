@@ -197,6 +197,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
         --blue-dark: #287aac;
         --blue-light: #77bbdd;
         --pink: #ff8899;
+        --gold: #bb9955;
         --sans: 'IBM Plex Sans SC', sans-serif;
         --display: 'Bebas Neue', sans-serif;
         --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
@@ -288,7 +289,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
       @keyframes fade-in { to { opacity: 1; } }
 
       .scroll-down { position: absolute; z-index: 2; bottom: 22px; left: 50%; text-decoration: none; font: 400 clamp(1.6rem, 4vw, 2.6rem) var(--display); letter-spacing: .08em; opacity: 0; animation: fade-in 1s 3.4s forwards; transform: translateX(-50%); }
-      .scroll-down b { display: block; background-image: linear-gradient(90deg, var(--blue-light), var(--pink), var(--blue-light), var(--pink), var(--blue-light)); background-size: 200%; color: transparent; -webkit-background-clip: text; background-clip: text; animation: gradient-slide 1.2s linear infinite, up-down 2s ease-in-out infinite; }
+      .scroll-down b { display: block; background-image: linear-gradient(90deg, var(--blue-light), var(--pink), var(--gold), var(--pink), var(--blue-light)); background-size: 200%; color: transparent; -webkit-background-clip: text; background-clip: text; animation: gradient-slide 1.2s linear infinite, up-down 2s ease-in-out infinite; }
       @keyframes gradient-slide { to { background-position: 200%; } }
       @keyframes up-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
@@ -397,9 +398,9 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
       .top-button.visible { opacity: 1; pointer-events: auto; transform: none; }
       .top-button:hover { background: var(--blue-dark); }
 
-      /* ===== 进场动画 ===== */
-      .reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .2, 1); }
-      .reveal.visible { opacity: 1; transform: none; }
+      /* ===== 进场动画（借鉴 blur-fadein：从焦外到清晰）===== */
+      .reveal { opacity: 0; transform: translateY(26px); filter: blur(8px); transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .2, 1), filter .9s ease; }
+      .reveal.visible { opacity: 1; transform: none; filter: blur(0); }
 
       @media (max-width: 760px) {
         .wordmark span { display: none; }
@@ -421,7 +422,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
         .hero-sub { color: var(--blue-light); opacity: 1; }
         .topbar { color: #fff; }
         .hero-title span, .hero-sub, .scroll-down { opacity: 1; }
-        .reveal { opacity: 1; transform: none; }
+        .reveal { opacity: 1; transform: none; filter: blur(0); }
         .skill-fill { transform: scaleX(var(--level)); }
         .marquee-track { animation: none; }
         .flow-section { height: auto; }
@@ -555,7 +556,7 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
             {latestNotes.length === 0 ? <p class="skill-note"><span class="i18n-zh">笔记整理中。</span><span class="i18n-en">Notes coming soon.</span></p> : (
               <ul>
                 {latestNotes.map((n) => (
-                  <li><a href={`/notes/${n.id}/`}><time>{n.data.date.toISOString().slice(0, 10)}</time><b>{n.data.title}</b></a></li>
+                  <li><a href={`/notes/${n.id}/`}><time>{n.data.date.toISOString().slice(0, 10).replace(/-/g, '.')}</time><b>{n.data.title}</b></a></li>
                 ))}
               </ul>
             )}
@@ -843,8 +844,8 @@ const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'G
               sctx.beginPath();
               sctx.arc(x + Math.cos(moonAng) * moonR, y + Math.sin(moonAng) * moonR, 1.8, 0, Math.PI * 2);
               sctx.fill();
-              // 据点标记环（粉色虚线）+ 标签
-              sctx.strokeStyle = '#ff8899';
+              // 据点标记环（古铜金虚线）+ 标签
+              sctx.strokeStyle = '#bb9955';
               sctx.setLineDash([3, 4]);
               sctx.beginPath();
               sctx.arc(x, y, p.size + 7, 0, Math.PI * 2);

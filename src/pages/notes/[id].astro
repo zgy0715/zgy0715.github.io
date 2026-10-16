@@ -17,8 +17,7 @@ export async function getStaticPaths() {
 const { note, newer, older } = Astro.props;
 const { Content } = await render(note);
 const dateStr = note.data.date.toISOString().slice(0, 10);
-const updatedStr = note.data.updated ? note.data.updated.toISOString().slice(0, 10) : null;
-// 阅读时长：按正文字符数估算（中文约 400 字/分钟）
+const updatedStr = note.data.updated ? note.data.updated.toISOString().slice(0, 10) : null;// 阅读时长：按正文字符数估算（中文约 400 字/分钟）
 const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').length / 400));
 ---
 
@@ -69,6 +68,7 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
         --blue-dark: #287aac;
         --blue-light: #77bbdd;
         --pink: #ff8899;
+        --gold: #bb9955;
         --sans: 'IBM Plex Sans SC', sans-serif;
         --display: 'Bebas Neue', sans-serif;
         --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
@@ -102,7 +102,8 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       .article-meta span { padding: 5px 9px; border: 1px solid rgba(0, 0, 0, .35); border-radius: 999px; }
       h1.article-title { margin: 0 0 34px; font: 700 clamp(1.9rem, 5.5vw, 3.2rem)/1.2 var(--sans); letter-spacing: .01em; }
 
-      .prose { font-size: 15px; line-height: 2.1; }
+      .prose { font-size: 15px; line-height: 2.1; opacity: 0; filter: blur(8px); animation: blur-in .8s cubic-bezier(.2, .7, .2, 1) .15s forwards; }
+      @keyframes blur-in { to { opacity: 1; filter: blur(0); } }
       .prose h2 { margin: 2.4em 0 .6em; font: 700 1.3rem var(--sans); letter-spacing: .02em; }
       .prose h2::before { content: '// '; color: var(--blue); font: 400 1em var(--mono); }
       .prose h3 { margin: 2em 0 .5em; font: 700 1.1rem var(--sans); }
@@ -135,6 +136,7 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       }
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
+        .prose { animation: none; opacity: 1; filter: blur(0); }
       }
 
       /* ===== 暗色模式（跟随系统）===== */
@@ -171,8 +173,8 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       </header>
       <main id="note-main">
         <p class="article-meta">
-          <time datetime={dateStr}>{dateStr}</time>
-          {updatedStr && updatedStr !== dateStr && <span><span class="i18n-zh">更新</span><span class="i18n-en">EDITED</span> {updatedStr}</span>}
+          <time datetime={dateStr}>{dateStr.replace(/-/g, '.')}</time>
+          {updatedStr && updatedStr !== dateStr && <span><span class="i18n-zh">更新</span><span class="i18n-en">EDITED</span> {updatedStr.replace(/-/g, '.')}</span>}
           <span>≈ {minutes} <span class="i18n-zh">分钟</span><span class="i18n-en">MIN</span></span>
           {note.data.tags.map((tag) => <span>{tag}</span>)}
         </p>

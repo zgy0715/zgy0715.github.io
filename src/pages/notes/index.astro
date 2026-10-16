@@ -26,7 +26,8 @@ const lastUpdated = notes.reduce((m, n) => {
   const d = (n.data.updated ?? n.data.date);
   return d.valueOf() > m.valueOf() ? d : m;
 }, notes[0]?.data.date ?? new Date());
-const fmt = (d) => d.toISOString().slice(0, 10);
+const fmt = (d) => d.toISOString().slice(0, 10).replace(/-/g, '.');
+const iso = (d) => d.toISOString().slice(0, 10);
 ---
 
 <!doctype html>
@@ -77,6 +78,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
         --blue-dark: #287aac;
         --blue-light: #77bbdd;
         --pink: #ff8899;
+        --gold: #bb9955;
         --sans: 'IBM Plex Sans SC', sans-serif;
         --display: 'Bebas Neue', sans-serif;
         --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
@@ -118,7 +120,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
       .tag-filter { display: flex; flex-wrap: wrap; gap: 8px; }
       .chip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border: 1px solid rgba(0, 0, 0, .3); border-radius: 999px; background: none; cursor: pointer; font: 9px var(--mono); letter-spacing: .12em; transition: background .2s, color .2s, border-color .2s; }
       .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--chip, #999); }
-      .chip .star-mark { color: var(--pink); font-size: 11px; }
+      .chip .star-mark { color: var(--gold); font-size: 11px; }
       .chip:hover { border-color: #000; }
       .chip.active { background: var(--black); border-color: var(--black); color: #fff; }
       .chip.active .dot { background: #fff; }
@@ -131,9 +133,20 @@ const fmt = (d) => d.toISOString().slice(0, 10);
 
       /* ===== 笔记列表（三种视图共用骨架）===== */
       .note-list { display: grid; list-style: none; margin: 14px 0 0; padding: 0; }
-      .note-item { position: relative; }
+      /* 载入 blur-fadein：从焦外到清晰，逐条交错 */
+      .note-item { position: relative; opacity: 0; filter: blur(8px); animation: blur-in .7s cubic-bezier(.2, .7, .2, 1) forwards; }
+      .note-item:nth-child(2) { animation-delay: .06s; }
+      .note-item:nth-child(3) { animation-delay: .12s; }
+      .note-item:nth-child(4) { animation-delay: .18s; }
+      .note-item:nth-child(5) { animation-delay: .24s; }
+      .note-item:nth-child(6) { animation-delay: .3s; }
+      .note-item:nth-child(7) { animation-delay: .36s; }
+      .note-item:nth-child(8) { animation-delay: .42s; }
+      .note-item:nth-child(9) { animation-delay: .48s; }
+      .note-item:nth-child(n+10) { animation-delay: .54s; }
+      @keyframes blur-in { to { opacity: 1; filter: blur(0); } }
       .note-item .accent { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent-color, var(--blue)); }
-      .note-star { color: var(--pink); font-size: 13px; }
+      .note-star { color: var(--gold); font-size: 13px; }
       .note-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0; font: 9px var(--mono); letter-spacing: .16em; color: #777; }
       .note-title { margin: 0; font: 700 1.35rem/1.3 var(--sans); letter-spacing: .02em; transition: color .2s; }
       .note-summary { margin: 9px 0 0; font-size: 13px; line-height: 1.95; color: #444; }
@@ -184,7 +197,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
       }
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
-        .note-list a, .note-item { transition: none; }
+        .note-list a, .note-item { transition: none; animation: none; opacity: 1; filter: blur(0); }
       }
 
       /* ===== 暗色模式（跟随系统）===== */
@@ -256,7 +269,7 @@ const fmt = (d) => d.toISOString().slice(0, 10);
               <a href={`/notes/${note.id}/`}>
                 <i class="accent" aria-hidden="true"></i>
                 <p class="note-meta">
-                  <time datetime={fmt(note.data.date)}>{fmt(note.data.date)}</time>
+                  <time datetime={iso(note.data.date)}>{fmt(note.data.date)}</time>
                   {note.data.updated && note.data.updated.valueOf() !== note.data.date.valueOf() && <span><span class="i18n-zh">更新</span><span class="i18n-en">edited</span> {fmt(note.data.updated)}</span>}
                   <span>≈ {note.minutes} <span class="i18n-zh">分钟</span><span class="i18n-en">min</span></span>
                 </p>
