@@ -1,0 +1,61 @@
+---
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>404 · YZBZGY</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233388bb'/%3E%3Ctext x='32' y='45' font-family='sans-serif' font-size='38' font-weight='bold' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root { color-scheme: dark; --blue: #3388bb; --blue-light: #77bbdd; --pink: #ff8899; --gold: #bb9955; --sans: 'IBM Plex Sans SC', sans-serif; --display: 'Bebas Neue', sans-serif; --mono: ui-monospace, Menlo, Consolas, monospace; --pad: clamp(20px, 6vw, 72px); }
+      *, *::before, *::after { box-sizing: border-box; }
+      body { margin: 0; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 40px var(--pad); background: #0a0a0a; color: #fff; font-family: var(--sans); text-align: center; overflow: hidden; }
+      .stars i { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; opacity: .6; animation: twinkle 2.4s ease-in-out infinite; }
+      @keyframes twinkle { 0%, 100% { opacity: .15; } 50% { opacity: .8; } }
+      .code { margin: 0; font: 400 clamp(6rem, 26vw, 17rem)/1 var(--display); letter-spacing: .04em; background-image: linear-gradient(90deg, var(--blue-light), var(--pink), var(--gold), var(--pink), var(--blue-light)); background-size: 200%; color: transparent; -webkit-background-clip: text; background-clip: text; animation: gradient-slide 1.2s linear infinite; }
+      @keyframes gradient-slide { to { background-position: 200% 0; } }
+      .msg { margin: 0; font-size: 14px; line-height: 2; color: #b5b5b5; }
+      .msg small { display: block; margin-top: 4px; font: 9px var(--mono); letter-spacing: .2em; color: #777; }
+      .links { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 10px; }
+      .links a { padding: 12px 22px; border: 1px solid rgba(255, 255, 255, .45); border-radius: 999px; color: #fff; font: 10px var(--mono); letter-spacing: .18em; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
+      .links a:hover { background: var(--blue); border-color: var(--blue); }
+      @media (prefers-reduced-motion: reduce) { .code, .stars i { animation: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="stars" aria-hidden="true">
+      {Array.from({ length: 40 }, (_, i) => {
+        const x = Math.round((i * 137.5) % 100);
+        const y = Math.round((i * 61.8) % 100);
+        const d = (i % 12) * 0.2;
+        return <i style={`left:${x}%; top:${y}%; animation-delay:${d}s`}></i>;
+      })}
+    </div>
+    <p class="code">404</p>
+    <p class="msg">
+      <span class="i18n-zh">这颗坐标上什么都没有——页面可能被移动或从未存在。</span>
+      <small>LOST IN SPACE · ERROR 404</small>
+    </p>
+    <div class="links">
+      <a href="/"><span aria-hidden="true">←</span> 回主页</a>
+      <a href="/notes/">学习笔记</a>
+      <a href="https://github.com/zgy0715" target="_blank" rel="noreferrer">GitHub ↗</a>
+    </div>
+    <script>
+      // 404 页无 i18n 切换按钮，但尊重已存的语言偏好
+      try {
+        if ((localStorage.getItem('site-lang') || 'zh') === 'en') {
+          document.querySelector('.msg').innerHTML = 'Nothing exists at these coordinates — the page may have been moved or never existed.';
+          document.querySelector('.links a').innerHTML = '← BACK HOME';
+          document.querySelector('.links a[href="/notes/"]').textContent = 'NOTES';
+        }
+      } catch (e) {}
+    </script>
+  </body>
+</html>
