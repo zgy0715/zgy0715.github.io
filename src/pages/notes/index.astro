@@ -128,10 +128,11 @@ const iso = (d) => d.toISOString().slice(0, 10);
       .chip.active .dot { background: #fff; }
       .chip.active .star-mark { color: #fff; }
       .view-toggle { display: inline-flex; border: 1px solid rgba(0, 0, 0, .3); }
-      .view-toggle button { width: 40px; height: 36px; border: 0; background: none; cursor: pointer; font-size: 15px; line-height: 1; opacity: .4; transition: background .2s, opacity .2s; }
+      .view-toggle button { width: 44px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 0; background: none; cursor: pointer; color: #666; transition: background .2s, color .2s; }
+      .view-toggle button svg { width: 17px; height: 17px; display: block; }
       .view-toggle button + button { border-left: 1px solid rgba(0, 0, 0, .3); }
-      .view-toggle button.active { background: var(--black); color: #fff; opacity: 1; }
-      .view-toggle button:hover { opacity: 1; }
+      .view-toggle button:hover { color: #000; }
+      .view-toggle button.active { background: var(--black); color: #fff; }
 
       /* ===== 笔记列表（三种视图共用骨架）===== */
       .note-list { display: grid; list-style: none; margin: 14px 0 0; padding: 0; }
@@ -258,9 +259,15 @@ const iso = (d) => d.toISOString().slice(0, 10);
           ))}
         </div>
         <div class="view-toggle" id="view-toggle" role="group" aria-label="切换视图">
-          <button type="button" data-view="list" class="active" aria-label="列表视图" title="列表">≡</button>
-          <button type="button" data-view="cards" aria-label="卡片视图" title="卡片">▣</button>
-          <button type="button" data-view="grid" aria-label="网格视图" title="网格">▦</button>
+          <button type="button" data-view="list" class="active" aria-label="列表视图" title="列表视图">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6.5" x2="20" y2="6.5"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17.5" x2="20" y2="17.5"/></svg>
+          </button>
+          <button type="button" data-view="cards" aria-label="卡片视图" title="卡片视图">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/></svg>
+          </button>
+          <button type="button" data-view="grid" aria-label="网格视图" title="网格视图">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></svg>
+          </button>
         </div>
       </div>
 
