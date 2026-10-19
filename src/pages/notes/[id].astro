@@ -1,20 +1,31 @@
 ---
 import { getCollection, render } from 'astro:content';
+import '@fontsource/bebas-neue';
+import '@ibm/plex-sans-sc/css/yzb-subset.css';
+
+// 站点色板：与笔记列表页一致的标签哈希映射
+const PALETTE = ['#3388bb', '#ff8899', '#287aac', '#77bbdd'];
+const tagColor = (tag) => PALETTE[[...tag].reduce((h, c) => h + c.charCodeAt(0), 0) % PALETTE.length];
 
 export async function getStaticPaths() {
   const notes = (await getCollection('notes'))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
   return notes.map((note, i) => ({
     params: { id: note.id },
-    props: {
-      note,
-      newer: notes[i - 1] ?? null,
-      older: notes[i + 1] ?? null,
-    },
+    props: { note, newer: notes[i - 1] ?? null, older: notes[i + 1] ?? null },
   }));
 }
 
 const { note, newer, older } = Astro.props;
+// 相关笔记：共享标签数降序取前 3（渲染期计算）
+const allNotes = await getCollection('notes');
+const related = allNotes
+  .filter((n) => n.id !== note.id)
+  .map((n) => ({ n, shared: n.data.tags.filter((t) => note.data.tags.includes(t)).length }))
+  .filter((x) => x.shared > 0)
+  .sort((a, b) => b.shared - a.shared)
+  .slice(0, 3)
+  .map((x) => ({ note: x.n, color: tagColor(x.n.data.tags[0] ?? 'META') }));
 const { Content, headings } = await render(note);
 // 目录：只取 h2/h3（Astro 渲染时自动带 slug id）
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
@@ -39,6 +50,18 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
     {note.data.summary && <meta property="og:description" content={note.data.summary} />}
     <meta property="og:type" content="article" />
     <meta property="og:url" content={`https://zgy0715.github.io/notes/${note.id}/`} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: note.data.title,
+      ...(note.data.summary ? { description: note.data.summary } : {}),
+      datePublished: dateStr,
+      dateModified: updatedStr ?? dateStr,
+      keywords: note.data.tags.join(', '),
+      author: { '@type': 'Person', name: 'YZBZGY' },
+      image: 'https://zgy0715.github.io/og-image.png',
+      mainEntityOfPage: `https://zgy0715.github.io/notes/${note.id}/`,
+    })} />
     <script is:inline>
       (function () {
         var theme;
@@ -58,9 +81,6 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
         if (m) m.content = theme === 'dark' ? '#0f1115' : '#3388bb';
       })();
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
     <style is:global>
       :root {
         color-scheme: light;
@@ -108,6 +128,16 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       .prose h2, .prose h3 { scroll-margin-top: 90px; }
       /* ===== 评论区（giscus，点击加载）===== */
       .comments { margin-top: 60px; }
+      .related { margin-top: 50px; }
+      .related-list { list-style: none; margin: 0; padding: 0; }
+      .related-list li { border-bottom: 1px solid rgba(0, 0, 0, .15); }
+      .related-list li:first-child { border-top: 1px solid rgba(0, 0, 0, .15); }
+      .related-list a { display: flex; align-items: baseline; gap: 12px; padding: 13px 2px; text-decoration: none; transition: padding-left .2s; }
+      .related-list a:hover { padding-left: 10px; }
+      .related-list a:hover b { color: var(--blue); }
+      .related-list .rel-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; align-self: center; }
+      .related-list b { flex: 1; font-weight: 500; font-size: 14px; transition: color .2s; }
+      .related-list time { font: 9px var(--mono); letter-spacing: .14em; color: #888; }
       .comments-title { margin: 0 0 20px; font: 9px var(--mono); letter-spacing: .2em; color: #888; }
       .giscus-load { display: inline-block; padding: 12px 20px; border: 1px solid rgba(0, 0, 0, .35); background: none; cursor: pointer; font: 12px var(--sans); color: #444; transition: border-color .2s, color .2s; }
       .giscus-load:hover { border-color: var(--blue); color: var(--blue); }
@@ -190,6 +220,9 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       [data-theme="dark"] .toc a.active { color: var(--blue-light); }
       [data-theme="dark"] .giscus-load { border-color: rgba(255, 255, 255, .35); color: #bbb; }
       [data-theme="dark"] .giscus-load:hover { border-color: var(--blue-light); color: var(--blue-light); }
+      [data-theme="dark"] .related-list li { border-color: rgba(255, 255, 255, .22); }
+      [data-theme="dark"] .related-list a:hover b { color: var(--blue-light); }
+      [data-theme="dark"] .related-list time { color: #777; }
     </style>
   </head>
   <body>
@@ -231,6 +264,22 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
         {newer ? <a href={`/notes/${newer.id}/`} class="pn"><small>← <span class="i18n-zh">更新一篇</span><span class="i18n-en">NEWER</span></small><b>{newer.data.title}</b></a> : <span />}
         {older ? <a href={`/notes/${older.id}/`} class="pn next"><small><span class="i18n-zh">更早一篇</span><span class="i18n-en">OLDER</span> →</small><b>{older.data.title}</b></a> : <span />}
       </nav>
+      {related.length > 0 && (
+        <section class="related" aria-label="同主题笔记">
+          <h2 class="comments-title"><span class="i18n-zh">同主题笔记</span><span class="i18n-en">RELATED NOTES</span></h2>
+          <ul class="related-list">
+            {related.map((r) => (
+              <li>
+                <a href={`/notes/${r.note.id}/`}>
+                  <i class="rel-dot" style={`background:${r.color}`} aria-hidden="true"></i>
+                  <b>{r.note.data.title}</b>
+                  <time>{r.note.data.date.toISOString().slice(0, 10).replace(/-/g, '.')}</time>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <section class="comments">
         <h2 class="comments-title"><span class="i18n-zh">评论 · GitHub账号登录后可留言</span><span class="i18n-en">COMMENTS · SIGN IN WITH GITHUB</span></h2>
         <button id="giscus-load" class="giscus-load" type="button"><span class="i18n-zh">展开评论区</span><span class="i18n-en">LOAD COMMENTS</span></button>

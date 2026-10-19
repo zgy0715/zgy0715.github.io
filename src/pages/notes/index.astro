@@ -1,5 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import '@fontsource/bebas-neue';
+import '@ibm/plex-sans-sc/css/yzb-subset.css';
 
 const raw = (await getCollection('notes'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -68,9 +70,6 @@ const iso = (d) => d.toISOString().slice(0, 10);
         if (m) m.content = theme === 'dark' ? '#0f1115' : '#3388bb';
       })();
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
     <style is:global>
       :root {
         color-scheme: light;
@@ -127,6 +126,12 @@ const iso = (d) => d.toISOString().slice(0, 10);
       .chip.active { background: var(--black); border-color: var(--black); color: #fff; }
       .chip.active .dot { background: #fff; }
       .chip.active .star-mark { color: #fff; }
+      .search-box { display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; height: 38px; border: 1px solid rgba(0, 0, 0, .3); border-radius: 999px; transition: border-color .2s; }
+      .search-box svg { width: 14px; height: 14px; flex: none; color: #888; }
+      .search-box input { border: 0; outline: none; background: none; font: 12.5px var(--sans); color: inherit; width: clamp(130px, 20vw, 230px); }
+      .search-box input::placeholder { color: #999; }
+      .search-box input::-webkit-search-cancel-button { -webkit-appearance: none; }
+      .search-box:focus-within { border-color: #000; }
       .view-toggle { display: inline-flex; border: 1px solid rgba(0, 0, 0, .3); }
       .view-toggle button { width: 44px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 0; background: none; cursor: pointer; color: #666; transition: background .2s, color .2s; }
       .view-toggle button svg { width: 17px; height: 17px; display: block; }
@@ -234,6 +239,10 @@ const iso = (d) => d.toISOString().slice(0, 10);
       [data-theme="dark"] .back-home:hover { color: var(--blue-light); }
       [data-theme="dark"] .lang-toggle, [data-theme="dark"] .theme-toggle { border-color: rgba(255, 255, 255, .4); }
       [data-theme="dark"] .theme-toggle:hover { border-color: #fff; }
+      [data-theme="dark"] .search-box { border-color: rgba(255, 255, 255, .4); }
+      [data-theme="dark"] .search-box svg { color: #999; }
+      [data-theme="dark"] .search-box input::placeholder { color: #777; }
+      [data-theme="dark"] .search-box:focus-within { border-color: #fff; }
       [data-theme="dark"] .skip-link { background: #fff; color: #000; }
       [data-theme="dark"] .page-footer { color: #777; }
     </style>
@@ -256,7 +265,11 @@ const iso = (d) => d.toISOString().slice(0, 10);
         </div>
       </header>
 
-      <div class="toolbar">
+        <div class="toolbar">
+        <label class="search-box" for="note-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+          <input type="search" id="note-search" placeholder="搜索标题 / 摘要 / 正文" autocomplete="off" />
+        </label>
         <div class="tag-filter" id="tag-filter" aria-label="按标签筛选">
           <button class="chip active" type="button" data-tag="__all__"><span class="i18n-zh">全部</span><span class="i18n-en">ALL</span> {notes.length}</button>
           {starredCount > 0 && <button class="chip" type="button" data-tag="__star__"><span class="star-mark">★</span> <span class="i18n-zh">重要</span><span class="i18n-en">KEY</span> {starredCount}</button>}
@@ -278,9 +291,13 @@ const iso = (d) => d.toISOString().slice(0, 10);
       </div>
 
       <main id="notes-main">
+        <script type="application/json" id="search-data" set:html={JSON.stringify(notes.map((n) => ({
+          id: n.id,
+          text: (n.data.title + ' ' + (n.data.summary ?? '') + ' ' + n.data.tags.join(' ') + ' ' + (n.body ?? '')).replace(/\s+/g, ' ').slice(0, 5000).toLowerCase(),
+        })))} />
         <ul class="note-list view-list" id="note-list">
           {notes.map((note) => (
-            <li class="note-item" style={`--accent-color:${note.color}`} data-tags={note.data.tags.join('|')} data-star={note.data.star ? '1' : '0'}>
+            <li class="note-item" style={`--accent-color:${note.color}`} data-id={note.id} data-tags={note.data.tags.join('|')} data-star={note.data.star ? '1' : '0'}>
               <a href={`/notes/${note.id}/`}>
                 <i class="accent" aria-hidden="true"></i>
                 <p class="note-meta">
@@ -298,6 +315,7 @@ const iso = (d) => d.toISOString().slice(0, 10);
             </li>
           ))}
         </ul>
+        <p class="empty" id="no-result" style="display:none">没有匹配的笔记——换个关键词，或清除标签筛选试试。</p>
       </main>
 
       <footer class="page-footer"><span class="i18n-zh">© 2026 YZBZGY — 建于地球 · 见于线上</span><span class="i18n-en">© 2026 YZBZGY — MADE ON EARTH · FOUND ONLINE</span></footer>
@@ -319,25 +337,39 @@ const iso = (d) => d.toISOString().slice(0, 10);
       });
       applyView((() => { try { return localStorage.getItem('notes-view') || 'list'; } catch (e) { return 'list'; } })());
 
-      // ===== 标签筛选 =====
+      // ===== 标签筛选 + 搜索（合并过滤）=====
       const items = [...list.querySelectorAll('.note-item')];
       const filterBox = document.querySelector('#tag-filter');
+      const searchInput = document.querySelector('#note-search');
+      const noResult = document.querySelector('#no-result');
+      const searchData = new Map(JSON.parse(document.querySelector('#search-data').textContent).map((o) => [o.id, o.text]));
       let activeTag = '__all__';
-      const applyFilter = () => {
+      let query = '';
+      const applyFilters = () => {
+        const q = query.trim().toLowerCase();
+        let visible = 0;
         items.forEach((item) => {
-          const ok = activeTag === '__all__'
+          const tagOk = activeTag === '__all__'
             || (activeTag === '__star__' ? item.dataset.star === '1' : item.dataset.tags.split('|').includes(activeTag));
+          const textOk = !q || (searchData.get(item.dataset.id) || '').includes(q);
+          const ok = tagOk && textOk;
           item.style.display = ok ? '' : 'none';
+          if (ok) visible += 1;
         });
         filterBox.querySelectorAll('.chip').forEach((chip) => chip.classList.toggle('active', chip.dataset.tag === activeTag));
+        if (noResult) noResult.style.display = visible === 0 ? '' : 'none';
       };
       filterBox?.addEventListener('click', (event) => {
         const chip = event.target.closest('.chip');
         if (!chip) return;
         activeTag = chip.dataset.tag;
-        applyFilter();
+        applyFilters();
       });
-      applyFilter();
+      searchInput?.addEventListener('input', () => {
+        query = searchInput.value;
+        applyFilters();
+      });
+      applyFilters();
 
       // ===== 中 / EN 语言切换（与主页共享 localStorage）=====
       const rootHtml = document.documentElement;
@@ -347,6 +379,7 @@ const iso = (d) => d.toISOString().slice(0, 10);
         rootHtml.classList.toggle('lang-zh', lang !== 'en');
         rootHtml.lang = lang === 'en' ? 'en' : 'zh-CN';
         document.title = lang === 'en' ? 'NOTES · YZBZGY' : '学习笔记 · YZBZGY';
+        if (searchInput) searchInput.placeholder = lang === 'en' ? 'Search title / summary / body' : '搜索标题 / 摘要 / 正文';
         try { localStorage.setItem('site-lang', lang); } catch (e) {}
       };
       applyLang(rootHtml.classList.contains('lang-en') ? 'en' : 'zh');
