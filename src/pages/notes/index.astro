@@ -21,6 +21,8 @@ const notes = raw.map((note) => {
 const tagCounts = {};
 notes.forEach((n) => n.data.tags.forEach((t) => { tagCounts[t] = (tagCounts[t] ?? 0) + 1; }));
 const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+// 筛选栏只放热门标签（出现 ≥2 次）：一次性标签进栏只会筛出一条，纯噪音
+const hotTags = tags.filter(([, c]) => c >= 2).slice(0, 10);
 const starredCount = notes.filter((n) => n.data.star).length;
 const lastUpdated = notes.reduce((m, n) => {
   const d = (n.data.updated ?? n.data.date);
@@ -251,7 +253,7 @@ const iso = (d) => d.toISOString().slice(0, 10);
         <div class="tag-filter" id="tag-filter" aria-label="按标签筛选">
           <button class="chip active" type="button" data-tag="__all__"><span class="i18n-zh">全部</span><span class="i18n-en">ALL</span> {notes.length}</button>
           {starredCount > 0 && <button class="chip" type="button" data-tag="__star__"><span class="star-mark">★</span> <span class="i18n-zh">重要</span><span class="i18n-en">KEY</span> {starredCount}</button>}
-          {tags.map(([tag, count]) => (
+          {hotTags.map(([tag, count]) => (
             <button class="chip" type="button" data-tag={tag} style={`--chip:${tagColor(tag)}`}><i class="dot" aria-hidden="true"></i>{tag} {count}</button>
           ))}
         </div>
