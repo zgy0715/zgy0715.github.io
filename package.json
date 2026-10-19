@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "postinstall": "node scripts/gen-plex-subset.mjs"
   },
   "dependencies": {
     "@fontsource/bebas-neue": "^5.3.0",
