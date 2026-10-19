@@ -9,7 +9,38 @@ const latestNotes = (await getCollection('notes'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
-const keywords = ['PYTHON', 'DATA', 'MACHINE LEARNING', 'JAVA', 'BUILDING THINGS'];
+const activity = [
+  {
+    date: '2026.10.19',
+    title: '重新整理个人网站',
+    titleEn: 'Simplified my personal website',
+    detail: '突出正在开发的项目与近期记录。',
+    detailEn: 'Bringing current projects and recent updates into focus.',
+    href: 'https://github.com/zgy0715/zgy0715.github.io',
+    link: '查看网站源码',
+    linkEn: 'SITE SOURCE',
+  },
+  {
+    date: '2026.10.17',
+    title: '歌曲数据与订单流程跑通',
+    titleEn: 'Connected song data and order flows',
+    detail: '首页读取 9 首歌曲，订单状态闭环已验证。',
+    detailEn: 'The home page loads nine songs; the order lifecycle is verified.',
+    href: 'https://github.com/zgy0715/ave-mygo/commit/23f9ad28d1f48a3c27ae04a0c60b3d8a06751411',
+    link: '查看这次提交',
+    linkEn: 'VIEW COMMIT',
+  },
+  {
+    date: '2026.10.15',
+    title: '机器学习学到 KNN',
+    titleEn: 'Reached KNN in machine learning',
+    detail: 'Python 与数据科学基础完成，持续练习算法。',
+    detailEn: 'Python and data-science foundations complete; algorithm practice continues.',
+    href: '/notes/aiml-roadmap-progress/',
+    link: '阅读进度记录',
+    linkEn: 'READ PROGRESS NOTE',
+  },
+];
 
 const projects = [
   {
@@ -17,8 +48,8 @@ const projects = [
     name: 'AI-ML-LEARNING',
     subtitle: '从零到独立完成 AI 项目',
     subtitleEn: 'From zero to real AI projects',
-    description: '按四阶段路线图推进的学习仓库：Python 基础 → NumPy/Pandas/Matplotlib 数据科学 → 机器学习算法（线性回归、KNN、决策树、朴素贝叶斯、逻辑回归）→ PyTorch 深度学习。PROGRESS.md 逐课追踪：Phase 1-2 已完成，Phase 3 推进到第 10 课 KNN，另附 7 课 Java 专题。',
-    descriptionEn: 'A learning repo on a four-phase roadmap: Python basics → NumPy/Pandas/Matplotlib → ML algorithms (linear regression, KNN, decision tree, Naive Bayes, logistic regression) → PyTorch. Tracked lesson-by-lesson in PROGRESS.md: Phases 1-2 done, Phase 3 at lesson 10 (KNN), plus a 7-lesson Java track.',
+    description: '机器学习课程仓库，记录 Python、数据科学与算法练习。',
+    descriptionEn: 'A learning repo for Python, data science and machine-learning practice.',
     tags: ['PYTHON', 'NUMPY', 'PANDAS', 'PYTORCH'],
     href: 'https://github.com/zgy0715/AI-ML-Learning',
     status: '进行中',
@@ -29,8 +60,8 @@ const projects = [
     name: 'YZBZGY.GITHUB.IO',
     subtitle: '你现在看的这个网站',
     subtitleEn: 'The site you are looking at',
-    description: 'Astro 手写的单页站，改到第三代：逆向 anontokyo.com 的 269KB CSS 拿到版式与配色，GSAP/Swiper 全部换成原生 JS，"据点"面板是纯 Canvas 手绘的太阳系。零运行时依赖。',
-    descriptionEn: 'My hand-written Astro site, third generation: layout and colors extracted from anontokyo.com\'s 269KB of CSS, GSAP/Swiper replaced with vanilla JS, and the HQ panel is a solar system drawn in pure Canvas. Zero runtime dependencies.',
+    description: 'Astro 个人网站，包含笔记搜索、阅读工具与互动首页。',
+    descriptionEn: 'An Astro personal site with searchable notes, reading tools and an interactive home page.',
     tags: ['ASTRO', 'HTML / CSS / JS', 'CANVAS', 'GITHUB PAGES'],
     href: 'https://github.com/zgy0715/zgy0715.github.io',
     status: '已上线',
@@ -41,8 +72,8 @@ const projects = [
     name: 'DEEPAGENT',
     subtitle: '多智能体协作开发平台',
     subtitleEn: 'Multi-agent dev platform',
-    description: '基于大语言模型的多智能体协作开发平台（v0.2.1，MIT）：让 AI Agent 像真正的开发团队一样分工构建软件。C++17 内核 + Python 3.11 + Java 21 + TypeScript 四种语言混合，是所有仓库里语言栈最杂的一个。',
-    descriptionEn: 'An LLM-based multi-agent collaborative development platform (v0.2.1, MIT): AI agents building software like a real dev team. A C++17 core mixed with Python 3.11, Java 21 and TypeScript — the widest language stack of all my repos.',
+    description: '用 C++、Python、Java 和 TypeScript 构建的多智能体协作平台。',
+    descriptionEn: 'A multi-agent collaboration platform built with C++, Python, Java and TypeScript.',
     tags: ['C++', 'PYTHON', 'JAVA', 'TYPESCRIPT'],
     href: 'https://github.com/zgy0715/zgy_project',
     status: '已开源',
@@ -53,8 +84,8 @@ const projects = [
     name: 'NEXUS INTELLIGENCE AGENT',
     subtitle: '智能体应用',
     subtitleEn: 'An agent application',
-    description: 'NIA：React 18 + TypeScript 5.8 + Vite 6.4 + Tailwind CSS 的前端，配 FastAPI 后端的智能体应用。TypeScript 写了约 10 万字节，是我 TS 工程实践最多的仓库。',
-    descriptionEn: 'NIA: a React 18 + TypeScript 5.8 + Vite 6.4 + Tailwind CSS frontend over a FastAPI backend. With ~100KB of TypeScript, this is where I have practiced TS engineering the most.',
+    description: 'React 前端与 FastAPI 后端组成的 AI 智能体应用。',
+    descriptionEn: 'An AI agent application with a React frontend and FastAPI backend.',
     tags: ['REACT 18', 'TYPESCRIPT', 'VITE', 'FASTAPI'],
     href: 'https://github.com/zgy0715/Nexus-Intelligence-Agent-zgy',
     status: '已开源',
@@ -65,8 +96,8 @@ const projects = [
     name: 'A3 LEARNING-AGENT',
     subtitle: '大模型个性化学习系统',
     subtitleEn: 'LLM learning system',
-    description: '基于大模型的个性化学习多智能体系统：FastAPI + MongoDB 后端，Vue 3 + Pinia + ECharts 前端，Python 与 Vue 的代码量几乎对半——前后端都按真实项目的规模来写。',
-    descriptionEn: 'An LLM-powered personalized learning multi-agent system: FastAPI + MongoDB backend, Vue 3 + Pinia + ECharts frontend, with Python and Vue each at roughly half the codebase — built at real-project scale on both ends.',
+    description: '基于 FastAPI 与 Vue 的个性化 AI 学习系统。',
+    descriptionEn: 'A personalized AI learning system built with FastAPI and Vue.',
     tags: ['FASTAPI', 'MONGODB', 'VUE 3', 'ECHARTS'],
     href: 'https://github.com/zgy0715/learning-agent',
     status: '已开源',
@@ -77,8 +108,8 @@ const projects = [
     name: 'HRMS 员工管理系统',
     subtitle: 'Spring Boot 3 + Vue 3 全栈',
     subtitleEn: 'Spring Boot 3 + Vue 3 full stack',
-    description: '企业员工管理系统（HRMS）：Spring Boot 3 后端 22 个领域实体、15 个 REST 控制器，Vue 3 + Element Plus 前端 12 个业务页面，RBAC 四角色贯穿，内置 61 名员工演示数据，start.sh 一键启动。',
-    descriptionEn: 'An HR management system: Spring Boot 3 backend with 22 domain entities and 15 REST controllers, Vue 3 + Element Plus frontend with 12 business pages, RBAC across 4 roles, 61 demo employees, one-command start.sh.',
+    description: 'Spring Boot 与 Vue 构建的员工管理系统，包含角色权限。',
+    descriptionEn: 'An employee management system built with Spring Boot and Vue, with role-based access.',
     tags: ['SPRING BOOT 3', 'VUE 3', 'ELEMENT PLUS', 'RBAC'],
     href: 'https://github.com/zgy0715/renliguanli',
     status: '已开源',
@@ -89,8 +120,8 @@ const projects = [
     name: 'FILL-A-PIX 像素填空',
     subtitle: 'Android + 鸿蒙双端游戏',
     subtitleEn: 'Android + HarmonyOS game',
-    description: '康思像素填空解谜游戏的联网版：Android（Kotlin + Jetpack Compose）与鸿蒙（ArkTS + ArkUI）双端同构，共用 Python FastAPI + SQLite 服务端，关卡由服务端即时生成并校验唯一解，支持同房对战。',
-    descriptionEn: 'A networked Fill-a-Pix logic puzzle: Android (Kotlin + Jetpack Compose) and HarmonyOS (ArkTS + ArkUI) clients sharing one Python FastAPI + SQLite server, which generates levels on the fly and verifies unique solutions.',
+    description: 'Android 与鸿蒙双端解谜游戏，共用 FastAPI 服务端。',
+    descriptionEn: 'A puzzle game for Android and HarmonyOS, sharing a FastAPI backend.',
     tags: ['KOTLIN', 'COMPOSE', 'ARKTS', 'FASTAPI'],
     href: 'https://github.com/zgy0715/xiangsuGame',
     status: '已开源',
@@ -101,8 +132,8 @@ const projects = [
     name: 'TECH HOTSPOT',
     subtitle: '技术热点数据平台',
     subtitleEn: 'Tech trends platform',
-    description: '多源技术热点采集与分析平台：Scrapy 自动爬取 GitHub Trending / Hacker News / arXiv / Reddit，Flask 统一 API，Streamlit 看板 + ECharts 仪表盘可视化，集成 DeepSeek 挖掘技术趋势。',
-    descriptionEn: 'A multi-source tech-trends platform: Scrapy crawls GitHub Trending / Hacker News / arXiv / Reddit, Flask serves a unified API, Streamlit + ECharts visualize the data, with DeepSeek-powered trend analysis.',
+    description: '采集多个技术社区的热点，并用仪表盘分析趋势。',
+    descriptionEn: 'Collects tech-community trends and visualizes them in a dashboard.',
     tags: ['SCRAPY', 'FLASK', 'STREAMLIT', 'DEEPSEEK'],
     href: 'https://github.com/zgy0715/py',
     status: '已开源',
@@ -113,8 +144,8 @@ const projects = [
     name: 'GUILIN CLIMATE',
     subtitle: '气候与旅游数据分析',
     subtitleEn: 'Climate & tourism analysis',
-    description: '桂林气候舒适度与旅游影响分析：Pandas/NumPy/SciPy/scikit-learn 的完整数据分析链，pyecharts 可视化，Jupyter Notebook 与 HTML 报告双形态输出。',
-    descriptionEn: 'An analysis of Guilin\'s climate comfort and its tourism impact: a full Pandas/NumPy/SciPy/scikit-learn pipeline, pyecharts visualizations, output as both Jupyter notebooks and HTML reports.',
+    description: '用 Python 分析桂林气候舒适度与旅游数据。',
+    descriptionEn: 'A Python analysis of Guilin climate comfort and tourism data.',
     tags: ['PANDAS', 'SCIPY', 'SCIKIT-LEARN', 'PYECHARTS'],
     href: 'https://github.com/zgy0715/guilin-climate-tourism',
     status: '已开源',
@@ -125,8 +156,8 @@ const projects = [
     name: 'SKY TAKEOUT',
     subtitle: '苍穹外卖自学复刻',
     subtitleEn: 'Sky Take-Out, self-taught',
-    description: '苍穹外卖的自学复刻：基于 Spring Boot 的餐饮外卖管理平台，Maven 多模块（sky-common / sky-pojo / sky-server），经典三层架构 + JWT 拦截器，README 里连请求处理流程图都画全了。',
-    descriptionEn: 'My re-implementation of Sky Take-Out: a Spring Boot food-delivery backend in Maven multi-modules (sky-common / sky-pojo / sky-server), classic 3-layer architecture with JWT interceptor, full request-flow diagrams in the README.',
+    description: '基于 Spring Boot 的外卖管理系统自学复刻。',
+    descriptionEn: 'A self-guided reimplementation of a food-delivery system with Spring Boot.',
     tags: ['SPRING BOOT', 'MAVEN', 'JWT', 'MYBATIS'],
     href: 'https://github.com/zgy0715/sky-takeout',
     status: '已开源',
@@ -134,23 +165,15 @@ const projects = [
   },
 ];
 
-// 技能条数据 = GitHub API /languages 对全部 22 个公开仓库的真实字节统计（2026-10-15 拉取）
-const skills = [
-  { name: 'PYTHON', share: 27.7, zh: '全部仓库语言占比 27.7%：数据分析、爬虫、FastAPI 后端', en: '27.7% of all repo code: data analysis, crawlers, FastAPI' },
-  { name: 'JAVA', share: 23.6, zh: '占比 23.6%：苍穹外卖、HRMS、课设与 AI-ML 的 Java 专题', en: '23.6%: Sky Take-Out, HRMS, coursework, AI-ML Java track' },
-  { name: 'VUE', share: 11.2, zh: '占比 11.2%：HRMS / learning-agent / Tech Hotspot 的前端', en: '11.2%: frontends of HRMS, learning-agent, Tech Hotspot' },
-  { name: 'KOTLIN', share: 9.3, zh: '占比 9.3%：像素填空 Android 端（Jetpack Compose）', en: '9.3%: the Android side of Fill-a-Pix (Jetpack Compose)' },
-  { name: 'C++', share: 9.1, zh: '占比 9.1%：大一大二代码合集与 DeepAgent 内核', en: '9.1%: freshman/sophomore archive and the DeepAgent core' },
-  { name: 'TYPESCRIPT', share: 8.4, zh: '占比 8.4%：NIA 的 React 前端与 DeepAgent', en: '8.4%: NIA\'s React frontend and DeepAgent' },
-];
+const splitProjectName = (name) => {
+  const match = /^(.+?)\s+([\u3400-\u9fff].*)$/u.exec(name);
+  return match ? { latin: match[1], local: match[2] } : { latin: name, local: null };
+};
 
-const plans = [
-  { zh: 'AI-ML-Learning 推进 Phase 3（第 11-14 课：模型评估 / 决策树 / 朴素贝叶斯 / 逻辑回归）', en: 'Push AI-ML-Learning Phase 3 (lessons 11-14: evaluation, decision tree, Naive Bayes, logistic regression)' },
-  { zh: '进入 Phase 4：神经网络本质与 PyTorch 入门', en: 'Reach Phase 4: neural network fundamentals and PyTorch' },
-  { zh: 'Phase 5 项目实战：独立完成一个 AI 项目', en: 'Phase 5 capstone: finish an AI project independently' },
+const interestGroups = [
+  { title: 'MUSIC', titleZh: '音乐', items: ['MYGO!!!!!', 'BANG DREAM!', 'GUITAR', 'LIVE'] },
+  { title: 'STORIES', titleZh: '故事', items: ['ANIME', 'GALGAME', 'NOVEL'] },
 ];
-
-const favs = ['MYGO!!!!!', 'BANG DREAM!', 'ANIME', 'MUSIC', 'GUITAR', 'LIVE', 'GALGAME', 'NOVEL'];
 
 // ===== 构建期拉取各仓库真实 star / commit / 最近推送（GitHub API，失败则该卡片不显示统计行）=====
 async function fetchRepoStats(fullName) {
@@ -248,7 +271,7 @@ const repoStats = Object.fromEntries(await Promise.all(
       html.lang-en .i18n-zh { display: none; }
       html.lang-en .i18n-en { display: inline; }
       /* 中文大标题加粗，弥补 Bebas Neue 无中文粗体的落差 */
-      h2 .i18n-zh, .menu-panel nav a .i18n-zh, .flow-label .i18n-zh, .scroll-down .i18n-zh { font-weight: 700; letter-spacing: .06em; }
+      h2 .i18n-zh, .menu-panel nav a .i18n-zh, .scroll-down .i18n-zh { font-weight: 700; letter-spacing: .06em; }
 
       .skip-link { position: fixed; z-index: 90; top: 12px; left: 12px; padding: 12px 16px; background: #fff; color: #000; font: 12px var(--mono); text-decoration: none; transform: translateY(-180%); }
       .skip-link:focus { transform: none; }
@@ -256,8 +279,9 @@ const repoStats = Object.fromEntries(await Promise.all(
 
       /* ===== 顶部栏 =====
          开场时页面是白底，顶栏文字先为深色，随首屏一起平滑转白 */
-      .topbar { position: fixed; z-index: 60; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px var(--pad); color: #000; transition: transform .45s ease; animation: topbar-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      .topbar { position: fixed; z-index: 60; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px var(--pad); color: #000; transition: transform .45s ease, background .25s ease, border-color .25s ease; animation: topbar-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
       .topbar.hidden { transform: translateY(-110%); }
+      .topbar.scrolled { border-bottom: 1px solid rgba(255, 255, 255, .1); background: rgba(5, 7, 13, .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
       @keyframes topbar-ink { to { color: #fff; } }
       .wordmark { display: inline-flex; align-items: baseline; gap: 10px; text-decoration: none; }
       .wordmark b { font: 400 1.5rem var(--display); letter-spacing: .06em; }
@@ -316,110 +340,126 @@ const repoStats = Object.fromEntries(await Promise.all(
 
       .hero-sub { position: relative; z-index: 1; margin: 0 0 .4em; font: 9px var(--mono); letter-spacing: .5em; color: var(--blue-dark); opacity: 0; animation: fade-in 1s 1.1s forwards, sub-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
       @keyframes sub-ink { to { color: var(--blue-light); } }
-      .hero-stack { position: relative; z-index: 1; display: grid; justify-items: center; gap: 14px; }
+      .hero-stack { position: relative; z-index: 1; display: grid; justify-items: center; gap: 14px; width: min(100%, 1180px); padding: 90px 24px; }
+      .hero-focus { max-width: 520px; margin: 4px 0 0; color: #222; font-size: clamp(15px, 1.5vw, 18px); line-height: 1.7; text-align: center; opacity: 0; animation: fade-in 1s 1.5s forwards, hero-copy-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      .hero-motto { margin: -6px 0 0; color: var(--blue-dark); font: 11px var(--mono); letter-spacing: .24em; text-transform: uppercase; opacity: 0; animation: fade-in 1s 1.7s forwards, hero-copy-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; opacity: 0; animation: fade-in 1s 1.8s forwards, hero-copy-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      .hero-actions a { padding: 11px 16px; border: 1px solid currentColor; font: 10px var(--mono); letter-spacing: .12em; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
+      .hero-actions a:first-child { background: #111; border-color: #111; color: #fff; animation: hero-button-shift 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      .hero-actions a:not(:first-child) { padding-inline: 8px; border-color: transparent; background: transparent; color: #111; animation: hero-secondary-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      .hero-actions a:hover { background: var(--blue); border-color: var(--blue); color: #fff; }
+      .hero-actions a:not(:first-child):hover { background: var(--blue-dark); border-color: var(--blue-dark); color: #fff; }
+      .hero-actions a:first-child:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+      @keyframes hero-button-shift { to { background: #fff; border-color: #fff; color: #0a0a0a; } }
+      @keyframes hero-secondary-ink { to { color: #fff; border-color: #fff; } }
+      @keyframes hero-copy-ink { to { color: #fff; } }
       @keyframes fade-in { to { opacity: 1; } }
 
-      .scroll-down { position: absolute; z-index: 2; bottom: 22px; left: 50%; text-decoration: none; font: 400 clamp(1.6rem, 4vw, 2.6rem) var(--display); letter-spacing: .08em; opacity: 0; animation: fade-in 1s 3.4s forwards; transform: translateX(-50%); }
+      .scroll-down { position: absolute; z-index: 2; bottom: 22px; left: 50%; text-decoration: none; font: 400 clamp(1.2rem, 3vw, 2rem) var(--display); letter-spacing: .08em; opacity: 0; animation: fade-in 1s 3.4s forwards; transform: translateX(-50%); }
       .scroll-down b { display: block; background-image: linear-gradient(90deg, var(--blue-light), var(--pink), var(--gold), var(--pink), var(--blue-light)); background-size: 200%; color: transparent; -webkit-background-clip: text; background-clip: text; animation: gradient-slide 1.2s linear infinite, up-down 2s ease-in-out infinite; }
       @keyframes gradient-slide { to { background-position: 200%; } }
       @keyframes up-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-      /* ===== 横向文字流 ===== */
-      .flow-section { position: relative; height: 340vh; background: var(--white); color: #000; }
-      .flow-sticky { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 4vh; overflow: hidden; padding: 0 4vw; }
-      .flow-label { margin: 0; font: 400 clamp(1.8rem, 4vw, 2.6rem) var(--display); letter-spacing: .05em; }
-      .flow-label i { font: 11px var(--sans); font-style: normal; letter-spacing: .2em; vertical-align: super; color: var(--blue); }
-      .flow-track { display: flex; align-items: baseline; gap: 7vw; width: max-content; white-space: nowrap; font: 400 clamp(4.5rem, 16vw, 15rem) var(--display); line-height: 1; will-change: transform; }
-      .flow-track i { font-style: normal; font-size: .3em; color: var(--blue); align-self: center; }
-      .flow-note { margin: 0; max-width: 440px; font-size: 13px; line-height: 2; color: #333; }
-      /* 底部渐变过渡到下一屏的蓝色 */
-      .flow-fade { position: absolute; inset: auto 0 0; height: 26vh; background: linear-gradient(180deg, transparent, var(--blue)); pointer-events: none; }
+      /* ===== 最近进展 ===== */
+      .activity-section { padding: clamp(68px, 9vw, 112px) var(--pad); background: var(--white); color: #000; }
+      .activity-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+      .activity-title { margin: 0; font: 400 clamp(2rem, 4.5vw, 3.2rem) var(--display); letter-spacing: .05em; }
+      .activity-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid rgba(0, 0, 0, .2); }
+      .activity-item { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 190px; padding: 20px 22px 16px 0; }
+      .activity-item + .activity-item { padding-left: 22px; border-left: 1px solid rgba(0, 0, 0, .16); }
+      .activity-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; font: 10px var(--mono); letter-spacing: .1em; }
+      .activity-meta time { color: var(--blue-dark); }
+      .activity-item h3 { margin: 0; font-size: 17px; line-height: 1.55; font-weight: 600; }
+      .activity-item p { margin: 0; font-size: 14px; line-height: 1.85; color: #555; }
+      .activity-item a { margin-top: auto; color: var(--blue-dark); font: 10px var(--mono); letter-spacing: .1em; text-decoration: none; }
+      .activity-item a:hover { text-decoration: underline; text-underline-offset: 4px; }
+      [data-theme="dark"] .activity-section { background: #101214; color: #eee; }
+      [data-theme="dark"] .activity-item p { color: #bbb; }
+      [data-theme="dark"] .activity-item + .activity-item { border-color: rgba(255, 255, 255, .2); }
+      [data-theme="dark"] .activity-list { border-color: rgba(255, 255, 255, .28); }
+      [data-theme="dark"] .activity-item a { color: var(--blue-light); }
 
       /* ===== Projects ===== */
       .projects { display: flex; flex-direction: column; justify-content: center; gap: 20px; min-height: 100svh; padding: 90px var(--pad); background: var(--blue); color: #fff; }
-      .projects h2 { margin: 0; font: 400 clamp(2.4rem, 5.5vw, 4rem) var(--display); letter-spacing: .05em; }
+      .projects h2 { margin: 0; font: 400 clamp(2rem, 4.5vw, 3.2rem) var(--display); letter-spacing: .05em; }
       .projects h2 i { font: 11px var(--sans); font-style: normal; letter-spacing: .2em; vertical-align: super; }
-      .slider { display: flex; gap: clamp(16px, 2.5vw, 28px); overflow-x: auto; scroll-snap-type: x mandatory; padding-block: 8px; scrollbar-width: none; }
-      .slider::-webkit-scrollbar { display: none; }
-      .slide { flex: 0 0 min(88vw, 700px); scroll-snap-align: center; display: flex; flex-direction: column; justify-content: space-between; gap: 26px; min-height: min(540px, 64svh); padding: clamp(22px, 3.5vw, 40px); border: 1px solid rgba(255, 255, 255, .5); background: rgba(255, 255, 255, .06); }
-      .slide-meta { display: flex; justify-content: space-between; gap: 12px; font: 9px var(--mono); letter-spacing: .18em; }
-      .slide-status { display: inline-flex; align-items: center; gap: 7px; }
-      .slide-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
-      .slide-name { margin: 0; font: 400 clamp(3.2rem, 7.5vw, 6.2rem) var(--display); letter-spacing: .03em; line-height: .92; }
-      .slide-sub { margin: 6px 0 0; font-size: 13px; color: rgba(255, 255, 255, .75); }
-      .slide-desc { max-width: 460px; margin: 0; font-size: 13.5px; line-height: 2.05; color: rgba(255, 255, 255, .88); }
-      .slide-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-      .slide-tags span { padding: 6px 10px; border: 1px solid rgba(255, 255, 255, .4); border-radius: 999px; font: 8px var(--mono); letter-spacing: .14em; }
-      .slide-stats { display: flex; flex-wrap: wrap; gap: 16px; margin: 14px 0 0; font: 10px var(--mono); letter-spacing: .14em; color: rgba(255, 255, 255, .78); }
-      .slide-stats .stat-star { color: var(--gold); }
-      .slide-link { display: inline-flex; align-items: center; gap: 10px; width: fit-content; padding-top: 16px; margin-top: auto; border-top: 1px solid rgba(255, 255, 255, .35); font: 10px var(--mono); letter-spacing: .2em; text-decoration: none; transition: color .2s; }
-      .slide-link b { font: 400 18px var(--display); transition: transform .2s; }
-      .slide-link:hover { color: var(--blue-dark); }
-      .slide-link:hover b { transform: translate(3px, -3px); }
-      .slider-nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-      .slider-arrows { display: flex; gap: 10px; }
-      .slider-arrows button { width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; background: transparent; cursor: pointer; font: 400 18px var(--display); transition: background .2s, color .2s; }
-      .slider-arrows button:hover { background: #fff; color: var(--blue); }
-      .dots { display: flex; gap: 8px; }
-      .dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .35); cursor: pointer; transition: background .2s, transform .2s; }
-      .dots button.active { background: #fff; transform: scale(1.25); }
+      .featured-project { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap: 22px clamp(24px, 4vw, 52px); padding: clamp(22px, 3.5vw, 38px); border: 1px solid rgba(255, 255, 255, .46); background: rgba(255, 255, 255, .08); }
+      .project-section-label { margin: 12px 0 0; font: 10px var(--mono); letter-spacing: .16em; color: rgba(255, 255, 255, .72); }
+      .featured-eyebrow { margin: 0 0 14px; font: 10px var(--mono); letter-spacing: .18em; color: rgba(255, 255, 255, .72); }
+      .featured-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px 16px; margin: 0; font: 400 clamp(2.4rem, 5vw, 4.2rem)/.98 var(--display); letter-spacing: .035em; }
+      .featured-title-local { font: 500 clamp(1.05rem, 2vw, 1.4rem)/1.4 var(--sans); letter-spacing: .03em; }
+      .featured-summary { max-width: 520px; margin: 14px 0 0; font-size: 15px; line-height: 1.75; color: rgba(255, 255, 255, .9); }
+      .featured-facts { display: flex; align-items: center; }
+      .featured-facts p { margin: 0; font-size: 14px; line-height: 1.8; color: rgba(255, 255, 255, .94); }
+      .featured-stack { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .25); }
+      .featured-stack span { padding: 6px 10px; border: 1px solid rgba(255, 255, 255, .36); border-radius: 999px; font: 9px var(--mono); letter-spacing: .1em; }
+      .featured-links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-left: auto; }
+      .featured-links a { font: 10px var(--mono); letter-spacing: .13em; text-decoration: none; }
+      .featured-links a:hover { color: #dcefff; text-decoration: underline; text-underline-offset: 4px; }
+      .project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      .project-card { display: flex; flex-direction: column; gap: 16px; min-width: 0; min-height: 290px; padding: 22px; border: 1px solid rgba(255, 255, 255, .4); background: rgba(255, 255, 255, .055); transition: background .2s, border-color .2s, transform .2s; }
+      .project-card[hidden] { display: none; }
+      .project-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, .75); background: rgba(255, 255, 255, .1); }
+      .project-card-meta { display: flex; justify-content: space-between; gap: 10px; font: 9px var(--mono); letter-spacing: .12em; color: rgba(255, 255, 255, .76); }
+      .project-card-status { display: inline-flex; align-items: center; gap: 7px; }
+      .project-card-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
+      .project-card h3 { margin: 0; font: 400 clamp(1.75rem, 2.8vw, 2.6rem)/1 var(--display); letter-spacing: .025em; overflow-wrap: anywhere; }
+      .project-card-name-local { font: 600 .58em/1.25 var(--sans); letter-spacing: .02em; }
+      .project-card-sub { margin: 7px 0 0; font-size: 13px; color: rgba(255, 255, 255, .82); }
+      .project-card-desc { margin: 0; font-size: 13px; line-height: 1.7; color: rgba(255, 255, 255, .88); }
+      .project-card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+      .project-card-tags span { padding: 5px 8px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 999px; font: 8px var(--mono); letter-spacing: .08em; }
+      .project-card-stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0 0; font: 9px var(--mono); letter-spacing: .1em; color: rgba(255, 255, 255, .74); }
+      .project-card-stats .stat-star { color: var(--gold); }
+      .project-card-link { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .28); font: 9px var(--mono); letter-spacing: .14em; text-decoration: none; transition: color .2s; }
+      .project-card-link b { font: 400 16px var(--display); transition: transform .2s; }
+      .project-card-link:hover { color: #dcefff; }
+      .project-card-link:hover b { transform: translate(3px, -3px); }
+      .projects-toggle { display: inline-flex; align-items: center; gap: 10px; width: fit-content; padding: 9px 0; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .48); background: transparent; color: #fff; cursor: pointer; font: 10px var(--mono); letter-spacing: .12em; }
+      .projects-toggle:hover { border-color: #fff; }
+      .projects-toggle i { font-style: normal; font-size: 15px; transition: transform .2s; }
+      .projects-toggle[aria-expanded="true"] i { transform: rotate(45deg); }
       .all-repos { display: inline-flex; gap: 10px; align-items: baseline; width: fit-content; font: 400 1.5rem var(--display); letter-spacing: .06em; text-decoration: none; transition: color .2s; }
       .all-repos:hover { color: var(--blue-dark); }
       .all-repos i { font-style: normal; transition: transform .2s; }
       .all-repos:hover i { transform: translate(4px, -4px); }
 
       /* ===== 关于我 ===== */
-      .about { display: flex; flex-direction: column; justify-content: center; gap: 26px; min-height: 100svh; padding: 90px var(--pad); background: var(--white); color: #000; }
-      .about h2 { margin: 0; font: 400 clamp(2.4rem, 5.5vw, 4rem) var(--display); letter-spacing: .05em; }
-      .about-intro { margin: 0; max-width: 580px; font-size: 13.5px; line-height: 2.1; color: #333; }
-      .skill-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 22px; }
-      .skill-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
-      .skill-head b { font: 400 clamp(1.5rem, 3.2vw, 2.2rem) var(--display); letter-spacing: .05em; }
-      .skill-head span { font: 10px var(--mono); letter-spacing: .15em; color: #666; }
-      .skill-track { position: relative; height: 6px; margin-top: 8px; background: rgba(0, 0, 0, .12); overflow: hidden; }
-      .skill-fill { position: absolute; inset: 0 auto 0 0; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left; transition: transform 1.1s cubic-bezier(.2, .7, .2, 1) var(--d, 0ms); }
-      .reveal.visible .skill-fill { transform: scaleX(var(--level)); }
-      .skill-note { margin: 7px 0 0; font-size: 12px; color: #666; }
-      .next-steps { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(24px, 4vw, 50px); margin-top: 10px; }
-      .next-steps h3, .notes-preview h3 { margin: 0 0 14px; font: 400 clamp(1.4rem, 2.8vw, 2rem) var(--display); letter-spacing: .05em; }
-      .next-steps ol { margin: 0; padding-left: 1.3em; font-size: 13px; line-height: 2; color: #333; }
-      .next-steps li::marker { color: var(--blue); font-weight: 700; }
-      .notes-preview ul { list-style: none; margin: 0; padding: 0; }
-      .notes-preview li { border-top: 1px solid rgba(0, 0, 0, .15); }
-      .notes-preview li:last-child { border-bottom: 1px solid rgba(0, 0, 0, .15); }
-      .notes-preview a { display: flex; align-items: baseline; gap: 18px; padding: 13px 0; text-decoration: none; }
-      .notes-preview time { font: 9px var(--mono); letter-spacing: .16em; color: #666; white-space: nowrap; }
-      .notes-preview b { font-weight: 500; font-size: 14px; transition: color .2s; }
-      .notes-preview a:hover b { color: var(--blue); }
-      .all-notes { display: inline-flex; gap: 10px; align-items: baseline; margin-top: 18px; width: fit-content; font: 400 1.4rem var(--display); letter-spacing: .06em; text-decoration: none; transition: color .2s; }
-      .all-notes:hover { color: var(--blue-dark); }
-      .all-notes i { font-style: normal; transition: transform .2s; }
-      .all-notes:hover i { transform: translate(4px, -4px); }
+      .about { display: flex; flex-direction: column; justify-content: center; gap: 20px; padding: 76px var(--pad); background: var(--white); color: #000; }
+      .about h2 { margin: 0; font: 400 clamp(2rem, 4.5vw, 3.2rem) var(--display); letter-spacing: .05em; }
+      .about-intro { margin: 0; max-width: 600px; font-size: 15px; line-height: 1.8; color: #333; }
+      .about-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+      .about-tags span { padding: 6px 10px; border: 1px solid rgba(0, 0, 0, .2); border-radius: 999px; font: 10px var(--mono); letter-spacing: .08em; }
+      .about-more { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+      .about-more a { color: var(--blue-dark); font: 10px var(--mono); letter-spacing: .1em; text-decoration: none; }
+      .about-more a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
       /* ===== 兴趣墙 ===== */
-      .fav { display: flex; flex-direction: column; justify-content: center; gap: 30px; min-height: 88svh; padding: 80px 0; background: var(--black); color: #fff; overflow: hidden; }
-      .fav h2 { margin: 0; padding: 0 var(--pad); font: 400 clamp(2.4rem, 5.5vw, 4rem) var(--display); letter-spacing: .05em; }
-      .marquee { overflow: hidden; }
-      .marquee-track { display: flex; width: max-content; animation: marquee-move 30s linear infinite; }
-      .marquee.reverse .marquee-track { animation-direction: reverse; animation-duration: 36s; }
-      .marquee:hover .marquee-track { animation-play-state: paused; }
-      .marquee-group { display: flex; align-items: baseline; gap: 5vw; padding-right: 5vw; white-space: nowrap; font: 400 clamp(3.5rem, 11vw, 9rem) var(--display); line-height: 1; }
-      .marquee-group span:nth-child(4n+2) { color: var(--blue-light); }
-      .marquee-group i { font-style: normal; font-size: .3em; color: var(--pink); align-self: center; }
-      @keyframes marquee-move { to { transform: translateX(-50%); } }
+      .fav { display: flex; flex-direction: column; justify-content: center; gap: clamp(24px, 5vw, 48px); min-height: 68svh; padding: 80px var(--pad); background: var(--black); color: #fff; overflow: hidden; }
+      .fav h2 { margin: 0; padding: 0; font: 400 clamp(2rem, 4.5vw, 3.2rem) var(--display); letter-spacing: .05em; }
+      .interest-groups { display: grid; gap: clamp(22px, 4vw, 38px); }
+      .interest-group { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 18px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .22); }
+      .interest-group h3 { margin: 0; color: var(--blue-light); font: 10px var(--mono); letter-spacing: .18em; }
+      .interest-marquee { overflow: hidden; }
+      .interest-track { display: flex; width: max-content; animation: interest-marquee 34s linear infinite; }
+      .interest-group:nth-child(even) .interest-track { animation-direction: reverse; animation-duration: 40s; }
+      .interest-group:hover .interest-track { animation-play-state: paused; }
+      .interest-set { display: flex; align-items: baseline; gap: clamp(28px, 5vw, 72px); padding-right: clamp(28px, 5vw, 72px); white-space: nowrap; font: 400 clamp(2.5rem, 6vw, 5rem)/1 var(--display); letter-spacing: .025em; }
+      .interest-set i { color: var(--pink); font-size: .28em; font-style: normal; }
+      @keyframes interest-marquee { to { transform: translateX(-50%); } }
 
       /* ===== 据点（原 Headquarter）===== */
       .hq { display: flex; flex-direction: column; justify-content: center; gap: 20px; min-height: 100svh; padding: 90px var(--pad); background: var(--pink); color: #fff; }
-      .hq h2 { margin: 0; align-self: flex-end; font: 400 clamp(2.4rem, 5.5vw, 4rem) var(--display); letter-spacing: .05em; text-align: right; }
-      .hq-desc { max-width: 560px; margin: 0; align-self: flex-end; font-size: 13px; line-height: 2; text-align: right; color: rgba(255, 255, 255, .92); }
-      .hq-panel { position: relative; overflow: hidden; min-height: 440px; background: #05070d; }
+      .hq h2 { margin: 0; align-self: flex-end; font: 400 clamp(2rem, 4.5vw, 3.2rem) var(--display); letter-spacing: .05em; text-align: right; }
+      .hq-desc { max-width: 560px; margin: 0; align-self: flex-end; font-size: 15px; line-height: 1.9; text-align: right; color: rgba(255, 255, 255, .92); }
+      .hq-panel { position: relative; overflow: hidden; min-height: 500px; border: 1px solid rgba(255, 255, 255, .18); background: radial-gradient(ellipse at 50% 48%, #101a2d 0%, #080d18 48%, #05070d 78%); box-shadow: inset 0 0 100px rgba(51, 136, 187, .08); }
       #space-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
       .hq-meta { position: absolute; left: 18px; bottom: 16px; display: grid; gap: 4px; margin: 0; font: 9px var(--mono); letter-spacing: .16em; color: rgba(255, 255, 255, .65); }
       .hq-tag { position: absolute; right: 18px; top: 16px; font: 9px var(--mono); letter-spacing: .16em; color: rgba(255, 255, 255, .65); }
 
       /* ===== Contact ===== */
       .contact { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; min-height: 62svh; padding: 90px var(--pad) 40px; background: var(--pink); color: #fff; text-align: center; }
-      .contact h2 { margin: 0; font: 400 clamp(2.6rem, 6vw, 4.4rem) var(--display); letter-spacing: .05em; }
+      .contact h2 { margin: 0; font: 400 clamp(2.2rem, 5vw, 3.6rem) var(--display); letter-spacing: .05em; }
       .contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(18px, 4vw, 42px); }
       .contact-links a { display: inline-flex; align-items: center; gap: 10px; font: 10px var(--mono); letter-spacing: .2em; text-decoration: none; transition: color .2s; }
       .contact-links a:hover { color: var(--blue-light); }
@@ -432,19 +472,29 @@ const repoStats = Object.fromEntries(await Promise.all(
       .top-button:hover { background: var(--blue-dark); }
 
       /* ===== 进场动画（借鉴 blur-fadein：从焦外到清晰）===== */
-      .reveal { opacity: 0; transform: translateY(26px); filter: blur(12px); transition: opacity .9s ease, transform .9s cubic-bezier(.2, .7, .2, 1), filter 1.1s ease; }
-      .reveal.visible { opacity: 1; transform: none; filter: blur(0); }
+      .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2, .7, .2, 1); }
+      .reveal.visible { opacity: 1; transform: none; }
 
       @media (max-width: 760px) {
         .wordmark span { display: none; }
-        .flow-section { height: auto; }
-        .flow-sticky { position: static; height: auto; padding-block: 80px; overflow-x: auto; }
-        .flow-track { transform: none !important; }
-        .flow-fade { display: none; }
-        .slide { min-height: 480px; }
-        .next-steps { grid-template-columns: 1fr; }
+        .activity-head { align-items: flex-start; flex-direction: column; }
+        .activity-list { grid-template-columns: 1fr; }
+        .activity-item { min-height: 0; padding: 20px 0; }
+        .activity-item + .activity-item { padding-left: 0; border-left: 0; border-top: 1px solid rgba(0, 0, 0, .16); }
+        .featured-project { grid-template-columns: 1fr; gap: 22px; }
+        .featured-facts { align-items: flex-start; }
+        .featured-stack { align-items: flex-start; }
+        .featured-links { width: 100%; margin-left: 0; }
+        .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .project-card { min-height: 280px; padding: 18px; }
+        .interest-groups { grid-template-columns: 1fr; }
         .hq h2, .hq-desc { align-self: flex-start; text-align: left; }
-        .hq-panel { min-height: 330px; }
+        .hq-panel { min-height: 400px; }
+      }
+
+      @media (max-width: 560px) {
+        .project-grid { grid-template-columns: 1fr; }
+        .interest-group { grid-template-columns: 1fr; gap: 12px; }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -453,38 +503,32 @@ const repoStats = Object.fromEntries(await Promise.all(
         .hero { background: var(--black); }
         .hero-title { color: #fff; }
         .hero-sub { color: var(--blue-light); opacity: 1; }
+        .hero-focus, .hero-motto, .hero-actions { opacity: 1; color: #fff; animation: none; }
+        .hero-actions a:first-child { background: #fff; border-color: #fff; color: #0a0a0a; animation: none; }
+        .hero-actions a:not(:first-child) { color: #fff; border-color: transparent; animation: none; }
         .topbar { color: #fff; }
         .hero-title span, .hero-sub, .scroll-down { opacity: 1; }
-        .reveal { opacity: 1; transform: none; filter: blur(0); }
-        .skill-fill { transform: scaleX(var(--level)); }
-        .marquee-track { animation: none; }
-        .flow-section { height: auto; }
-        .flow-sticky { position: static; height: auto; overflow-x: auto; }
-        .flow-fade { display: none; }
+        .reveal { opacity: 1; transform: none; }
+        .interest-track { animation: none; }
+        .interest-set.is-copy { display: none; }
       }
 
       /* ===== 暗色主题（手动切换，首次跟随系统）===== */
-      [data-theme="dark"] .flow-section { background: #101214; color: #eee; }
-      [data-theme="dark"] .flow-label i { color: var(--blue-light); }
-      [data-theme="dark"] .flow-track i { color: var(--blue-light); }
-      [data-theme="dark"] .flow-note { color: #999; }
-      [data-theme="dark"] .flow-fade { background: linear-gradient(180deg, transparent, rgba(51, 136, 187, .55)); }
       [data-theme="dark"] .about { background: #101214; color: #eee; }
-      [data-theme="dark"] .about-intro { color: #bbb; }
-      [data-theme="dark"] .skill-track { background: rgba(255, 255, 255, .16); }
-      [data-theme="dark"] .skill-head span, [data-theme="dark"] .skill-note { color: #999; }
-      [data-theme="dark"] .next-steps ol { color: #bbb; }
-      [data-theme="dark"] .notes-preview li { border-color: rgba(255, 255, 255, .22); }
-      [data-theme="dark"] .notes-preview time { color: #999; }
+      [data-theme="dark"] .about-intro { color: #ccc; }
+      [data-theme="dark"] .about-tags span { border-color: rgba(255, 255, 255, .24); }
       /* 暗色下首屏开场直接用深色形态，不走白幕动画 */
       [data-theme="dark"] .hero { animation: none; background: var(--black); }
       [data-theme="dark"] .hero-title { animation: none; color: #fff; }
-      [data-theme="dark"] .hero-sub { animation: fade-in 1s 1.1s forwards; color: var(--blue-light); }
+      [data-theme="dark"] .hero-sub { animation: none; opacity: 1; color: var(--blue-light); }
+      [data-theme="dark"] .hero-focus, [data-theme="dark"] .hero-motto, [data-theme="dark"] .hero-actions { animation: none; opacity: 1; color: #fff; }
+      [data-theme="dark"] .hero-actions a:first-child { background: #fff; border-color: #fff; color: #0a0a0a; }
+      [data-theme="dark"] .hero-actions a:not(:first-child) { color: #fff; border-color: transparent; animation: none; }
       [data-theme="dark"] .topbar { animation: none; color: #fff; }
     </style>
   </head>
   <body>
-    <a class="skip-link" href="#interests">跳到主要内容</a>
+    <a class="skip-link" href="#activity">跳到主要内容</a>
 
     <header class="topbar" id="topbar">
       <a class="wordmark" href="#top" aria-label="回到顶部"><b>YZBZGY</b><span><span class="i18n-zh">个人据点</span><span class="i18n-en">PERSONAL ARCHIVE</span></span></a>
@@ -500,7 +544,7 @@ const repoStats = Object.fromEntries(await Promise.all(
       <button class="menu-close" id="menu-close" type="button" aria-label="关闭菜单">×</button>
       <nav aria-label="主导航">
         <a href="#top"><span class="i18n-zh">主页</span><span class="i18n-en">TOP</span></a>
-        <a href="#interests"><span class="i18n-zh">兴趣</span><span class="i18n-en">INTERESTS</span></a>
+        <a href="#activity"><span class="i18n-zh">最近进展</span><span class="i18n-en">ACTIVITY</span></a>
         <a href="#projects"><span class="i18n-zh">项目</span><span class="i18n-en">PROJECTS</span></a>
         <a href="#about"><span class="i18n-zh">关于</span><span class="i18n-en">ABOUT</span></a>
         <a href="/notes/"><span class="i18n-zh">笔记</span><span class="i18n-en">NOTES</span></a>
@@ -513,42 +557,86 @@ const repoStats = Object.fromEntries(await Promise.all(
       <!-- 首屏：同一组元素完成 白底黑字 → 黑底白字 的平滑过渡 -->
       <section class="hero" id="top" aria-label="首屏">
         <div class="hero-stack">
-          <p class="hero-sub"><span class="i18n-zh">个人据点 — 建于 {year}</span><span class="i18n-en">PERSONAL ARCHIVE — EST. {year}</span></p>
+          <p class="hero-sub"><span class="i18n-zh">本科生 · 全栈实践 · AI / ML</span><span class="i18n-en">UNDERGRAD · FULL-STACK · AI / ML</span></p>
           <h1 class="hero-title" aria-label="YZBZGY"><span aria-hidden="true">Y</span><span aria-hidden="true">Z</span><span aria-hidden="true">B</span><span aria-hidden="true">Z</span><span aria-hidden="true">G</span><span aria-hidden="true">Y</span></h1>
+          <p class="hero-focus"><span class="i18n-zh">喜欢把想法做成能运行的项目。</span><span class="i18n-en">I like turning ideas into working projects.</span></p>
+          <p class="hero-motto">Keep coding</p>
+          <div class="hero-actions">
+            <a href="#featured-project-title"><span class="i18n-zh">看项目 ↓</span><span class="i18n-en">PROJECTS ↓</span></a>
+            <a href="/notes/"><span class="i18n-zh">学习笔记 ↗</span><span class="i18n-en">NOTES ↗</span></a>
+          </div>
         </div>
-        <a class="scroll-down" href="#interests"><b aria-hidden="true"><span class="i18n-zh">往下滚动</span><span class="i18n-en">Scroll down</span></b><span class="sr-only">向下滚动</span></a>
+        <a class="scroll-down" href="#activity"><b aria-hidden="true"><span class="i18n-zh">往下滚动</span><span class="i18n-en">Scroll down</span></b><span class="sr-only">向下滚动</span></a>
       </section>
 
-      <!-- 兴趣横向文字流 -->
-      <section class="flow-section" id="interests" aria-label="兴趣方向">
-        <div class="flow-sticky">
-          <p class="flow-label"><span class="i18n-zh">最近在探索 <i>01</i></span><span class="i18n-en">Currently into <i>01</i></span></p>
-          <div class="flow-track" id="flow-track">
-            {keywords.map((word) => <><span>{word}</span><i aria-hidden="true">✳</i></>)}
-          </div>
-          <p class="flow-note"><span class="i18n-zh">最近在探索这些东西。写 Python、碰数据、学机器学习，顺手用 Java 交作业，剩下的时间都在动手做点小东西。</span><span class="i18n-en">Things I've been exploring lately — writing Python, playing with data, learning machine learning, handing in Java homework, and building small stuff with whatever time is left.</span></p>
+      <section class="activity-section" id="activity" aria-labelledby="activity-title">
+        <div class="activity-head reveal">
+          <h2 class="activity-title" id="activity-title"><span class="i18n-zh">最近进展</span><span class="i18n-en">RECENT ACTIVITY</span></h2>
         </div>
-        <div class="flow-fade" aria-hidden="true"></div>
+        <div class="activity-list">
+          {activity.map((item) => (
+            <article class="activity-item reveal">
+              <div class="activity-meta"><time datetime={item.date.replace(/\./g, '-')}>{item.date}</time></div>
+              <h3><span class="i18n-zh">{item.title}</span><span class="i18n-en">{item.titleEn}</span></h3>
+              <p><span class="i18n-zh">{item.detail}</span><span class="i18n-en">{item.detailEn}</span></p>
+              <a href={item.href} target={item.href.startsWith('https://') ? '_blank' : undefined} rel={item.href.startsWith('https://') ? 'noreferrer' : undefined}>
+                <span class="i18n-zh">{item.link} ↗</span><span class="i18n-en">{item.linkEn} ↗</span>
+              </a>
+            </article>
+          ))}
+        </div>
       </section>
 
       <!-- Projects -->
       <section class="projects" id="projects" aria-labelledby="projects-title">
-        <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>10</i></span><span class="i18n-en">Projects <i>10</i></span></h2>
-        <div class="slider reveal" id="slider" tabindex="0" aria-label="项目列表，可左右滑动">
-          {projects.map((project) => (
-            <article class="slide">
-              <div class="slide-meta"><span><span class="i18n-zh">项目 / {project.number}</span><span class="i18n-en">PROJECT / {project.number}</span></span><span class="slide-status"><span class="i18n-zh">{project.status}</span><span class="i18n-en">{project.statusEn}</span></span></div>
+        <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>11</i></span><span class="i18n-en">Projects <i>11</i></span></h2>
+        <article class="featured-project reveal" aria-labelledby="featured-project-title">
+          <div>
+            <p class="featured-eyebrow"><span class="i18n-zh">正在开发 · 进度快照 2026.10.17</span><span class="i18n-en">IN DEVELOPMENT · PROGRESS SNAPSHOT 2026.10.17</span></p>
+            <h3 class="featured-title" id="featured-project-title">
+              <span>BANDORI LIVE</span>
+              <span class="featured-title-local">MyGO!! / Ave Mujica</span>
+            </h3>
+            <p class="featured-summary">
+              <span class="i18n-zh">为 MyGO!! / Ave Mujica 打造的全栈粉丝站，整合曲库、演出与内容管理。</span>
+              <span class="i18n-en">A full-stack fan site for MyGO!! / Ave Mujica, bringing together music, live events and content.</span>
+            </p>
+          </div>
+          <div class="featured-facts">
+            <p><span class="i18n-zh">我负责前后端开发。歌曲 API 与订单流程已跑通，接下来完善购票体验。</span><span class="i18n-en">I build both frontend and backend. Song APIs and order flows work; ticketing is next.</span></p>
+          </div>
+          <div class="featured-stack">
+            <span>VUE 3</span><span>SPRING BOOT 3</span><span>JAVA 17</span><span>MYSQL</span><span>JWT</span>
+            <div class="featured-links">
+              <a href="https://github.com/zgy0715/ave-mygo" target="_blank" rel="noreferrer"><span class="i18n-zh">项目仓库 ↗</span><span class="i18n-en">SOURCE ↗</span></a>
+              <a href="https://github.com/zgy0715/ave-mygo/blob/main/docs/04-%E9%9C%80%E6%B1%82%E8%AF%B4%E6%98%8E.md" target="_blank" rel="noreferrer"><span class="i18n-zh">需求与范围 ↗</span><span class="i18n-en">PRODUCT BRIEF ↗</span></a>
+            </div>
+          </div>
+        </article>
+        <p class="project-section-label"><span class="i18n-zh">其他项目 · 10 个</span><span class="i18n-en">MORE PROJECTS · 10</span></p>
+        <div class="project-grid reveal" id="project-grid" aria-label="其他项目">
+          {projects.map((project, index) => (
+            <article class="project-card" hidden={index >= 3}>
+              <div class="project-card-meta"><span>/{project.number}</span><span class="project-card-status"><span class="i18n-zh">{project.status}</span><span class="i18n-en">{project.statusEn}</span></span></div>
               <div>
-                <h3 class="slide-name">{project.name}</h3>
-                <p class="slide-sub"><span class="i18n-zh">{project.subtitle}</span><span class="i18n-en">{project.subtitleEn}</span></p>
+                <h3>
+                  {(() => {
+                    const title = splitProjectName(project.name);
+                    return <>
+                      <span>{title.latin}</span>
+                      {title.local && <span class="project-card-name-local">{title.local}</span>}
+                    </>;
+                  })()}
+                </h3>
+                <p class="project-card-sub"><span class="i18n-zh">{project.subtitle}</span><span class="i18n-en">{project.subtitleEn}</span></p>
               </div>
               <div>
-                <p class="slide-desc"><span class="i18n-zh">{project.description}</span><span class="i18n-en">{project.descriptionEn}</span></p>
-                <div class="slide-tags" aria-label="技术标签">
+                <p class="project-card-desc"><span class="i18n-zh">{project.description}</span><span class="i18n-en">{project.descriptionEn}</span></p>
+                <div class="project-card-tags" aria-label="技术标签">
                   {project.tags.map((tag) => <span>{tag}</span>)}
                 </div>
                 {repoStats[project.number] && (
-                  <p class="slide-stats">
+                  <p class="project-card-stats">
                     <span class="stat-star">★ {repoStats[project.number].stars}</span>
                     {repoStats[project.number].commits && <span>{repoStats[project.number].commits} COMMITS</span>}
                     {repoStats[project.number].pushed && <span><span class="i18n-zh">更新</span><span class="i18n-en">PUSHED</span> {repoStats[project.number].pushed}</span>}
@@ -556,78 +644,61 @@ const repoStats = Object.fromEntries(await Promise.all(
                 )}
               </div>
               {project.href ? (
-                <a class="slide-link" href={project.href} target="_blank" rel="noreferrer"><span><span class="i18n-zh">查看仓库</span><span class="i18n-en">VIEW REPOSITORY</span></span><b aria-hidden="true">↗</b></a>
+                <a class="project-card-link" href={project.href} target="_blank" rel="noreferrer"><span><span class="i18n-zh">查看仓库</span><span class="i18n-en">VIEW REPOSITORY</span></span><b aria-hidden="true">↗</b></a>
               ) : (
-                <p class="slide-link"><span><span class="i18n-zh">{project.note.zh}</span><span class="i18n-en">{project.note.en}</span></span></p>
+                <p class="project-card-link"><span><span class="i18n-zh">{project.note.zh}</span><span class="i18n-en">{project.note.en}</span></span></p>
               )}
             </article>
           ))}
         </div>
-        <div class="slider-nav reveal">
-          <div class="slider-arrows">
-            <button id="slider-prev" type="button" aria-label="上一个项目">←</button>
-            <button id="slider-next" type="button" aria-label="下一个项目">→</button>
-          </div>
-          <div class="dots" id="dots" aria-label="项目页码"></div>
-        </div>
+        <button class="projects-toggle reveal" id="projects-toggle" type="button" aria-expanded="false" aria-controls="project-grid">
+          <span class="i18n-zh" data-collapsed="展开其余 7 个项目" data-expanded="收起项目">展开其余 7 个项目</span>
+          <span class="i18n-en" data-collapsed="SHOW 7 MORE PROJECTS" data-expanded="SHOW FEWER PROJECTS">SHOW 7 MORE PROJECTS</span>
+          <i aria-hidden="true">+</i>
+        </button>
         <a class="all-repos reveal" href="https://github.com/zgy0715?tab=repositories" target="_blank" rel="noreferrer"><span><span class="i18n-zh">全部仓库</span><span class="i18n-en">ALL REPOSITORIES</span></span> <i aria-hidden="true">↗</i></a>
       </section>
 
       <!-- 关于我 -->
       <section class="about" id="about" aria-labelledby="about-title">
         <h2 id="about-title" class="reveal"><span class="i18n-zh">关于我</span><span class="i18n-en">About Me</span></h2>
-        <p class="about-intro reveal"><span class="i18n-zh">在读本科生，大一从 C/C++ 起步（大一大二的代码至今留着专门的仓库），后来一路写到 Java 和 Python。GitHub 上现有 22 个公开仓库，语言占比最大的是 Python（27.7%）和 Java（23.6%），最近集中在大模型智能体方向。本页列出的项目全部来自这些仓库的真实数据。</span><span class="i18n-en">An undergrad who started with C/C++ in freshman year (that code still lives in its own repo), later moving through Java into Python. 22 public repos on GitHub so far, dominated by Python (27.7%) and Java (23.6%); lately focused on LLM agent projects. Every project on this page comes from those repos' real data.</span></p>
-        <ul class="skill-list reveal" aria-label="语言占比（数据来源：GitHub API）">
-          {skills.map((skill, i) => (
-            <li class="skill-row" style={`--level:${(skill.share / 27.7).toFixed(3)}; --d:${i * 90}ms`}>
-              <div class="skill-head"><b>{skill.name}</b><span>{skill.share}%</span></div>
-              <div class="skill-track"><i class="skill-fill"></i></div>
-              <p class="skill-note"><span class="i18n-zh">{skill.zh}</span><span class="i18n-en">{skill.en}</span></p>
-            </li>
-          ))}
-        </ul>
-        <div class="next-steps reveal">
-          <div>
-            <h3><span class="i18n-zh">下一步</span><span class="i18n-en">NEXT UP</span></h3>
-            <ol>{plans.map((plan) => <li><span class="i18n-zh">{plan.zh}</span><span class="i18n-en">{plan.en}</span></li>)}</ol>
-          </div>
-          <div class="notes-preview">
-            <h3><span class="i18n-zh">最新笔记</span><span class="i18n-en">LATEST NOTES</span></h3>
-            {latestNotes.length === 0 ? <p class="skill-note"><span class="i18n-zh">笔记整理中。</span><span class="i18n-en">Notes coming soon.</span></p> : (
-              <ul>
-                {latestNotes.map((n) => (
-                  <li><a href={`/notes/${n.id}/`}><time>{n.data.date.toISOString().slice(0, 10).replace(/-/g, '.')}</time><b>{n.data.title}</b></a></li>
-                ))}
-              </ul>
-            )}
-            <a class="all-notes" href="/notes/"><span class="i18n-zh">全部笔记</span><span class="i18n-en">ALL NOTES</span> <i aria-hidden="true">↗</i></a>
-          </div>
+        <p class="about-intro reveal"><span class="i18n-zh">本科生，喜欢通过做项目学习。主要使用 Java、Vue 和 Python，也在探索 AI / ML。</span><span class="i18n-en">An undergraduate who learns by building. I work mainly with Java, Vue and Python, and explore AI / ML.</span></p>
+        <div class="about-tags reveal" aria-label="技术方向"><span>JAVA</span><span>VUE</span><span>PYTHON</span><span>AI / ML</span></div>
+        <div class="about-more reveal">
+          <a href={latestNotes[0] ? `/notes/${latestNotes[0].id}/` : '/notes/'}><span class="i18n-zh">{latestNotes[0] ? `最新笔记：${latestNotes[0].data.title} ↗` : '学习笔记 ↗'}</span><span class="i18n-en">{latestNotes[0] ? `LATEST NOTE: ${latestNotes[0].data.title} ↗` : 'NOTES ↗'}</span></a>
+          <a href="#contact"><span class="i18n-zh">联系我 ↗</span><span class="i18n-en">CONTACT ↗</span></a>
         </div>
       </section>
 
       <!-- 兴趣墙 -->
       <section class="fav" id="fav" aria-labelledby="fav-title">
         <h2 id="fav-title" class="reveal"><span class="i18n-zh">喜欢的东西</span><span class="i18n-en">Favorites</span></h2>
-        <div class="marquee" aria-hidden="true"><div class="marquee-track">
-          {[0, 1].map(() => <div class="marquee-group">{favs.map((f) => <><span>{f}</span><i>✳</i></>)}</div>)}
-        </div></div>
-        <div class="marquee reverse" aria-hidden="true"><div class="marquee-track">
-          {[0, 1].map(() => <div class="marquee-group">{favs.map((f) => <><span>{f}</span><i>✳</i></>)}</div>)}
-        </div></div>
+        <div class="interest-groups">
+          {interestGroups.map((group) => (
+            <div class="interest-group reveal">
+              <h3><span class="i18n-zh">{group.titleZh}</span><span class="i18n-en">{group.title}</span></h3>
+              <div class="interest-marquee" aria-hidden="true">
+                <div class="interest-track">
+                  {[0, 1].map((copy) => (
+                    <div class:list={['interest-set', { 'is-copy': copy === 1 }]}>
+                      {group.items.map((item) => <><span>{item}</span><i>✳</i></>)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <!-- 据点（原 Headquarter）-->
       <section class="hq" id="map" aria-labelledby="hq-title">
         <h2 id="hq-title" class="reveal"><span class="i18n-zh">我的据点</span><span class="i18n-en">Headquarter</span></h2>
-        <p class="hq-desc reveal"><span class="i18n-zh">「据点」指我在互联网上的大本营：这个网站、我的 GitHub、B 站和抖音都属于这个据点群。下面是一张会动的太阳系示意图——第三轨道上的蓝色星球就是地球，我的据点就在那里。</span><span class="i18n-en">"Headquarter" means my base camp on the internet: this website, my GitHub, Bilibili and Douyin all belong to it. Below is a live solar system — the blue planet on the third orbit is Earth, and that's where my base sits.</span></p>
-        <div class="hq-panel reveal" role="img" aria-label="太阳系动态示意图：太阳居中，行星沿轨道公转，地球位于第三轨道并标记为据点所在地">
+        <p class="hq-desc reveal"><span class="i18n-zh">我的网络据点在地球上。找找第三条轨道上的蓝色星球。</span><span class="i18n-en">My corner of the internet is based on Earth. Find the blue planet on the third orbit.</span></p>
+        <div class="hq-panel reveal" role="img" aria-label="动态太阳系：行星围绕太阳运行，第三轨道上的地球标记为网络据点">
           <canvas id="space-canvas" aria-hidden="true"></canvas>
           <div class="hq-tag"><span class="i18n-zh">YZBZGY · 网络据点</span><span class="i18n-en">YZBZGY · INTERNET HQ</span></div>
-          <div class="hq-meta">
-            <p><span class="i18n-zh">位置 — 地球 · 太阳系第三行星</span><span class="i18n-en">LOC — EARTH · 3RD PLANET</span></p>
-            <p><span class="i18n-zh">状态 — 在线 · 自 {year}</span><span class="i18n-en">STATUS — ONLINE · EST. {year}</span></p>
-            <p><span class="i18n-zh">更新 — 持续进行</span><span class="i18n-en">UPTIME — ONGOING</span></p>
-          </div>
+          <p class="hq-meta"><span class="i18n-zh">地球 · 太阳系第三行星 · 在线自 {year}</span><span class="i18n-en">EARTH · 3RD PLANET · ONLINE SINCE {year}</span></p>
         </div>
       </section>
 
@@ -696,6 +767,20 @@ const repoStats = Object.fromEntries(await Promise.all(
         applyTheme(rootHtml.dataset.theme === 'dark' ? 'light' : 'dark');
       });
 
+      // ===== 展开更多项目 =====
+      const projectsToggle = document.querySelector('#projects-toggle');
+      const projectCards = [...(document.querySelectorAll('.project-card') ?? [])];
+      projectsToggle?.addEventListener('click', () => {
+        const expanded = projectsToggle.getAttribute('aria-expanded') !== 'true';
+        projectCards.forEach((card, index) => {
+          if (index >= 3) card.hidden = !expanded;
+        });
+        projectsToggle.setAttribute('aria-expanded', String(expanded));
+        projectsToggle.querySelectorAll('[data-collapsed]').forEach((label) => {
+          label.textContent = label.dataset[expanded ? 'expanded' : 'collapsed'];
+        });
+      });
+
       // ===== 全屏菜单 =====
       const menu = document.querySelector('#menu');
       const menuOpen = document.querySelector('#menu-open');
@@ -726,61 +811,33 @@ const repoStats = Object.fromEntries(await Promise.all(
 
       // ===== 顶部栏：下滑隐藏、上滑出现 =====
       const topbar = document.querySelector('#topbar');
+      const topButton = document.querySelector('#top-button');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let lastY = window.scrollY;
-      window.addEventListener('scroll', () => {
+      let scrollFrame = 0;
+      const updateScrollState = () => {
+        scrollFrame = 0;
         const y = window.scrollY;
         if (topbar) {
+          topbar.classList.toggle('scrolled', y > 40);
           if (y > lastY + 6 && y > 140 && !document.body.classList.contains('menu-open')) topbar.classList.add('hidden');
           else if (y < lastY - 6 || y <= 140) topbar.classList.remove('hidden');
         }
+        topButton?.classList.toggle('visible', y > window.innerHeight * 0.8);
         lastY = y;
+      };
+      const scheduleScrollUpdate = () => {
+        if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollState);
+      };
+      window.addEventListener('scroll', scheduleScrollUpdate, { passive: true });
+      window.addEventListener('resize', () => {
+        scheduleScrollUpdate();
       }, { passive: true });
+      scheduleScrollUpdate();
 
-      // ===== 兴趣文字流：滚动驱动横向位移 =====
-      const flowSection = document.querySelector('.flow-section');
-      const flowTrack = document.querySelector('#flow-track');
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const updateFlow = () => {
-        if (!flowSection || !flowTrack || reducedMotion) return;
-        const rect = flowSection.getBoundingClientRect();
-        const scrollable = flowSection.offsetHeight - window.innerHeight;
-        if (scrollable <= 0) return;
-        const progress = Math.min(1, Math.max(0, -rect.top / scrollable));
-        const distance = Math.max(0, flowTrack.scrollWidth - window.innerWidth + window.innerWidth * 0.08);
-        flowTrack.style.transform = `translateX(${-progress * distance}px)`;
-      };
-      window.addEventListener('scroll', updateFlow, { passive: true });
-      window.addEventListener('resize', updateFlow);
-      updateFlow();
-
-      // ===== 项目轮播 =====
-      const slider = document.querySelector('#slider');
-      const dotsBox = document.querySelector('#dots');
-      const slides = [...(slider?.querySelectorAll('.slide') ?? [])];
-      const step = () => (slides[0] ? slides[0].getBoundingClientRect().width + 24 : slider?.clientWidth ?? 300);
-      slides.forEach((_, index) => {
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.setAttribute('aria-label', `第 ${index + 1} 个项目`);
-        dot.addEventListener('click', () => slider?.scrollTo({ left: index * step(), behavior: 'smooth' }));
-        dotsBox?.appendChild(dot);
+      document.fonts?.ready.then(() => {
+        scheduleScrollUpdate();
       });
-      const dots = [...(dotsBox?.querySelectorAll('button') ?? [])];
-      const updateDots = () => {
-        if (!slider) return;
-        const index = Math.min(slides.length - 1, Math.round(slider.scrollLeft / step()));
-        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
-      };
-      slider?.addEventListener('scroll', updateDots, { passive: true });
-      updateDots();
-      document.querySelector('#slider-prev')?.addEventListener('click', () => slider?.scrollBy({ left: -step(), behavior: 'smooth' }));
-      document.querySelector('#slider-next')?.addEventListener('click', () => slider?.scrollBy({ left: step(), behavior: 'smooth' }));
-
-      // ===== 回到顶部 =====
-      const topButton = document.querySelector('#top-button');
-      const updateTopButton = () => topButton?.classList.toggle('visible', window.scrollY > window.innerHeight * 0.8);
-      window.addEventListener('scroll', updateTopButton, { passive: true });
-      updateTopButton();
 
       // ===== 进场动画 =====
       const revealElements = document.querySelectorAll('.reveal');
@@ -797,7 +854,7 @@ const repoStats = Object.fromEntries(await Promise.all(
       const spaceCanvas = document.querySelector('#space-canvas');
       if (spaceCanvas) {
         const sctx = spaceCanvas.getContext('2d');
-        const STAR_COUNT = 130;
+        const STAR_COUNT = 56;
         const stars = Array.from({ length: STAR_COUNT }, () => ({
           x: Math.random(), y: Math.random(), r: Math.random() * 1.1 + .3, tw: Math.random() * Math.PI * 2,
         }));
@@ -805,7 +862,7 @@ const repoStats = Object.fromEntries(await Promise.all(
         const planets = [
           { name: 'MERCURY', orbit: .16, size: 2.4, period: .24, color: '#9aa0a6' },
           { name: 'VENUS',   orbit: .26, size: 3.8, period: .62, color: '#d9b38c' },
-          { name: 'EARTH',   orbit: .40, size: 6.0, period: 1,   color: '#3388bb', hq: true },
+          { name: 'EARTH',   orbit: .40, size: 7.5, period: 1,   color: '#3388bb', hq: true },
           { name: 'MARS',    orbit: .52, size: 3.4, period: 1.88, color: '#c96a4a' },
           { name: 'JUPITER', orbit: .68, size: 9.0, period: 4.5, color: '#cfa678' },
           { name: 'SATURN',  orbit: .86, size: 7.6, period: 7.4, color: '#d8c690', ring: true },
@@ -813,18 +870,21 @@ const repoStats = Object.fromEntries(await Promise.all(
         const EARTH_YEAR_MS = 24000; // 地球公转一圈 24 秒
         let panelW = 0, panelH = 0;
         const resizeSpace = () => {
-          const dpr = window.devicePixelRatio || 1;
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
           const rect = spaceCanvas.getBoundingClientRect();
+          if (rect.width === panelW && rect.height === panelH
+            && spaceCanvas.width === Math.round(rect.width * dpr)
+            && spaceCanvas.height === Math.round(rect.height * dpr)) return;
           panelW = rect.width; panelH = rect.height;
-          spaceCanvas.width = panelW * dpr;
-          spaceCanvas.height = panelH * dpr;
+          spaceCanvas.width = Math.round(panelW * dpr);
+          spaceCanvas.height = Math.round(panelH * dpr);
           sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
         resizeSpace();
-        window.addEventListener('resize', resizeSpace);
         const drawSpace = (t) => {
           const cx = panelW / 2, cy = panelH / 2;
           const unit = Math.min(panelW, panelH) * .47;
+          const scale = Math.max(.8, Math.min(1.35, unit / 220));
           sctx.clearRect(0, 0, panelW, panelH);
           // 星空（缓慢闪烁）
           for (const s of stars) {
@@ -852,18 +912,19 @@ const repoStats = Object.fromEntries(await Promise.all(
           // 行星
           for (const p of planets) {
             const orbitR = unit * p.orbit;
-            sctx.strokeStyle = 'rgba(255, 255, 255, .10)';
+            sctx.strokeStyle = p.hq ? 'rgba(92, 168, 224, .32)' : 'rgba(255, 255, 255, .10)';
             sctx.lineWidth = 1;
             sctx.beginPath();
             sctx.arc(cx, cy, orbitR, 0, Math.PI * 2);
             sctx.stroke();
             const ang = p.ang + (t / (EARTH_YEAR_MS * p.period)) * Math.PI * 2;
+            const planetSize = p.size * scale;
             const x = cx + Math.cos(ang) * orbitR;
             const y = cy + Math.sin(ang) * orbitR * .96; // 轻微压扁，透视感
             if (p.ring) { // 土星环
               sctx.strokeStyle = 'rgba(216, 198, 144, .55)';
               sctx.beginPath();
-              sctx.ellipse(x, y, p.size * 2.1, p.size * .8, ang, 0, Math.PI * 2);
+              sctx.ellipse(x, y, planetSize * 2.1, planetSize * .8, ang, 0, Math.PI * 2);
               sctx.stroke();
             }
             if (p.hq) { // 地球：蓝色光晕 + 据点标记
@@ -871,61 +932,83 @@ const repoStats = Object.fromEntries(await Promise.all(
               sctx.shadowBlur = 18;
               sctx.fillStyle = '#3f97cc';
               sctx.beginPath();
-              sctx.arc(x, y, p.size, 0, Math.PI * 2);
+              sctx.arc(x, y, planetSize, 0, Math.PI * 2);
               sctx.fill();
               sctx.shadowBlur = 0;
               sctx.fillStyle = 'rgba(255, 255, 255, .55)';
               sctx.beginPath();
-              sctx.arc(x - p.size * .3, y - p.size * .3, p.size * .32, 0, Math.PI * 2);
+              sctx.arc(x - planetSize * .3, y - planetSize * .3, planetSize * .32, 0, Math.PI * 2);
               sctx.fill(); // 高光
               const moonAng = ang * 13.4; // 月球：一年约 13.4 个朔望月
-              const moonR = p.size * 2.6;
+              const moonR = planetSize * 2.6;
               sctx.fillStyle = '#c7c9cc';
               sctx.beginPath();
-              sctx.arc(x + Math.cos(moonAng) * moonR, y + Math.sin(moonAng) * moonR, 1.8, 0, Math.PI * 2);
+              sctx.arc(x + Math.cos(moonAng) * moonR, y + Math.sin(moonAng) * moonR, 1.8 * scale, 0, Math.PI * 2);
               sctx.fill();
               // 据点标记环（古铜金虚线）+ 标签
               sctx.strokeStyle = '#bb9955';
               sctx.setLineDash([3, 4]);
               sctx.beginPath();
-              sctx.arc(x, y, p.size + 7, 0, Math.PI * 2);
+              sctx.arc(x, y, planetSize + 9 * scale, 0, Math.PI * 2);
               sctx.stroke();
               sctx.setLineDash([]);
               sctx.fillStyle = 'rgba(255, 255, 255, .75)';
-              sctx.font = '8px ui-monospace, Menlo, monospace';
+              sctx.font = `600 ${Math.max(9, 10 * scale)}px ui-monospace, Menlo, monospace`;
               sctx.textAlign = 'center';
-              sctx.fillText('EARTH · HQ', x, y + p.size + 20);
+              sctx.shadowColor = 'rgba(5, 7, 13, .9)';
+              sctx.shadowBlur = 5;
+              sctx.fillText('EARTH · HQ', x, y + planetSize + 25 * scale);
+              sctx.shadowBlur = 0;
             } else {
               sctx.fillStyle = p.color;
               sctx.beginPath();
-              sctx.arc(x, y, p.size, 0, Math.PI * 2);
+              sctx.arc(x, y, planetSize, 0, Math.PI * 2);
               sctx.fill();
             }
           }
         };
-        let spaceRunning = false, spaceRafId = 0;
+        const handleSpaceResize = () => {
+          resizeSpace();
+          if (reducedMotion) drawSpace(performance.now());
+        };
+        if ('ResizeObserver' in window) {
+          new ResizeObserver(handleSpaceResize).observe(spaceCanvas);
+        } else {
+          window.addEventListener('resize', handleSpaceResize, { passive: true });
+        }
+        let spaceRunning = false, spaceVisible = false, spaceRafId = 0, lastFrameTime = 0;
         const spaceLoop = (t) => {
-          drawSpace(t);
+          if (t - lastFrameTime >= 1000 / 30) {
+            drawSpace(t);
+            lastFrameTime = t;
+          }
           if (spaceRunning) spaceRafId = requestAnimationFrame(spaceLoop);
         };
         const setSpaceRunning = (run) => {
           if (run && !spaceRunning) {
             spaceRunning = true;
+            lastFrameTime = 0;
             spaceRafId = requestAnimationFrame(spaceLoop);
           } else if (!run && spaceRunning) {
             spaceRunning = false;
             cancelAnimationFrame(spaceRafId);
           }
         };
+        const syncSpaceVisibility = () => setSpaceRunning(spaceVisible && !document.hidden);
+        document.addEventListener('visibilitychange', syncSpaceVisibility);
         if (reducedMotion) {
           drawSpace(0); // 静态帧
         } else {
           // 面板滚出视口时暂停动画，省电
           if ('IntersectionObserver' in window) {
-            new IntersectionObserver((entries) => setSpaceRunning(entries[0].isIntersecting), { threshold: .05 })
+            new IntersectionObserver((entries) => {
+              spaceVisible = entries[0].isIntersecting;
+              syncSpaceVisibility();
+            }, { threshold: .05 })
               .observe(spaceCanvas);
           } else {
-            setSpaceRunning(true);
+            spaceVisible = true;
+            syncSpaceVisibility();
           }
         }
       }
