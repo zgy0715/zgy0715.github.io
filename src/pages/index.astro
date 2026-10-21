@@ -307,10 +307,20 @@ const repoStats = Object.fromEntries(await Promise.all(
       body.menu-open { overflow: hidden; }
 
       /* ===== 全屏菜单 ===== */
-      .menu-panel { position: fixed; z-index: 70; inset: 0; display: grid; place-items: center; background: var(--blue); visibility: hidden; opacity: 0; transition: opacity .35s ease, visibility .35s; }
-      .menu-panel.open { visibility: visible; opacity: 1; }
-      .menu-panel nav { display: grid; gap: 4px; text-align: center; }
-      .menu-panel nav a { font: 400 clamp(2.1rem, 6.5vw, 5rem) var(--display); letter-spacing: .04em; line-height: 1; text-decoration: none; opacity: 0; transform: translateY(18px); transition: opacity .4s ease, transform .4s ease, color .2s; }
+      .menu-panel { position: fixed; z-index: 70; top: 0; right: 0; bottom: 0; width: min(560px, 88vw); display: flex; flex-direction: column; justify-content: center; padding: 96px clamp(26px, 4.5vw, 60px) 56px; background: var(--blue); color: #fff; visibility: hidden; opacity: 0; transform: translateX(102%); transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .3s ease, visibility .45s; box-shadow: -30px 0 80px rgba(0, 0, 0, .35); }
+      .menu-panel.open { visibility: visible; opacity: 1; transform: none; }
+      .menu-backdrop { position: fixed; z-index: 69; inset: 0; background: rgba(0, 0, 0, .45); visibility: hidden; opacity: 0; transition: opacity .35s ease, visibility .35s; }
+      .menu-backdrop.open { visibility: visible; opacity: 1; }
+      .menu-panel nav { display: grid; gap: 0; text-align: left; }
+      .menu-panel nav a { display: grid; grid-template-columns: 32px 1fr auto; align-items: baseline; gap: 14px; padding: 14px 2px; border-bottom: 1px solid rgba(255, 255, 255, .16); text-decoration: none; color: #fff; opacity: 0; transform: translateX(26px); transition: opacity .4s ease, transform .4s ease, color .2s; }
+      .menu-panel nav a:first-child { border-top: 1px solid rgba(255, 255, 255, .16); }
+      .menu-num { font: 9px var(--mono); letter-spacing: .12em; color: rgba(255, 255, 255, .5); }
+      .menu-panel nav b { font: 400 clamp(1.9rem, 4.6vw, 3.2rem) var(--display); letter-spacing: .04em; line-height: 1; transition: transform .25s ease; }
+      .menu-label { font: 9px var(--mono); letter-spacing: .2em; color: rgba(255, 255, 255, .62); }
+      .menu-panel nav a:hover b { transform: translateX(6px); }
+      .menu-panel nav a:hover .menu-label { color: #fff; }
+      .menu-num { font-style: normal; }
+      .menu-label .i18n-zh { font-weight: 500; letter-spacing: inherit; }
       .menu-panel.open nav a { opacity: 1; transform: none; }
       .menu-panel.open nav a:nth-child(1) { transition-delay: .05s; }
       .menu-panel.open nav a:nth-child(2) { transition-delay: .1s; }
@@ -320,7 +330,8 @@ const repoStats = Object.fromEntries(await Promise.all(
       .menu-panel.open nav a:nth-child(6) { transition-delay: .3s; }
       .menu-panel.open nav a:nth-child(7) { transition-delay: .35s; }
       .menu-panel nav a:hover { color: var(--blue-dark); }
-      .menu-close { position: absolute; top: 18px; right: var(--pad); width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; background: transparent; cursor: pointer; font: 20px var(--mono); }
+      .menu-close { position: absolute; top: 0; right: 0; width: 68px; height: 68px; border: 0; background: rgba(0, 0, 0, .14); color: #fff; cursor: pointer; font: 24px var(--mono); line-height: 1; transition: background .2s; }
+      .menu-close:hover { background: rgba(0, 0, 0, .3); }
 
       /* ===== Hero 首屏 =====
          开场：白底黑字标题逐字母浮现 → 停留 → 整屏平滑过渡为黑底白字。
@@ -549,18 +560,19 @@ const repoStats = Object.fromEntries(await Promise.all(
       </div>
     </header>
 
-    <div class="menu-panel" id="menu" aria-hidden="true" inert>
+    <div class="menu-backdrop" id="menu-backdrop" aria-hidden="true"></div>
+    <aside class="menu-panel" id="menu" aria-hidden="true" aria-label="主导航面板" inert>
       <button class="menu-close" id="menu-close" type="button" aria-label="关闭菜单">×</button>
       <nav aria-label="主导航">
-        <a href="#top"><span class="i18n-zh">主页</span><span class="i18n-en">TOP</span></a>
-        <a href="#activity"><span class="i18n-zh">最近进展</span><span class="i18n-en">ACTIVITY</span></a>
-        <a href="#projects"><span class="i18n-zh">项目</span><span class="i18n-en">PROJECTS</span></a>
-        <a href="#about"><span class="i18n-zh">关于</span><span class="i18n-en">ABOUT</span></a>
-        <a href="/notes/"><span class="i18n-zh">笔记</span><span class="i18n-en">NOTES</span></a>
-        <a href="#map"><span class="i18n-zh">据点</span><span class="i18n-en">HEADQUARTER</span></a>
-        <a href="#contact"><span class="i18n-zh">联系</span><span class="i18n-en">CONTACT</span></a>
+        <a href="#top"><i class="menu-num">01</i><b>TOP</b><span class="menu-label"><span class="i18n-zh">主页</span><span class="i18n-en">HOME</span></span></a>
+        <a href="#activity"><i class="menu-num">02</i><b>ACTIVITY</b><span class="menu-label"><span class="i18n-zh">最近进展</span><span class="i18n-en">UPDATES</span></span></a>
+        <a href="#projects"><i class="menu-num">03</i><b>PROJECTS</b><span class="menu-label"><span class="i18n-zh">项目</span><span class="i18n-en">WORK</span></span></a>
+        <a href="#about"><i class="menu-num">04</i><b>ABOUT</b><span class="menu-label"><span class="i18n-zh">关于</span><span class="i18n-en">ME</span></span></a>
+        <a href="/notes/"><i class="menu-num">05</i><b>NOTES</b><span class="menu-label"><span class="i18n-zh">笔记</span><span class="i18n-en">BLOG</span></span></a>
+        <a href="#map"><i class="menu-num">06</i><b>HQ</b><span class="menu-label"><span class="i18n-zh">据点</span><span class="i18n-en">MAP</span></span></a>
+        <a href="#contact"><i class="menu-num">07</i><b>CONTACT</b><span class="menu-label"><span class="i18n-zh">联系</span><span class="i18n-en">REACH</span></span></a>
       </nav>
-    </div>
+    </aside>
 
     <main id="main">
       <!-- 首屏：同一组元素完成 白底黑字 → 黑底白字 的平滑过渡 -->
@@ -797,13 +809,15 @@ const repoStats = Object.fromEntries(await Promise.all(
         });
       });
 
-      // ===== 全屏菜单 =====
+      // ===== 右侧抽屉菜单 =====
       const menu = document.querySelector('#menu');
       const menuOpen = document.querySelector('#menu-open');
       const menuClose = document.querySelector('#menu-close');
+      const menuBackdrop = document.querySelector('#menu-backdrop');
       const menuLinks = [...(menu?.querySelectorAll('a') ?? [])];
       const setMenuOpen = (open) => {
         menu?.classList.toggle('open', open);
+        menuBackdrop?.classList.toggle('open', open);
         menu?.setAttribute('aria-hidden', String(!open));
         if (menu) menu.inert = !open;
         menuOpen?.setAttribute('aria-expanded', String(open));
@@ -813,6 +827,7 @@ const repoStats = Object.fromEntries(await Promise.all(
       };
       menuOpen?.addEventListener('click', () => setMenuOpen(true));
       menuClose?.addEventListener('click', () => setMenuOpen(false));
+      menuBackdrop?.addEventListener('click', () => setMenuOpen(false));
       menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && menu?.classList.contains('open')) setMenuOpen(false);
