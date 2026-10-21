@@ -5,9 +5,14 @@ import '@ibm/plex-sans-sc/css/yzb-subset.css';
 
 const year = new Date().getFullYear();
 
-const latestNotes = (await getCollection('notes'))
+const allNotes = await getCollection('notes');
+const noteTotal = allNotes.length;
+const latestNotes = [...allNotes]
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
+
+// 据点诞生日（首次上线），用于页脚"已运行 N 天"
+const SITE_BIRTH = '2026-10-15T00:00:00+08:00';
 
 const activity = [
   {
@@ -343,6 +348,8 @@ const repoStats = Object.fromEntries(await Promise.all(
       .hero-stack { position: relative; z-index: 1; display: grid; justify-items: center; gap: 14px; width: min(100%, 1180px); padding: 90px 24px; }
       .hero-focus { max-width: 520px; margin: 4px 0 0; color: #222; font-size: clamp(15px, 1.5vw, 18px); line-height: 1.7; text-align: center; opacity: 0; animation: fade-in 1s 1.5s forwards, hero-copy-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
       .hero-motto { margin: -6px 0 0; color: var(--blue-dark); font: 11px var(--mono); letter-spacing: .24em; text-transform: uppercase; opacity: 0; animation: fade-in 1s 1.7s forwards, hero-copy-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
+      .typed-cursor { display: inline-block; width: 2px; height: 1.05em; margin-left: 3px; background: currentColor; vertical-align: -2px; animation: cursor-blink 1s steps(1) infinite; }
+      @keyframes cursor-blink { 50% { opacity: 0; } }
       .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; opacity: 0; animation: fade-in 1s 1.8s forwards, hero-copy-ink 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
       .hero-actions a { padding: 11px 16px; border: 1px solid currentColor; font: 10px var(--mono); letter-spacing: .12em; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
       .hero-actions a:first-child { background: #111; border-color: #111; color: #fff; animation: hero-button-shift 1.5s cubic-bezier(.6, 0, .2, 1) 2.6s forwards; }
@@ -397,9 +404,9 @@ const repoStats = Object.fromEntries(await Promise.all(
       .featured-links a { font: 10px var(--mono); letter-spacing: .13em; text-decoration: none; }
       .featured-links a:hover { color: #dcefff; text-decoration: underline; text-underline-offset: 4px; }
       .project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-      .project-card { display: flex; flex-direction: column; gap: 16px; min-width: 0; min-height: 290px; padding: 22px; border: 1px solid rgba(255, 255, 255, .4); background: rgba(255, 255, 255, .055); transition: background .2s, border-color .2s, transform .2s; }
+      .project-card { display: flex; flex-direction: column; gap: 16px; min-width: 0; min-height: 290px; padding: 22px; border: 1px solid rgba(255, 255, 255, .4); background: rgba(255, 255, 255, .055); transition: background .2s, border-color .2s, transform .2s, box-shadow .25s; }
       .project-card[hidden] { display: none; }
-      .project-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, .75); background: rgba(255, 255, 255, .1); }
+      .project-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, .75); background: rgba(255, 255, 255, .1); box-shadow: 0 16px 42px -16px rgba(0, 0, 0, .5); }
       .project-card-meta { display: flex; justify-content: space-between; gap: 10px; font: 9px var(--mono); letter-spacing: .12em; color: rgba(255, 255, 255, .76); }
       .project-card-status { display: inline-flex; align-items: center; gap: 7px; }
       .project-card-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
@@ -464,7 +471,9 @@ const repoStats = Object.fromEntries(await Promise.all(
       .contact-links a { display: inline-flex; align-items: center; gap: 10px; font: 10px var(--mono); letter-spacing: .2em; text-decoration: none; transition: color .2s; }
       .contact-links a:hover { color: var(--blue-light); }
       .contact-links svg { width: 22px; height: 22px; fill: currentColor; }
-      .contact footer { margin-top: 40px; font: 9px var(--mono); letter-spacing: .2em; color: rgba(255, 255, 255, .65); }
+      .contact footer { margin-top: 40px; font: 9px var(--mono); letter-spacing: .2em; color: rgba(255, 255, 255, .65); display: grid; gap: 8px; justify-items: center; }
+      .foot-stats { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 16px; letter-spacing: .14em; }
+      .foot-stats b { font-weight: 700; color: #fff; }
 
       /* ===== 回到顶部 ===== */
       .top-button { position: fixed; z-index: 50; right: 22px; bottom: 22px; display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #fff; border-radius: 50%; background: var(--blue); color: #fff; text-decoration: none; font: 400 20px var(--display); opacity: 0; pointer-events: none; transform: translateX(16px); transition: opacity .3s, transform .3s, background .2s; }
@@ -560,7 +569,7 @@ const repoStats = Object.fromEntries(await Promise.all(
           <p class="hero-sub"><span class="i18n-zh">本科生 · 全栈实践 · AI / ML</span><span class="i18n-en">UNDERGRAD · FULL-STACK · AI / ML</span></p>
           <h1 class="hero-title" aria-label="YZBZGY"><span aria-hidden="true">Y</span><span aria-hidden="true">Z</span><span aria-hidden="true">B</span><span aria-hidden="true">Z</span><span aria-hidden="true">G</span><span aria-hidden="true">Y</span></h1>
           <p class="hero-focus"><span class="i18n-zh">喜欢把想法做成能运行的项目。</span><span class="i18n-en">I like turning ideas into working projects.</span></p>
-          <p class="hero-motto">Keep coding</p>
+          <p class="hero-motto"><span id="hero-typed">KEEP CODING</span><i class="typed-cursor" aria-hidden="true"></i></p>
           <div class="hero-actions">
             <a href="#featured-project-title"><span class="i18n-zh">看项目 ↓</span><span class="i18n-en">PROJECTS ↓</span></a>
             <a href="/notes/"><span class="i18n-zh">学习笔记 ↗</span><span class="i18n-en">NOTES ↗</span></a>
@@ -723,7 +732,14 @@ const repoStats = Object.fromEntries(await Promise.all(
             <span>DOUYIN</span>
           </a>
         </div>
-        <footer><span class="i18n-zh">© {year} YZBZGY — 建于地球 · 见于线上</span><span class="i18n-en">© {year} YZBZGY — MADE ON EARTH · FOUND ONLINE</span></footer>
+        <footer>
+          <span class="i18n-zh">© {year} YZBZGY — 建于地球 · 见于线上</span><span class="i18n-en">© {year} YZBZGY — MADE ON EARTH · FOUND ONLINE</span>
+          <span class="foot-stats">
+            <span><b data-site-days data-birth={SITE_BIRTH}>—</b> <span class="i18n-zh">天</span><span class="i18n-en">DAYS</span></span>
+            <span><b>{noteTotal}</b> <span class="i18n-zh">篇笔记</span><span class="i18n-en">POSTS</span></span>
+            <span><b>{projects.length}</b> <span class="i18n-zh">个项目</span><span class="i18n-en">PROJECTS</span></span>
+          </span>
+        </footer>
       </section>
     </main>
 
@@ -1041,6 +1057,47 @@ const repoStats = Object.fromEntries(await Promise.all(
         }
         sound.setAttribute('aria-pressed', String(enabled));
         sound.setAttribute('aria-label', enabled ? '关闭背景音效' : '开启背景音效');
+      });
+
+      // ===== 首屏 motto 打字机（借鉴 phlin 博客的 Typed 效果，零依赖手写）=====
+      const typedEl = document.querySelector('#hero-typed');
+      if (typedEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const phrases = ['KEEP CODING', 'KEEP BUILDING', 'KEEP LEARNING', 'STAY CURIOUS'];
+        let phraseIndex = 0;
+        let charIndex = phrases[0].length;
+        let deleting = true;
+        const typeTick = () => {
+          const word = phrases[phraseIndex];
+          if (deleting) {
+            charIndex -= 1;
+            typedEl.textContent = word.slice(0, Math.max(0, charIndex));
+            if (charIndex <= 0) {
+              deleting = false;
+              phraseIndex = (phraseIndex + 1) % phrases.length;
+              charIndex = 0;
+              setTimeout(typeTick, 420);
+              return;
+            }
+            setTimeout(typeTick, 48);
+          } else {
+            charIndex += 1;
+            typedEl.textContent = word.slice(0, charIndex);
+            if (charIndex >= word.length) {
+              deleting = true;
+              setTimeout(typeTick, 1900);
+              return;
+            }
+            setTimeout(typeTick, 88);
+          }
+        };
+        setTimeout(typeTick, 3000); // 等开场白幕动画结束
+      }
+
+      // ===== 页脚：据点已运行天数 =====
+      document.querySelectorAll('[data-site-days]').forEach((el) => {
+        const birth = new Date(el.dataset.birth).getTime();
+        if (Number.isNaN(birth)) return;
+        el.textContent = Math.max(1, Math.floor((Date.now() - birth) / 86400000));
       });
     </script>
   </body>

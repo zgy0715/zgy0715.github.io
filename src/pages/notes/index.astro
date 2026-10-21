@@ -156,6 +156,7 @@ const iso = (d) => d.toISOString().slice(0, 10);
       .note-item .accent { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent-color, var(--blue)); }
       .note-star { color: var(--gold); font-size: 13px; }
       .note-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0; font: 9px var(--mono); letter-spacing: .16em; color: #777; }
+      .meta-icon { width: 11px; height: 11px; display: inline-block; vertical-align: -1.5px; margin-right: 5px; opacity: .6; }
       .note-title { margin: 0; font: 700 1.35rem/1.3 var(--sans); letter-spacing: .02em; transition: color .2s; }
       .note-summary { margin: 9px 0 0; font-size: 13px; line-height: 1.95; color: #444; }
       .note-tags { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0 0; }
@@ -177,7 +178,7 @@ const iso = (d) => d.toISOString().slice(0, 10);
       /* —— 卡片视图：大卡 + 摘要全显 —— */
       .view-cards { gap: 20px; }
       .view-cards .note-item { border: 1px solid rgba(0, 0, 0, .25); background: var(--white); transition: border-color .2s, transform .25s cubic-bezier(.2, .7, .2, 1); }
-      .view-cards .note-item:hover { border-color: var(--accent-color, var(--blue)); transform: translateY(-3px); }
+      .view-cards .note-item:hover { border-color: var(--accent-color, var(--blue)); transform: translateY(-3px); box-shadow: 0 12px 34px -14px rgba(0, 0, 0, .22); }
       .view-cards a { display: block; padding: 26px 28px 24px 32px; text-decoration: none; }
       .view-cards a:hover .note-title { color: var(--blue); }
       .view-cards .note-title { font-size: 1.6rem; }
@@ -187,7 +188,7 @@ const iso = (d) => d.toISOString().slice(0, 10);
       /* —— 网格视图：紧凑磁贴（accent 顶条 + 标题 + 标签，不放摘要）—— */
       .view-grid { grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; align-items: stretch; }
       .view-grid .note-item { border: 1px solid rgba(0, 0, 0, .25); display: flex; flex-direction: column; transition: border-color .2s, transform .25s cubic-bezier(.2, .7, .2, 1); }
-      .view-grid .note-item:hover { border-color: var(--accent-color, var(--blue)); transform: translateY(-3px); }
+      .view-grid .note-item:hover { border-color: var(--accent-color, var(--blue)); transform: translateY(-3px); box-shadow: 0 12px 34px -14px rgba(0, 0, 0, .22); }
       .view-grid .note-item .accent { left: 0; right: 0; bottom: auto; width: auto; height: 4px; }
       .view-grid a { display: flex; flex-direction: column; flex: 1; padding: 20px 18px 16px 20px; text-decoration: none; }
       .view-grid a:hover .note-title { color: var(--blue); }
@@ -301,9 +302,9 @@ const iso = (d) => d.toISOString().slice(0, 10);
               <a href={`/notes/${note.id}/`}>
                 <i class="accent" aria-hidden="true"></i>
                 <p class="note-meta">
-                  <time datetime={iso(note.data.date)}>{fmt(note.data.date)}</time>
-                  {note.data.updated && note.data.updated.valueOf() !== note.data.date.valueOf() && <span><span class="i18n-zh">更新</span><span class="i18n-en">edited</span> {fmt(note.data.updated)}</span>}
-                  <span>≈ {note.minutes} <span class="i18n-zh">分钟</span><span class="i18n-en">min</span></span>
+                  <time datetime={iso(note.data.date)}><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="3.5" y1="10.5" x2="20.5" y2="10.5"/></svg>{fmt(note.data.date)}</time>
+                  {note.data.updated && note.data.updated.valueOf() !== note.data.date.valueOf() && <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20l4-1 10-10-3-3L5 16z"/><path d="M14 6l3 3"/></svg><span class="i18n-zh">更新</span><span class="i18n-en">edited</span> {fmt(note.data.updated)}</span>}
+                  <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>≈ {note.minutes} <span class="i18n-zh">分钟</span><span class="i18n-en">min</span></span>
                 </p>
                 <h2 class="note-title">{note.data.star && <span class="note-star" title="重要" aria-label="重要">★ </span>}{note.data.title}</h2>
                 {note.data.summary && <p class="note-summary">{note.data.summary}</p>}
