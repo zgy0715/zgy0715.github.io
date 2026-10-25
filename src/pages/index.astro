@@ -26,16 +26,6 @@ const paletteData = {
   notes: allNotes.map((n) => ({ id: n.id, title: n.data.title, tags: n.data.tags, summary: n.data.summary ?? '' })),
 };
 
-// 技能雷达图（关于我）：0-5 自评，想调整直接改这里的 level
-const SKILLS = [
-  { key: 'JAVA', level: 4, desc: { zh: '主力语言：苍穹外卖、HRMS、票务后端都是它。', en: 'Main language: sky-takeout, HRMS and the ticketing backend.' } },
-  { key: 'SPRING BOOT', level: 3.5, desc: { zh: 'JWT/RBAC、Flyway 迁移、三层架构，ave-mygo 已用 4.1。', en: 'JWT/RBAC, Flyway migrations, layered architecture; on 4.1 for ave-mygo.' } },
-  { key: 'VUE', level: 3.5, desc: { zh: 'Vue 3 + Pinia + Tailwind，管理端与粉丝站前端。', en: 'Vue 3 + Pinia + Tailwind for admin and fan-site frontends.' } },
-  { key: 'PYTHON', level: 3, desc: { zh: '数据分析（Pandas/scikit-learn）、FastAPI、爬虫。', en: 'Data analysis (Pandas/scikit-learn), FastAPI and crawlers.' } },
-  { key: 'SQL / DB', level: 3, desc: { zh: 'MySQL 为主、Flyway 管迁移，PostgreSQL/Redis 有实验项目。', en: 'MySQL-first with Flyway; PostgreSQL/Redis via lab projects.' } },
-  { key: 'AI / ML', level: 2.5, desc: { zh: '课程推进到 KNN 与回归，工程侧接过 Ollama 与规则引擎。', en: 'Coursework at KNN and regression; Ollama and rule engines on the side.' } },
-];
-
 // 据点诞生日（首次上线），用于页脚"已运行 N 天"
 const SITE_BIRTH = '2026-10-15T00:00:00+08:00';
 
@@ -475,23 +465,12 @@ const repoStats = Object.fromEntries(await Promise.all(
       /* ===== 关于我 ===== */
       .about { display: flex; flex-direction: column; justify-content: center; gap: 20px; padding: 76px var(--pad); background: var(--white); color: #000; }
       .about h2 { margin: 0; font: 400 clamp(2rem, 4.5vw, 3.2rem) var(--display); letter-spacing: .05em; }
-      .about-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); gap: 28px clamp(28px, 5vw, 64px); align-items: center; }
-      .about-left { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
       .about-intro { margin: 0; max-width: 600px; font-size: 15px; line-height: 1.8; color: #333; }
       .about-tags { display: flex; flex-wrap: wrap; gap: 8px; }
       .about-tags span { padding: 6px 10px; border: 1px solid rgba(0, 0, 0, .2); border-radius: 999px; font: 10px var(--mono); letter-spacing: .08em; }
       .about-more { display: flex; flex-wrap: wrap; gap: 10px 22px; }
       .about-more a { color: var(--blue-dark); font: 10px var(--mono); letter-spacing: .1em; text-decoration: none; }
       .about-more a:hover { text-decoration: underline; text-underline-offset: 4px; }
-      /* 技能雷达图 */
-      .radar-wrap { position: relative; max-width: 380px; justify-self: center; width: 100%; }
-      #skills-radar { display: block; width: 100%; height: auto; cursor: crosshair; }
-      .radar-tip { position: absolute; z-index: 2; max-width: 230px; padding: 10px 12px; border: 1px solid rgba(0, 0, 0, .18); background: #fff; box-shadow: 0 12px 32px -12px rgba(0, 0, 0, .35); font: 11px/1.6 var(--mono); letter-spacing: .02em; pointer-events: none; opacity: 0; transition: opacity .15s; }
-      .radar-tip.show { opacity: 1; }
-      .radar-tip b { display: block; margin-bottom: 3px; font-size: 12px; letter-spacing: .06em; }
-      .radar-tip span { color: #555; font-family: var(--sans); }
-      [data-theme="dark"] .radar-tip { border-color: rgba(255, 255, 255, .25); background: #1a1f28; box-shadow: 0 12px 32px -12px rgba(0, 0, 0, .7); }
-      [data-theme="dark"] .radar-tip span { color: #bbb; }
 
       /* ===== 兴趣墙 ===== */
       .fav { display: flex; flex-direction: column; justify-content: center; gap: clamp(24px, 5vw, 48px); min-height: 68svh; padding: 80px var(--pad); background: var(--black); color: #fff; overflow: hidden; }
@@ -563,8 +542,6 @@ const repoStats = Object.fromEntries(await Promise.all(
         .activity-item { min-height: 0; padding: 20px 0; }
         .activity-item + .activity-item { padding-left: 0; border-left: 0; border-top: 1px solid rgba(0, 0, 0, .16); }
         .featured-project { grid-template-columns: 1fr; gap: 22px; }
-        .about-grid { grid-template-columns: 1fr; }
-        .radar-wrap { max-width: 330px; justify-self: flex-start; }
         .featured-facts { align-items: flex-start; }
         .featured-stack { align-items: flex-start; }
         .featured-links { width: 100%; margin-left: 0; }
@@ -748,19 +725,11 @@ const repoStats = Object.fromEntries(await Promise.all(
       <!-- 关于我 -->
       <section class="about" id="about" aria-labelledby="about-title">
         <h2 id="about-title" class="reveal"><span class="i18n-zh">关于我</span><span class="i18n-en">About Me</span></h2>
-        <div class="about-grid">
-          <div class="about-left reveal">
-            <p class="about-intro"><span class="i18n-zh">本科生，喜欢通过做项目学习。主要使用 Java、Vue 和 Python，也在探索 AI / ML。雷达图悬停顶点可以看每个方向的说明。</span><span class="i18n-en">An undergraduate who learns by building. I work mainly with Java, Vue and Python, and explore AI / ML. Hover the radar vertices for notes on each direction.</span></p>
-            <div class="about-tags" aria-label="技术方向"><span>JAVA</span><span>VUE</span><span>PYTHON</span><span>AI / ML</span></div>
-            <div class="about-more">
-              <a href={latestNotes[0] ? `/notes/${latestNotes[0].id}/` : '/notes/'}><span class="i18n-zh">{latestNotes[0] ? `最新笔记：${latestNotes[0].data.title} ↗` : '学习笔记 ↗'}</span><span class="i18n-en">{latestNotes[0] ? `LATEST NOTE: ${latestNotes[0].data.title} ↗` : 'NOTES ↗'}</span></a>
-              <a href="#contact"><span class="i18n-zh">联系我 ↗</span><span class="i18n-en">CONTACT ↗</span></a>
-            </div>
-          </div>
-          <div class="radar-wrap reveal" id="radar-wrap">
-            <canvas id="skills-radar" width="380" height="330" role="img" aria-label="技能雷达图：Java、Spring Boot、Vue、Python、SQL、AI 六个维度的自评"></canvas>
-            <div class="radar-tip" id="radar-tip" hidden></div>
-          </div>
+        <p class="about-intro reveal"><span class="i18n-zh">本科生，喜欢通过做项目学习。主要使用 Java、Vue 和 Python，也在探索 AI / ML。</span><span class="i18n-en">An undergraduate who learns by building. I work mainly with Java, Vue and Python, and explore AI / ML.</span></p>
+        <div class="about-tags reveal" aria-label="技术方向"><span>JAVA</span><span>VUE</span><span>PYTHON</span><span>AI / ML</span></div>
+        <div class="about-more reveal">
+          <a href={latestNotes[0] ? `/notes/${latestNotes[0].id}/` : '/notes/'}><span class="i18n-zh">{latestNotes[0] ? `最新笔记：${latestNotes[0].data.title} ↗` : '学习笔记 ↗'}</span><span class="i18n-en">{latestNotes[0] ? `LATEST NOTE: ${latestNotes[0].data.title} ↗` : 'NOTES ↗'}</span></a>
+          <a href="#contact"><span class="i18n-zh">联系我 ↗</span><span class="i18n-en">CONTACT ↗</span></a>
         </div>
       </section>
 
@@ -840,167 +809,7 @@ const repoStats = Object.fromEntries(await Promise.all(
     <a class="top-button" id="top-button" href="#top" aria-label="回到顶部">↑</a>
 
     <script type="application/json" id="palette-data" set:html={JSON.stringify(paletteData)} />
-    <script type="application/json" id="skills-data" set:html={JSON.stringify(SKILLS)} />
     <CommandPalette />
-
-    <script>
-      // ===== 技能雷达图：Canvas 手绘，主题/语言变化自动重绘 =====
-      (() => {
-        const canvas = document.querySelector('#skills-radar');
-        const wrap = document.querySelector('#radar-wrap');
-        const tip = document.querySelector('#radar-tip');
-        if (!canvas || !wrap || !tip) return;
-        let SKILLS = [];
-        try { SKILLS = JSON.parse(document.querySelector('#skills-data').textContent); } catch (e) {}
-        const ctx = canvas.getContext('2d');
-        const TAU = Math.PI * 2;
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let progress = reducedMotion ? 1 : 0; // 生长动画 0→1
-        let hoverIdx = -1;
-        const isDark = () => document.documentElement.dataset.theme === 'dark';
-        const isEn = () => document.documentElement.classList.contains('lang-en');
-        const cssVar = (name, fallback) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
-        const hexToRgba = (hex, a) => {
-          const m = /^#?([0-9a-f]{6})$/i.exec(hex);
-          if (!m) return hex;
-          const n = parseInt(m[1], 16);
-          return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
-        };
-
-        const draw = () => {
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          const W = canvas.clientWidth || 380;
-          const H = Math.round(W * (330 / 380));
-          if (canvas.width !== Math.round(W * dpr)) {
-            canvas.width = Math.round(W * dpr);
-            canvas.height = Math.round(H * dpr);
-          }
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          ctx.clearRect(0, 0, W, H);
-          const cx = W / 2, cy = H / 2 + 4;
-          const R = Math.min(W, H) * .34;
-          const N = SKILLS.length;
-          const line = isDark() ? 'rgba(255,255,255,.22)' : 'rgba(0,0,0,.18)';
-          const text = isDark() ? 'rgba(255,255,255,.85)' : 'rgba(0,0,0,.75)';
-          const blue = cssVar('--blue', '#3388bb');
-          const gold = cssVar('--gold', '#bb9955');
-          // 网格（5 环多边形）
-          for (let ring = 1; ring <= 5; ring++) {
-            ctx.beginPath();
-            for (let i = 0; i <= N; i++) {
-              const a = -Math.PI / 2 + (i % N) / N * TAU;
-              const rr = R * (ring / 5) * progress;
-              const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
-              if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            }
-            ctx.strokeStyle = line;
-            ctx.lineWidth = ring === 5 ? 1.2 : .7;
-            ctx.stroke();
-          }
-          // 轴线 + 维度标签
-          ctx.font = `600 ${Math.max(9, Math.round(W * .031))}px ui-monospace, Menlo, monospace`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          SKILLS.forEach((s, i) => {
-            const a = -Math.PI / 2 + i / N * TAU;
-            ctx.strokeStyle = line;
-            ctx.lineWidth = .7;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(cx + Math.cos(a) * R * progress, cy + Math.sin(a) * R * progress);
-            ctx.stroke();
-            ctx.fillStyle = text;
-            ctx.fillText(s.key, cx + Math.cos(a) * (R + 24), cy + Math.sin(a) * (R + 18));
-          });
-          // 数据多边形
-          ctx.beginPath();
-          SKILLS.forEach((s, i) => {
-            const a = -Math.PI / 2 + i / N * TAU;
-            const rr = R * (s.level / 5) * progress;
-            const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
-            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-          });
-          ctx.closePath();
-          ctx.fillStyle = hexToRgba(blue, isDark() ? .32 : .2);
-          ctx.fill();
-          ctx.strokeStyle = blue;
-          ctx.lineWidth = 1.6;
-          ctx.stroke();
-          // 顶点（悬停放大 + 金色）
-          SKILLS.forEach((s, i) => {
-            const a = -Math.PI / 2 + i / N * TAU;
-            const rr = R * (s.level / 5) * progress;
-            s._x = cx + Math.cos(a) * rr;
-            s._y = cy + Math.sin(a) * rr;
-            ctx.beginPath();
-            ctx.arc(s._x, s._y, i === hoverIdx ? 5.2 : 3.4, 0, TAU);
-            ctx.fillStyle = i === hoverIdx ? gold : blue;
-            ctx.fill();
-            ctx.strokeStyle = isDark() ? '#101214' : '#fff';
-            ctx.lineWidth = 1.4;
-            ctx.stroke();
-          });
-        };
-
-        // 生长动画：进入视口触发
-        if (progress < 1 && 'IntersectionObserver' in window) {
-          const io = new IntersectionObserver((entries) => {
-            if (!entries[0].isIntersecting) return;
-            io.disconnect();
-            const start = performance.now();
-            const DUR = 900;
-            const tick = (now) => {
-              const t = Math.min(1, (now - start) / DUR);
-              progress = 1 - Math.pow(1 - t, 3);
-              draw();
-              if (t < 1) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
-          }, { threshold: .3 });
-          io.observe(wrap);
-        }
-
-        // 悬停顶点 → tooltip
-        const showTip = (idx) => {
-          const s = SKILLS[idx];
-          tip.innerHTML = `<b>${s.key} · ${s.level}/5</b><span>${isEn() ? s.desc.en : s.desc.zh}</span>`;
-          tip.hidden = false;
-          const tw = tip.offsetWidth, th = tip.offsetHeight;
-          let left = s._x + 14;
-          if (left + tw > canvas.clientWidth - 6) left = s._x - tw - 14;
-          tip.style.left = `${Math.max(6, left)}px`;
-          tip.style.top = `${Math.max(6, Math.min(s._y - th / 2, canvas.clientHeight - th - 6))}px`;
-          tip.classList.add('show');
-        };
-        const setHover = (idx) => {
-          if (idx === hoverIdx) return;
-          hoverIdx = idx;
-          draw();
-          if (idx >= 0) showTip(idx);
-          else tip.classList.remove('show');
-        };
-        const hitVertex = (e, radius) => {
-          const rect = canvas.getBoundingClientRect();
-          const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-          let idx = -1;
-          SKILLS.forEach((s, i) => {
-            if (Math.hypot(mx - s._x, my - s._y) < radius) idx = i;
-          });
-          return idx;
-        };
-        canvas.addEventListener('mousemove', (e) => setHover(hitVertex(e, 15)));
-        canvas.addEventListener('mouseleave', () => setHover(-1));
-        canvas.addEventListener('click', (e) => {
-          // 触屏：点按顶点切换 tooltip
-          const idx = hitVertex(e, 18);
-          setHover(idx >= 0 ? idx : -1);
-        });
-
-        // 主题/语言切换时重绘（配色与标签跟随）
-        new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
-        draw();
-      })();
-    </script>
 
     <script>
       // ===== 中 / EN 语言切换（默认中文，选择存入 localStorage）=====
