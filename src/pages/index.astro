@@ -16,34 +16,34 @@ const SITE_BIRTH = '2026-10-15T00:00:00+08:00';
 
 const activity = [
   {
-    date: '2026.10.19',
-    title: '重新整理个人网站',
-    titleEn: 'Simplified my personal website',
-    detail: '突出正在开发的项目与近期记录。',
-    detailEn: 'Bringing current projects and recent updates into focus.',
-    href: 'https://github.com/zgy0715/zgy0715.github.io',
-    link: '查看网站源码',
-    linkEn: 'SITE SOURCE',
+    date: '2026.10.22',
+    title: '粉丝站更名 BanG Dream! Live，演示部署上线',
+    titleEn: 'BanG Dream! Live: renamed and demo-deployed',
+    detail: '管理端演出/场次/票档三级删除与全量数据审计（V45–V48）完成，README 重写，CloudStudio 演示环境可访问。',
+    detailEn: 'Three-level deletion, a full data audit (V45–V48) and a rewritten README shipped; a CloudStudio demo is live.',
+    href: 'https://github.com/zgy0715/ave-mygo',
+    link: '查看项目仓库',
+    linkEn: 'VIEW REPO',
   },
   {
-    date: '2026.10.17',
-    title: '歌曲数据与订单流程跑通',
-    titleEn: 'Connected song data and order flows',
-    detail: '首页读取 9 首歌曲，订单状态闭环已验证。',
-    detailEn: 'The home page loads nine songs; the order lifecycle is verified.',
-    href: 'https://github.com/zgy0715/ave-mygo/commit/23f9ad28d1f48a3c27ae04a0c60b3d8a06751411',
+    date: '2026.10.22',
+    title: '首页迎来写实太阳系',
+    titleEn: 'A realistic solar system on the home page',
+    detail: 'Canvas 手绘行星贴图、朝向太阳的晨昏线、小行星带、彗尾与固定种子星空，零图片素材。',
+    detailEn: 'Canvas-painted planet sprites, sun-lit terminators, an asteroid belt, a comet and a seeded starfield — no image assets.',
+    href: '/notes/canvas-solar-system/',
+    link: '阅读实现笔记',
+    linkEn: 'READ THE NOTE',
+  },
+  {
+    date: '2026.10.21',
+    title: 'AI 助手学会流式回答',
+    titleEn: 'AI assistant learned to stream',
+    detail: '/chat/stream SSE 分片推送 + done 事件，独立线程池；LLM 掉线时规则引擎按人格口吻兜底。',
+    detailEn: 'SSE chunked replies on /chat/stream with a dedicated thread pool; a rule engine answers in-character when the LLM is down.',
+    href: 'https://github.com/zgy0715/ave-mygo/commit/89332f5',
     link: '查看这次提交',
     linkEn: 'VIEW COMMIT',
-  },
-  {
-    date: '2026.10.15',
-    title: '机器学习学到 KNN',
-    titleEn: 'Reached KNN in machine learning',
-    detail: 'Python 与数据科学基础完成，持续练习算法。',
-    detailEn: 'Python and data-science foundations complete; algorithm practice continues.',
-    href: '/notes/aiml-roadmap-progress/',
-    link: '阅读进度记录',
-    linkEn: 'READ PROGRESS NOTE',
   },
 ];
 
@@ -613,21 +613,21 @@ const repoStats = Object.fromEntries(await Promise.all(
         <h2 id="projects-title" class="reveal"><span class="i18n-zh">项目 <i>11</i></span><span class="i18n-en">Projects <i>11</i></span></h2>
         <article class="featured-project reveal" aria-labelledby="featured-project-title">
           <div>
-            <p class="featured-eyebrow"><span class="i18n-zh">正在开发 · 进度快照 2026.10.17</span><span class="i18n-en">IN DEVELOPMENT · PROGRESS SNAPSHOT 2026.10.17</span></p>
+            <p class="featured-eyebrow"><span class="i18n-zh">正在开发 · 进度快照 2026.10.22</span><span class="i18n-en">IN DEVELOPMENT · PROGRESS SNAPSHOT 2026.10.22</span></p>
             <h3 class="featured-title" id="featured-project-title">
-              <span>BANDORI LIVE</span>
-              <span class="featured-title-local">MyGO!! / Ave Mujica</span>
+              <span>BANG DREAM! LIVE</span>
+              <span class="featured-title-local">MyGO!!!!! × Ave Mujica 粉丝站</span>
             </h3>
             <p class="featured-summary">
-              <span class="i18n-zh">为 MyGO!! / Ave Mujica 打造的全栈粉丝站，整合曲库、演出与内容管理。</span>
-              <span class="i18n-en">A full-stack fan site for MyGO!! / Ave Mujica, bringing together music, live events and content.</span>
+              <span class="i18n-zh">为 MyGO!!!!! / Ave Mujica 打造的全栈粉丝站：曲库试听、演出票务、收藏歌单、评论与开售提醒、管理端与 AI 助手。</span>
+              <span class="i18n-en">A full-stack fan site for MyGO!!!!! / Ave Mujica: music library, ticketing, playlists, comments, on-sale alerts, admin and an AI assistant.</span>
             </p>
           </div>
           <div class="featured-facts">
-            <p><span class="i18n-zh">我负责前后端开发。歌曲 API 与订单流程已跑通，接下来完善购票体验。</span><span class="i18n-en">I build both frontend and backend. Song APIs and order flows work; ticketing is next.</span></p>
+            <p><span class="i18n-zh">独立完成前后端、数据库与部署：55 首曲库、防超卖票务闭环、四人格 AI 助手流式问答已上线，CloudStudio 演示环境可访问。</span><span class="i18n-en">Built solo end to end: a 55-song library, oversell-proof ticketing and a four-persona streaming AI assistant, with a CloudStudio demo live.</span></p>
           </div>
           <div class="featured-stack">
-            <span>VUE 3</span><span>SPRING BOOT 3</span><span>JAVA 17</span><span>MYSQL</span><span>JWT</span>
+            <span>VUE 3</span><span>SPRING BOOT 4.1</span><span>JAVA 17</span><span>MYSQL 8</span><span>FLYWAY V49</span><span>SSE</span><span>OLLAMA</span>
             <div class="featured-links">
               <a href="https://github.com/zgy0715/ave-mygo" target="_blank" rel="noreferrer"><span class="i18n-zh">项目仓库 ↗</span><span class="i18n-en">SOURCE ↗</span></a>
               <a href="https://github.com/zgy0715/ave-mygo/blob/main/docs/04-%E9%9C%80%E6%B1%82%E8%AF%B4%E6%98%8E.md" target="_blank" rel="noreferrer"><span class="i18n-zh">需求与范围 ↗</span><span class="i18n-en">PRODUCT BRIEF ↗</span></a>
