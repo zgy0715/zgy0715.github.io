@@ -194,6 +194,30 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       .note-footer a:hover { color: var(--blue); }
       .note-footer .copyright { font: 9px var(--mono); letter-spacing: .2em; color: #999; }
 
+      /* ===== 代码块工具条 ===== */
+      .code-block { margin: 22px 0; border: 1px solid rgba(0, 0, 0, .18); border-radius: 8px; overflow: hidden; }
+      .code-bar { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; background: rgba(0, 0, 0, .06); border-bottom: 1px solid rgba(0, 0, 0, .12); }
+      .code-lang { font: 9px var(--mono); letter-spacing: .16em; color: #777; }
+      .code-copy { padding: 3px 10px; border: 1px solid rgba(0, 0, 0, .25); border-radius: 6px; background: none; color: #555; cursor: pointer; font: 10px var(--mono); letter-spacing: .08em; transition: color .2s, border-color .2s; }
+      .code-copy:hover { color: var(--blue); border-color: var(--blue); }
+      .code-copy.ok { color: #2e8b57; border-color: #2e8b57; }
+      .code-block pre { margin: 0; border: 0; border-radius: 0; }
+      [data-theme="dark"] .code-block { border-color: rgba(255, 255, 255, .2); }
+      [data-theme="dark"] .code-bar { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .14); }
+      [data-theme="dark"] .code-lang { color: #888; }
+      [data-theme="dark"] .code-copy { color: #aaa; border-color: rgba(255, 255, 255, .3); }
+      [data-theme="dark"] .code-copy.ok { color: #7fd6a4; border-color: #7fd6a4; }
+
+      /* ===== 图片灯箱 ===== */
+      .prose img { cursor: zoom-in; }
+      .lightbox { position: fixed; inset: 0; z-index: 92; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px; background: rgba(4, 6, 12, .88); cursor: zoom-out; }
+      .lightbox[hidden] { display: none; }
+      .lightbox img { max-width: min(1100px, 92vw); max-height: 78vh; object-fit: contain; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8); }
+      .lightbox-cap { margin: 0; color: #ccc; font: 11px var(--mono); letter-spacing: .1em; text-align: center; max-width: 80vw; }
+      .lightbox-close { position: absolute; top: 18px; right: 22px; width: 42px; height: 42px; border: 1px solid rgba(255, 255, 255, .4); border-radius: 50%; background: none; color: #fff; cursor: pointer; font: 20px var(--mono); line-height: 1; transition: background .2s; }
+      .lightbox-close:hover { background: rgba(255, 255, 255, .15); }
+      body.lb-open { overflow: hidden; }
+
       @media (max-width: 760px) {
         .note-page { padding-top: 72px; }
       }
@@ -387,6 +411,82 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       // 主题切换时同步 giscus 主题
       const _applyTheme = applyTheme;
       applyTheme = (theme) => { _applyTheme(theme); notifyGiscus(theme); };
+    </script>
+
+    <script>
+      // ===== 代码块工具条：语言标签 + 复制按钮 =====
+      const isEn = () => document.documentElement.classList.contains('lang-en');
+      document.querySelectorAll('.prose pre').forEach((pre) => {
+        if (pre.closest('.code-block')) return;
+        const code = pre.querySelector('code');
+        const langMatch = /language-([\w+-]+)/.exec((code ?? pre).className);
+        const lang = langMatch ? langMatch[1].toUpperCase() : 'CODE';
+        const wrap = document.createElement('div');
+        wrap.className = 'code-block';
+        pre.replaceWith(wrap);
+        const bar = document.createElement('div');
+        bar.className = 'code-bar';
+        bar.innerHTML = `<span class="code-lang">${lang}</span><button class="code-copy" type="button">${isEn() ? 'COPY' : '复制'}</button>`;
+        wrap.appendChild(bar);
+        wrap.appendChild(pre);
+        const btn = bar.querySelector('.code-copy');
+        btn.addEventListener('click', async () => {
+          const text = (code ?? pre).innerText.replace(/\n$/, '');
+          try { await navigator.clipboard.writeText(text); }
+          catch {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+          }
+          btn.textContent = isEn() ? 'COPIED ✓' : '已复制 ✓';
+          btn.classList.add('ok');
+          setTimeout(() => {
+            btn.textContent = isEn() ? 'COPY' : '复制';
+            btn.classList.remove('ok');
+          }, 1800);
+        });
+      });
+
+      // ===== 图片灯箱 =====
+      const lightbox = document.createElement('div');
+      lightbox.className = 'lightbox';
+      lightbox.hidden = true;
+      lightbox.innerHTML = '<button class="lightbox-close" type="button" aria-label="关闭预览">×</button><img alt="" /><p class="lightbox-cap"></p>';
+      document.body.appendChild(lightbox);
+      const lbImg = lightbox.querySelector('img');
+      const lbCap = lightbox.querySelector('.lightbox-cap');
+      const closeLightbox = () => {
+        lightbox.hidden = true;
+        document.body.classList.remove('lb-open');
+      };
+      document.querySelectorAll('.prose img').forEach((img) => {
+        img.addEventListener('click', () => {
+          lbImg.src = img.currentSrc || img.src;
+          lbImg.alt = img.alt ?? '';
+          lbCap.textContent = img.alt ?? '';
+          lbCap.hidden = !img.alt;
+          lightbox.hidden = false;
+          document.body.classList.add('lb-open');
+        });
+      });
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target.closest('.lightbox-close')) closeLightbox();
+      });
+
+      // ===== 键盘翻页：← 新一篇 / → 更早一篇 =====
+      const newerLink = document.querySelector('.note-prevnext a.pn');
+      const olderLink = document.querySelector('.note-prevnext a.pn.next');
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const active = document.activeElement;
+        if (active && (['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName) || active.isContentEditable)) return;
+        if (document.body.classList.contains('cmdk-open') || !lightbox.hidden) return;
+        if (e.key === 'ArrowLeft' && newerLink) location.href = newerLink.href;
+        if (e.key === 'ArrowRight' && olderLink) location.href = olderLink.href;
+      });
     </script>
 
     <script type="application/json" id="palette-data" set:html={JSON.stringify(paletteData)} />
