@@ -474,6 +474,26 @@ const repoStats = Object.fromEntries(await Promise.all(
       #space-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
       .hq-meta { position: absolute; left: 18px; bottom: 16px; display: grid; gap: 4px; margin: 0; font: 9px var(--mono); letter-spacing: .16em; color: rgba(255, 255, 255, .65); }
       .hq-tag { position: absolute; right: 18px; top: 16px; font: 9px var(--mono); letter-spacing: .16em; color: rgba(255, 255, 255, .65); }
+      /* 时间控制（右下角）与行星资料卡 */
+      .hq-controls { position: absolute; right: 14px; bottom: 14px; z-index: 3; display: flex; align-items: center; gap: 10px; }
+      .hq-controls button { padding: 5px 10px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 999px; background: rgba(5, 9, 18, .55); color: #fff; cursor: pointer; font: 9px var(--mono); letter-spacing: .1em; line-height: 1.5; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: border-color .2s, background .2s; }
+      .hq-controls button:hover { border-color: #fff; }
+      #hq-play { width: 30px; height: 30px; padding: 0; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+      .hq-speed { display: inline-flex; overflow: hidden; border: 1px solid rgba(255, 255, 255, .32); border-radius: 999px; background: rgba(5, 9, 18, .55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+      .hq-speed button { border: 0; border-radius: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+      .hq-speed button + button { border-left: 1px solid rgba(255, 255, 255, .18); }
+      .hq-speed button[aria-pressed="true"] { background: var(--blue); color: #fff; }
+      .planet-card { position: absolute; z-index: 4; width: min(250px, calc(100% - 24px)); padding: 14px 16px 12px; border: 1px solid rgba(255, 255, 255, .38); background: rgba(6, 10, 20, .9); color: #fff; box-shadow: 0 18px 44px -18px rgba(0, 0, 0, .65); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+      .planet-card[hidden] { display: none; }
+      .planet-card h4 { display: flex; align-items: baseline; gap: 8px; margin: 0 24px 10px 0; font: 400 22px var(--display); letter-spacing: .05em; }
+      .planet-card h4 .i18n-zh { font-weight: 700; font-size: 14px; }
+      .planet-card-close { position: absolute; top: 0; right: 0; width: 30px; height: 30px; border: 0; background: rgba(255, 255, 255, .08); color: #fff; cursor: pointer; font: 16px var(--mono); line-height: 1; transition: background .2s; }
+      .planet-card-close:hover { background: rgba(255, 255, 255, .22); }
+      .planet-card dl { display: grid; gap: 5px; margin: 0; }
+      .planet-card dl div { display: flex; justify-content: space-between; gap: 12px; font: 10px var(--mono); letter-spacing: .08em; }
+      .planet-card dt { color: rgba(255, 255, 255, .6); }
+      .planet-card dd { margin: 0; }
+      .planet-card-line { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .2); font-size: 12px; line-height: 1.75; color: rgba(255, 255, 255, .92); }
 
       /* ===== Contact ===== */
       .contact { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; min-height: 62svh; padding: 90px var(--pad) 40px; background: var(--pink); color: #fff; text-align: center; }
@@ -531,6 +551,7 @@ const repoStats = Object.fromEntries(await Promise.all(
         .reveal { opacity: 1; transform: none; }
         .interest-track { animation: none; }
         .interest-set.is-copy { display: none; }
+        .hq-controls { display: none; }
       }
 
       /* ===== 暗色主题（手动切换，首次跟随系统）===== */
@@ -716,10 +737,19 @@ const repoStats = Object.fromEntries(await Promise.all(
       <section class="hq" id="map" aria-labelledby="hq-title">
         <h2 id="hq-title" class="reveal"><span class="i18n-zh">我的据点</span><span class="i18n-en">Headquarter</span></h2>
         <p class="hq-desc reveal"><span class="i18n-zh">我的网络据点在地球上。找找第三条轨道上的蓝色星球。</span><span class="i18n-en">My corner of the internet is based on Earth. Find the blue planet on the third orbit.</span></p>
-        <div class="hq-panel reveal" role="img" aria-label="动态太阳系：行星围绕太阳运行，第三轨道上的地球标记为网络据点">
+        <div class="hq-panel reveal" role="group" aria-label="动态太阳系：行星沿倾斜椭圆轨道围绕太阳运行，第三轨道上的地球标记为网络据点。点击行星查看资料卡，右下角可控制时间流速">
           <canvas id="space-canvas" aria-hidden="true"></canvas>
           <div class="hq-tag"><span class="i18n-zh">YZBZGY · 网络据点</span><span class="i18n-en">YZBZGY · INTERNET HQ</span></div>
           <p class="hq-meta"><span class="i18n-zh">地球 · 太阳系第三行星 · 在线自 {year}</span><span class="i18n-en">EARTH · 3RD PLANET · ONLINE SINCE {year}</span></p>
+          <div class="hq-controls" id="hq-controls" hidden>
+            <button id="hq-play" type="button" aria-pressed="true" aria-label="暂停动画">⏸</button>
+            <div class="hq-speed" role="group" aria-label="时间流速">
+              <button type="button" data-speed="0.5" aria-pressed="false">0.5×</button>
+              <button type="button" data-speed="1" aria-pressed="true">1×</button>
+              <button type="button" data-speed="4" aria-pressed="false">4×</button>
+            </div>
+          </div>
+          <article class="planet-card" id="planet-card" role="dialog" aria-label="行星资料卡" hidden></article>
         </div>
       </section>
 
@@ -890,24 +920,25 @@ const repoStats = Object.fromEntries(await Promise.all(
         // 固定随机种子：resize 后星空/小行星带保持同一布局
         const rand = ((seed) => () => (seed = (seed * 16807) % 2147483647) / 2147483647)(20261022);
 
-        // orbit: 相对面板短边的半径比例；period: 相对地球公转周期的倍数（开普勒近似）
+        // orbit: 相对面板短边的半径比例（外行星显著拉开，防贴图重叠）；
+        // period: 相对地球公转周期的倍数（开普勒近似）；tilt: 各行星轨道面的压扁系数微差（伪 3D）
         const planets = [
-          { name: 'MERCURY', orbit: .13, size: 3.4,  period: .24 },
-          { name: 'VENUS',   orbit: .22, size: 5.4,  period: .62 },
-          { name: 'EARTH',   orbit: .33, size: 6.0,  period: 1,    hq: true },
-          { name: 'MARS',    orbit: .44, size: 4.6,  period: 1.88 },
-          { name: 'JUPITER', orbit: .64, size: 15,   period: 4.5 },
-          { name: 'SATURN',  orbit: .78, size: 12.5, period: 7.4, ring: true },
-          { name: 'URANUS',  orbit: .90, size: 8,    period: 12 },
-          { name: 'NEPTUNE', orbit: .99, size: 7.5,  period: 16 },
-        ].map((p, i) => ({ ...p, ang: i * 1.7 + .6 }));
+          { name: 'MERCURY', orbit: .14, size: 3.2,  period: .24 },
+          { name: 'VENUS',   orbit: .24, size: 5.2,  period: .62 },
+          { name: 'EARTH',   orbit: .35, size: 5.8,  period: 1,    hq: true },
+          { name: 'MARS',    orbit: .46, size: 4.4,  period: 1.88 },
+          { name: 'JUPITER', orbit: .60, size: 13.5, period: 4.5 },
+          { name: 'SATURN',  orbit: .75, size: 11.5, period: 7.4, ring: true },
+          { name: 'URANUS',  orbit: .88, size: 7.6,  period: 12 },
+          { name: 'NEPTUNE', orbit: 1.0, size: 7.2,  period: 16 },
+        ].map((p, i) => ({ ...p, ang: i * 1.7 + .6, tilt: .5 + rand() * .1 }));
 
         // 小行星带（火星与木星之间）与彗星
         const belt = Array.from({ length: 150 }, () => ({
           orbit: .515 + rand() * .05, ang: rand() * TAU,
-          period: 3.3 + rand() * 1.2, r: .4 + rand() * .8, a: .22 + rand() * .4,
+          period: 3.3 + rand() * 1.2, r: .4 + rand() * .8, a: .22 + rand() * .4, tilt: .5 + rand() * .08,
         }));
-        const comet = { a: .82, e: .68, tilt: -.42, period: 5.4 };
+        const comet = { a: .82, e: .68, tilt: -.42, period: 5.4, squash: .55 };
 
         // 星空：静态底 + 动态闪烁两层
         const stars = Array.from({ length: 130 }, () => ({
@@ -1057,9 +1088,9 @@ const repoStats = Object.fromEntries(await Promise.all(
         const RING_TILT = -.46;
         const drawRingHalf = (x, y, r, front) => {
           const rings = [
-            [1.45, 2.0, 'rgba(216,200,160,.34)'],
-            [2.02, 2.32, 'rgba(228,214,178,.6)'],
-            [2.34, 2.52, 'rgba(200,184,146,.3)'],
+            [1.45, 1.95, 'rgba(216,200,160,.34)'],
+            [1.98, 2.18, 'rgba(228,214,178,.6)'],
+            [2.2, 2.3, 'rgba(200,184,146,.3)'],
           ];
           for (const [r0, r1, c] of rings) {
             sctx.strokeStyle = c;
@@ -1089,6 +1120,9 @@ const repoStats = Object.fromEntries(await Promise.all(
         };
 
         let mouseX = -1, mouseY = -1;
+        let hoveredPlanet = null, selectedPlanet = null, lastPositions = [];
+        let showerUntil = 0;
+        const meteors = Array.from({ length: 9 }, () => ({ x: 0, y: 0, vx: 0, vy: 0, born: 0, ttl: 1 }));
         spaceCanvas.addEventListener('mousemove', (e) => {
           const rect = spaceCanvas.getBoundingClientRect();
           mouseX = e.clientX - rect.left;
@@ -1114,6 +1148,7 @@ const repoStats = Object.fromEntries(await Promise.all(
 
         const drawSpace = (t) => {
           const cx = panelW / 2, cy = panelH / 2;
+          const realNow = performance.now();
           sctx.clearRect(0, 0, panelW, panelH);
           // 静态星空 + 银河尘带
           for (const s of stars) {
@@ -1139,12 +1174,16 @@ const repoStats = Object.fromEntries(await Promise.all(
             sctx.fill();
           }
           sctx.globalAlpha = 1;
-          // 轨道
+          // 轨道（各自压扁的椭圆；悬停/选中的行星轨道加亮）
           for (const p of planets) {
-            sctx.strokeStyle = p.hq ? 'rgba(92, 168, 224, .3)' : 'rgba(255, 255, 255, .085)';
-            sctx.lineWidth = 1;
+            const orbitR = unit * p.orbit;
+            const hi = p === hoveredPlanet || p === selectedPlanet;
+            sctx.strokeStyle = p.hq
+              ? (hi ? 'rgba(120,190,240,.6)' : 'rgba(92, 168, 224, .3)')
+              : (hi ? 'rgba(255,255,255,.4)' : 'rgba(255, 255, 255, .085)');
+            sctx.lineWidth = hi ? 1.6 : 1;
             sctx.beginPath();
-            sctx.arc(cx, cy, unit * p.orbit, 0, TAU);
+            sctx.ellipse(cx, cy, orbitR, orbitR * p.tilt, 0, 0, TAU);
             sctx.stroke();
           }
           // 小行星带
@@ -1153,10 +1192,105 @@ const repoStats = Object.fromEntries(await Promise.all(
             sctx.globalAlpha = a.a;
             sctx.fillStyle = '#9a948a';
             sctx.beginPath();
-            sctx.arc(cx + Math.cos(aa) * unit * a.orbit, cy + Math.sin(aa) * unit * a.orbit * .97, a.r * scale, 0, TAU);
+            sctx.arc(cx + Math.cos(aa) * unit * a.orbit, cy + Math.sin(aa) * unit * a.orbit * a.tilt, a.r * scale, 0, TAU);
             sctx.fill();
           }
           sctx.globalAlpha = 1;
+          // ---- 本帧行星 / 彗星位置（伪 3D：y 压扁，y < cy 视为太阳远侧）----
+          const positions = planets.map((p) => {
+            const orbitR = unit * p.orbit;
+            const ang = p.ang + (t / (EARTH_YEAR_MS * p.period)) * TAU;
+            return { p, ang, r: p.size * scale, x: cx + Math.cos(ang) * orbitR, y: cy + Math.sin(ang) * orbitR * p.tilt };
+          });
+          lastPositions = positions;
+          const M = (t / (EARTH_YEAR_MS * comet.period)) * TAU;
+          const rC = (comet.a * (1 - comet.e * comet.e)) / (1 + comet.e * Math.cos(M));
+          const cometPos = { x: cx + Math.cos(M + comet.tilt) * unit * rC, y: cy + Math.sin(M + comet.tilt) * unit * rC * comet.squash, rC };
+
+          const drawPlanet = (it) => {
+            const { p, ang, r, x, y } = it;
+            if (p.ring) drawRingHalf(x, y, r, false);
+            const sp = sprites.get(p.name);
+            sctx.drawImage(sp, x - sp.width / 2, y - sp.height / 2);
+            drawTerminator(x, y, r);
+            if (p.ring) drawRingHalf(x, y, r, true);
+            if (p.hq) { // 地球：月球
+              const moonAng = ang * 13.4;
+              const moonR = r * 2.7;
+              sctx.fillStyle = '#c7c9cc';
+              sctx.beginPath();
+              sctx.arc(x + Math.cos(moonAng) * moonR, y + Math.sin(moonAng) * moonR, 1.9 * scale, 0, TAU);
+              sctx.fill();
+            }
+            if (p.hq || p === selectedPlanet) { // 据点标记环 / 选中环（古铜金虚线）
+              sctx.strokeStyle = '#bb9955';
+              sctx.setLineDash([3, 4]);
+              sctx.beginPath();
+              sctx.arc(x, y, r + 9 * scale, 0, TAU);
+              sctx.stroke();
+              sctx.setLineDash([]);
+            }
+            if (p.hq) {
+              sctx.fillStyle = 'rgba(255, 255, 255, .78)';
+              sctx.font = `600 ${Math.max(9, 10 * scale)}px ui-monospace, Menlo, monospace`;
+              sctx.textAlign = 'center';
+              sctx.shadowColor = 'rgba(5, 7, 13, .9)';
+              sctx.shadowBlur = 5;
+              sctx.fillText('EARTH · HQ', x, y + r + 25 * scale);
+              sctx.shadowBlur = 0;
+            }
+          };
+
+          const drawComet = () => {
+            const { x: px, y: py, rC: rc } = cometPos;
+            const per = Math.max(0, 1 - rc / (comet.a * .5)); // 近日点因子：日距小于 a/2 后逐渐拉满
+            const tailLen = Math.max(0, (1 - rc / comet.a) * (150 + 130 * per) * scale);
+            if (tailLen > 14) {
+              const away = Math.atan2(py - cy, px - cx);
+              const tg = sctx.createLinearGradient(px, py, px + Math.cos(away) * tailLen, py + Math.sin(away) * tailLen);
+              tg.addColorStop(0, `rgba(210, 234, 255, ${.5 + .4 * per})`);
+              tg.addColorStop(1, 'rgba(170, 220, 255, 0)');
+              sctx.strokeStyle = tg;
+              sctx.lineWidth = (2.2 + 1.5 * per) * scale;
+              sctx.beginPath();
+              sctx.moveTo(px, py);
+              sctx.lineTo(px + Math.cos(away) * tailLen, py + Math.sin(away) * tailLen);
+              sctx.stroke();
+            }
+            if (per > .08) { // 近日点光晕
+              const halo = sctx.createRadialGradient(px, py, 0, px, py, 15 * scale);
+              halo.addColorStop(0, `rgba(190, 228, 255, ${.45 * per})`);
+              halo.addColorStop(1, 'rgba(190, 228, 255, 0)');
+              sctx.fillStyle = halo;
+              sctx.beginPath();
+              sctx.arc(px, py, 15 * scale, 0, TAU);
+              sctx.fill();
+            }
+            sctx.fillStyle = 'rgba(210, 236, 255, .95)';
+            sctx.beginPath();
+            sctx.arc(px, py, (1.6 + .9 * per) * scale, 0, TAU);
+            sctx.fill();
+            const labelAlpha = Math.max(0, Math.min(1, (per - .3) / .25)); // 近日点标签淡入淡出
+            if (labelAlpha > 0) {
+              const en = document.documentElement.classList.contains('lang-en');
+              sctx.globalAlpha = labelAlpha;
+              sctx.fillStyle = 'rgba(255, 255, 255, .85)';
+              sctx.font = `600 ${Math.max(9, 9.5 * scale)}px ui-monospace, Menlo, monospace`;
+              sctx.textAlign = 'center';
+              sctx.shadowColor = 'rgba(5, 7, 13, .9)';
+              sctx.shadowBlur = 5;
+              sctx.fillText(en ? 'COMET · PERIHELION' : '彗星 · 近日点', px, py - 14 * scale);
+              sctx.shadowBlur = 0;
+              sctx.globalAlpha = 1;
+            }
+          };
+
+          // ---- 深度分层：远侧行星 → 太阳 → 近侧行星（行星从太阳背后绕过）----
+          const far = positions.filter((it) => it.y < cy).sort((a, b) => a.y - b.y);
+          const near = positions.filter((it) => it.y >= cy).sort((a, b) => a.y - b.y);
+          const cometFar = cometPos.y < cy;
+          for (const it of far) drawPlanet(it);
+          if (cometFar) drawComet();
           // 太阳（白热核心 + 呼吸日冕）
           const sunR = Math.max(10, unit * .058);
           const pulse = 1 + .05 * Math.sin(t * .0011);
@@ -1176,84 +1310,56 @@ const repoStats = Object.fromEntries(await Promise.all(
           sctx.beginPath();
           sctx.arc(cx, cy, sunR, 0, TAU);
           sctx.fill();
-          // 彗星（椭圆轨道，靠近太阳时彗尾拉长）
-          {
-            const M = (t / (EARTH_YEAR_MS * comet.period)) * TAU;
-            const th = M;
-            const rC = (comet.a * (1 - comet.e * comet.e)) / (1 + comet.e * Math.cos(th));
-            const px = cx + Math.cos(th + comet.tilt) * unit * rC;
-            const py = cy + Math.sin(th + comet.tilt) * unit * rC * .97;
-            const tailLen = Math.max(0, (1 - rC / comet.a) * 170 * scale);
-            if (tailLen > 14) {
-              const away = Math.atan2(py - cy, px - cx);
-              const tg = sctx.createLinearGradient(px, py, px + Math.cos(away) * tailLen, py + Math.sin(away) * tailLen);
-              tg.addColorStop(0, 'rgba(170, 220, 255, .5)');
-              tg.addColorStop(1, 'rgba(170, 220, 255, 0)');
-              sctx.strokeStyle = tg;
-              sctx.lineWidth = 2.2 * scale;
-              sctx.beginPath();
-              sctx.moveTo(px, py);
-              sctx.lineTo(px + Math.cos(away) * tailLen, py + Math.sin(away) * tailLen);
-              sctx.stroke();
-            }
-            sctx.fillStyle = 'rgba(210, 236, 255, .95)';
-            sctx.beginPath();
-            sctx.arc(px, py, 1.6 * scale, 0, TAU);
-            sctx.fill();
-          }
-          // 行星（贴图 + 晨昏线 + 光环/月球/据点标记）
-          for (const p of planets) {
-            const orbitR = unit * p.orbit;
-            const ang = p.ang + (t / (EARTH_YEAR_MS * p.period)) * TAU;
-            const r = p.size * scale;
-            const x = cx + Math.cos(ang) * orbitR;
-            const y = cy + Math.sin(ang) * orbitR * .96;
-            if (p.ring) drawRingHalf(x, y, r, false);
-            const sp = sprites.get(p.name);
-            sctx.drawImage(sp, x - sp.width / 2, y - sp.height / 2);
-            drawTerminator(x, y, r);
-            if (p.ring) drawRingHalf(x, y, r, true);
-            if (p.hq) { // 地球：月球 + 据点标记环（古铜金虚线）+ 标签
-              const moonAng = ang * 13.4;
-              const moonR = r * 2.7;
-              sctx.fillStyle = '#c7c9cc';
-              sctx.beginPath();
-              sctx.arc(x + Math.cos(moonAng) * moonR, y + Math.sin(moonAng) * moonR, 1.9 * scale, 0, TAU);
-              sctx.fill();
-              sctx.strokeStyle = '#bb9955';
-              sctx.setLineDash([3, 4]);
-              sctx.beginPath();
-              sctx.arc(x, y, r + 9 * scale, 0, TAU);
-              sctx.stroke();
-              sctx.setLineDash([]);
-              sctx.fillStyle = 'rgba(255, 255, 255, .78)';
-              sctx.font = `600 ${Math.max(9, 10 * scale)}px ui-monospace, Menlo, monospace`;
-              sctx.textAlign = 'center';
-              sctx.shadowColor = 'rgba(5, 7, 13, .9)';
-              sctx.shadowBlur = 5;
-              sctx.fillText('EARTH · HQ', x, y + r + 25 * scale);
-              sctx.shadowBlur = 0;
-            }
-          }
-          // 悬停行星显示名称
+          for (const it of near) drawPlanet(it);
+          if (!cometFar) drawComet();
+          // 悬停行星：记录高亮（下一帧轨道加亮）+ 名称
+          hoveredPlanet = null;
           if (mouseX >= 0) {
-            for (const p of planets) {
-              const orbitR = unit * p.orbit;
-              const ang = p.ang + (t / (EARTH_YEAR_MS * p.period)) * TAU;
-              const r = p.size * scale;
-              const x = cx + Math.cos(ang) * orbitR;
-              const y = cy + Math.sin(ang) * orbitR * .96;
-              if (Math.hypot(mouseX - x, mouseY - y) < Math.max(15, r + 8)) {
+            for (const it of positions) {
+              if (Math.hypot(mouseX - it.x, mouseY - it.y) < Math.max(15, it.r + 8)) {
+                hoveredPlanet = it.p;
                 sctx.fillStyle = 'rgba(255, 255, 255, .82)';
                 sctx.font = `600 ${Math.max(9, 9.5 * scale)}px ui-monospace, Menlo, monospace`;
                 sctx.textAlign = 'center';
                 sctx.shadowColor = 'rgba(5, 7, 13, .9)';
                 sctx.shadowBlur = 5;
-                sctx.fillText(p.name, x, y - r - 10 * scale);
+                sctx.fillText(it.p.name, it.x, it.y - it.r - 10 * scale);
                 sctx.shadowBlur = 0;
                 break;
               }
             }
+          }
+          // 陨石雨（Konami 彩蛋触发，真实时钟驱动，暂停时间轴也在飞）
+          if (showerUntil > realNow) {
+            for (const m of meteors) {
+              if (!m.born || realNow - m.born > m.ttl) {
+                m.born = realNow;
+                m.ttl = 800 + rand() * 900;
+                m.x = rand() * panelW;
+                m.y = rand() * panelH * .45;
+                m.vx = (rand() < .5 ? -1 : 1) * (90 + rand() * 110);
+                m.vy = 40 + rand() * 60;
+              }
+            }
+          }
+          for (const m of meteors) {
+            if (!m.born) continue;
+            const prog = (realNow - m.born) / m.ttl;
+            if (prog >= 1) continue;
+            const hx = m.x + m.vx * (realNow - m.born) / 1000;
+            const hy = m.y + m.vy * (realNow - m.born) / 1000;
+            const vlen = Math.hypot(m.vx, m.vy) || 1;
+            const len = 70 + 40 * Math.sin(Math.PI * prog);
+            const alpha = Math.sin(Math.PI * prog) * .85;
+            const grad = sctx.createLinearGradient(hx, hy, hx - (m.vx / vlen) * len, hy - (m.vy / vlen) * len);
+            grad.addColorStop(0, `rgba(255, 240, 214, ${alpha})`);
+            grad.addColorStop(1, 'rgba(255, 240, 214, 0)');
+            sctx.strokeStyle = grad;
+            sctx.lineWidth = 1.4;
+            sctx.beginPath();
+            sctx.moveTo(hx, hy);
+            sctx.lineTo(hx - (m.vx / vlen) * len, hy - (m.vy / vlen) * len);
+            sctx.stroke();
           }
         };
         const handleSpaceResize = () => {
@@ -1265,11 +1371,96 @@ const repoStats = Object.fromEntries(await Promise.all(
         } else {
           window.addEventListener('resize', handleSpaceResize, { passive: true });
         }
-        let spaceRunning = false, spaceVisible = false, spaceRafId = 0, lastFrameTime = 0;
-        const spaceLoop = (t) => {
-          if (t - lastFrameTime >= 1000 / 30) {
-            drawSpace(t);
-            lastFrameTime = t;
+
+        // ===== 行星资料卡（点击行星弹出）=====
+        const planetCard = document.querySelector('#planet-card');
+        const PLANET_INFO = {
+          MERCURY: { zh: '水星', en: 'Mercury', diameter: '4,879 km', year: '88 天', moons: '0', line: { zh: '离太阳最近的跑者——学习也是贴着核心一圈圈转。', en: 'Closest to the sun — learning loops close to the core.' } },
+          VENUS: { zh: '金星', en: 'Venus', diameter: '12,104 km', year: '225 天', moons: '0', line: { zh: '反着自转的特立独行者——偶尔反套路反而有效。', en: 'It spins backwards — the reverse trick works sometimes.' } },
+          EARTH: { zh: '地球', en: 'Earth', diameter: '12,756 km', year: '365 天', moons: '1', line: { zh: '我的网络据点就在这颗蓝色星球上。', en: 'My corner of the internet lives on this blue planet.' } },
+          MARS: { zh: '火星', en: 'Mars', diameter: '6,792 km', year: '687 天', moons: '2', line: { zh: '移民候选第一站——新方向也先在这里选址。', en: 'The first colony candidate — new directions scout here.' } },
+          JUPITER: { zh: '木星', en: 'Jupiter', diameter: '142,984 km', year: '11.9 年', moons: '95', line: { zh: '大块头引力场——像 ave-mygo，什么都装得下。', en: 'The big hauler — like ave-mygo, it fits everything.' } },
+          SATURN: { zh: '土星', en: 'Saturn', diameter: '120,536 km', year: '29.5 年', moons: '274', line: { zh: '光环最好看的行星——好看的细节值得慢慢打磨。', en: 'Best rings in town — polish the details people see.' } },
+          URANUS: { zh: '天王星', en: 'Uranus', diameter: '51,118 km', year: '84 年', moons: '28', line: { zh: '躺着自转的懒骨头——休息也是开发的一部分。', en: 'It rolls on its side — rest is part of the process.' } },
+          NEPTUNE: { zh: '海王星', en: 'Neptune', diameter: '49,528 km', year: '165 年', moons: '16', line: { zh: '先用数学算出来再找到的行星——先推演，再动手验证。', en: 'Found by math before telescopes — derive first, verify by doing.' } },
+        };
+        const closePlanetCard = () => {
+          selectedPlanet = null;
+          if (planetCard) planetCard.hidden = true;
+        };
+        const openPlanetCard = (item) => {
+          if (!planetCard) return;
+          const info = PLANET_INFO[item.p.name];
+          if (!info) return;
+          selectedPlanet = item.p;
+          planetCard.innerHTML = `
+            <button class="planet-card-close" type="button" aria-label="关闭资料卡">×</button>
+            <h4><span class="i18n-zh">${info.zh}</span><span class="i18n-en">${info.en}</span></h4>
+            <dl>
+              <div><dt><span class="i18n-zh">直径</span><span class="i18n-en">DIAMETER</span></dt><dd>${info.diameter}</dd></div>
+              <div><dt><span class="i18n-zh">公转周期</span><span class="i18n-en">ORBIT</span></dt><dd>${info.year}</dd></div>
+              <div><dt><span class="i18n-zh">卫星</span><span class="i18n-en">MOONS</span></dt><dd>${info.moons}</dd></div>
+            </dl>
+            <p class="planet-card-line"><span class="i18n-zh">${info.line.zh}</span><span class="i18n-en">${info.line.en}</span></p>`;
+          planetCard.hidden = false;
+          const cw = planetCard.offsetWidth, ch = planetCard.offsetHeight;
+          let left = item.x + 22;
+          if (left + cw > panelW - 12) left = item.x - cw - 22;
+          left = Math.max(12, Math.min(left, Math.max(12, panelW - cw - 12)));
+          const top = Math.max(12, Math.min(item.y - ch / 2, Math.max(12, panelH - ch - 12)));
+          planetCard.style.left = `${left}px`;
+          planetCard.style.top = `${top}px`;
+          planetCard.querySelector('.planet-card-close')?.addEventListener('click', closePlanetCard);
+        };
+        spaceCanvas.addEventListener('click', (e) => {
+          const rect = spaceCanvas.getBoundingClientRect();
+          const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+          let hit = null;
+          for (const it of lastPositions) {
+            if (Math.hypot(mx - it.x, my - it.y) < Math.max(16, it.r + 9)) { hit = it; break; }
+          }
+          if (hit) openPlanetCard(hit);
+          else closePlanetCard();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && planetCard && !planetCard.hidden) closePlanetCard();
+        });
+
+        // ===== 时间控制（⏸/▶ + 0.5×/1×/4×，驱动模拟时钟 simT）=====
+        const hqControls = document.querySelector('#hq-controls');
+        const playBtn = document.querySelector('#hq-play');
+        let speed = 1, paused = false;
+        if (hqControls && playBtn && !reducedMotion) {
+          hqControls.hidden = false;
+          playBtn.addEventListener('click', () => {
+            paused = !paused;
+            playBtn.textContent = paused ? '▶' : '⏸';
+            playBtn.setAttribute('aria-pressed', String(!paused));
+            playBtn.setAttribute('aria-label', paused ? '继续动画' : '暂停动画');
+          });
+          hqControls.addEventListener('click', (event) => {
+            const btn = event.target.closest('button[data-speed]');
+            if (!btn) return;
+            speed = Number(btn.dataset.speed);
+            hqControls.querySelectorAll('button[data-speed]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+          });
+        }
+
+        // Konami 彩蛋入口：命令面板触发陨石雨（非首页没有 canvas，走 CSS 流星雨）
+        window.__solarShower = () => {
+          if (reducedMotion) return;
+          showerUntil = performance.now() + 8000;
+          meteors.forEach((m) => { m.born = 0; });
+        };
+
+        let spaceRunning = false, spaceVisible = false, spaceRafId = 0, lastFrameTime = 0, lastRafTime = 0, simT = 0;
+        const spaceLoop = (now) => {
+          const dt = lastRafTime ? Math.min(now - lastRafTime, 100) : 16.7;
+          lastRafTime = now;
+          if (!paused) simT += dt * speed;
+          if (now - lastFrameTime >= 1000 / 30) {
+            drawSpace(simT);
+            lastFrameTime = now;
           }
           if (spaceRunning) spaceRafId = requestAnimationFrame(spaceLoop);
         };
@@ -1277,6 +1468,7 @@ const repoStats = Object.fromEntries(await Promise.all(
           if (run && !spaceRunning) {
             spaceRunning = true;
             lastFrameTime = 0;
+            lastRafTime = 0;
             spaceRafId = requestAnimationFrame(spaceLoop);
           } else if (!run && spaceRunning) {
             spaceRunning = false;
