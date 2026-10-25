@@ -1,0 +1,242 @@
+---
+// 全站共享：Ctrl/Cmd+K 命令面板 + Konami 彩蛋 + toast。
+// 页面在 <body> 内注入 <script type="application/json" id="palette-data"> 提供本页数据：
+//   { links: [{ zh, en, href }], notes: [{ id, title, tags, summary }] }
+// 未注入时面板仍提供主题/语言/复制链接等全局动作。零依赖，样式全局挂载但类名全部 cmdk- 前缀。
+---
+<div class="cmdk-backdrop" id="cmdk-backdrop" aria-hidden="true"></div>
+<div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="命令面板">
+  <div class="cmdk-box">
+    <input id="cmdk-input" type="text" placeholder="搜索笔记、跳转板块、执行动作…" autocomplete="off" spellcheck="false" aria-label="搜索命令" role="combobox" aria-expanded="true" aria-controls="cmdk-list" />
+    <ul id="cmdk-list" role="listbox" aria-label="命令列表"></ul>
+    <p class="cmdk-hint" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 执行 · <kbd>Esc</kbd> 关闭</p>
+  </div>
+</div>
+<div class="cmdk-toast" id="cmdk-toast" role="status" aria-live="polite"></div>
+
+<style is:global>
+  .cmdk-backdrop { position: fixed; inset: 0; z-index: 95; background: rgba(4, 6, 12, .55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); opacity: 0; visibility: hidden; transition: opacity .22s ease, visibility .22s; }
+  .cmdk-backdrop.open { opacity: 1; visibility: visible; }
+  .cmdk { position: fixed; z-index: 96; inset: 11vh 0 auto; display: flex; justify-content: center; padding: 0 20px; pointer-events: none; visibility: hidden; }
+  .cmdk.open { visibility: visible; }
+  .cmdk-box { width: min(620px, 100%); max-height: 64vh; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255, 255, 255, .22); border-radius: 14px; background: rgba(10, 14, 24, .97); color: #eee; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .7); pointer-events: auto; opacity: 0; transform: translateY(-10px) scale(.985); transition: opacity .18s ease, transform .18s ease; }
+  .cmdk.open .cmdk-box { opacity: 1; transform: none; }
+  #cmdk-input { padding: 16px 18px; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .14); background: none; color: #fff; font: 14px/1.4 var(--sans, sans-serif); outline: none; }
+  #cmdk-input::placeholder { color: rgba(255, 255, 255, .38); }
+  #cmdk-list { margin: 0; padding: 8px; list-style: none; overflow-y: auto; overscroll-behavior: contain; }
+  .cmdk-group { margin: 8px 8px 4px; font: 9px var(--mono, monospace); letter-spacing: .18em; color: rgba(255, 255, 255, .45); }
+  .cmdk-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; font: 13px/1.5 var(--sans, sans-serif); }
+  .cmdk-item b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cmdk-item small { margin-left: auto; flex-shrink: 0; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 9px var(--mono, monospace); letter-spacing: .1em; color: rgba(255, 255, 255, .45); }
+  .cmdk-item .cmdk-mark { flex-shrink: 0; width: 18px; text-align: center; color: var(--blue-light, #77bbdd); font-size: 13px; }
+  .cmdk-item.active { background: rgba(51, 136, 187, .3); }
+  .cmdk-item mark { background: none; color: #ffcf7d; padding: 0; }
+  .cmdk-empty { padding: 24px; text-align: center; font: 12px var(--mono, monospace); color: rgba(255, 255, 255, .5); }
+  .cmdk-hint { display: flex; gap: 14px; align-items: center; margin: 0; padding: 10px 16px; border-top: 1px solid rgba(255, 255, 255, .12); font: 10px var(--mono, monospace); color: rgba(255, 255, 255, .45); }
+  .cmdk-hint kbd { padding: 2px 6px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 5px; font: 10px var(--mono, monospace); }
+  .cmdk-toast { position: fixed; z-index: 97; left: 50%; bottom: 34px; transform: translateX(-50%) translateY(8px); padding: 11px 18px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; background: rgba(10, 14, 24, .95); color: #fff; font: 12px var(--mono, monospace); letter-spacing: .06em; box-shadow: 0 12px 40px -12px rgba(0, 0, 0, .6); opacity: 0; visibility: hidden; transition: opacity .3s, transform .3s, visibility .3s; }
+  .cmdk-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%); }
+  /* Konami 彩蛋：非首页的 CSS 流星雨 */
+  .cmdk-meteor { position: fixed; z-index: 94; top: -100px; width: 2px; height: 90px; pointer-events: none; background: linear-gradient(to bottom, rgba(255, 240, 214, 0), rgba(255, 240, 214, .9)); transform: rotate(28deg); animation: cmdk-meteor-fall 1.6s linear infinite; }
+  @keyframes cmdk-meteor-fall { to { transform: translateY(130vh) rotate(28deg); } }
+  body.cmdk-open { overflow: hidden; }
+  /* 页面上的 ⌘K 呼出按钮 */
+  .cmdk-chip { display: inline-flex; align-items: center; padding: 6px 10px; border: 1px solid rgba(0, 0, 0, .25); border-radius: 999px; background: none; color: inherit; cursor: pointer; font: 10px var(--mono, monospace); letter-spacing: .1em; transition: border-color .2s, color .2s; }
+  .cmdk-chip:hover { border-color: var(--blue, #3388bb); color: var(--blue, #3388bb); }
+  [data-theme="dark"] .cmdk-chip { border-color: rgba(255, 255, 255, .4); }
+  [data-theme="dark"] .cmdk-chip:hover { border-color: var(--blue-light, #77bbdd); color: var(--blue-light, #77bbdd); }
+  @media (prefers-reduced-motion: reduce) {
+    .cmdk-meteor { display: none; }
+    .cmdk-box, .cmdk-backdrop, .cmdk-toast { transition: none; }
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.documentElement;
+    const backdrop = document.getElementById('cmdk-backdrop');
+    const panel = document.getElementById('cmdk');
+    const input = document.getElementById('cmdk-input');
+    const list = document.getElementById('cmdk-list');
+    const toast = document.getElementById('cmdk-toast');
+    if (!backdrop || !panel || !input || !list) return;
+
+    // 页面注入的数据（links + notes）
+    let data = { links: [], notes: [] };
+    try {
+      data = { ...data, ...JSON.parse(document.getElementById('palette-data')?.textContent ?? '{}') };
+    } catch (e) {}
+
+    const getLang = () => (root.classList.contains('lang-en') ? 'en' : 'zh');
+    let toastTimer = 0;
+    const showToast = (msg) => {
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    };
+
+    // 面板动作的兜底实现（页面已有切换按钮时优先触发按钮，保持行为一致）
+    const fallbackTheme = () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.content = next === 'dark' ? '#0a0a0a' : '#3388bb';
+      try { localStorage.setItem('site-theme', next); } catch (e) {}
+    };
+    const fallbackLang = () => {
+      const next = root.classList.contains('lang-en') ? 'zh' : 'en';
+      root.classList.toggle('lang-en', next === 'en');
+      root.classList.toggle('lang-zh', next !== 'en');
+      root.lang = next === 'en' ? 'en' : 'zh-CN';
+      try { localStorage.setItem('site-lang', next); } catch (e) {}
+    };
+
+    const commands = [];
+    (data.links ?? []).forEach((l) => commands.push({
+      group: 'nav', icon: '→', zh: l.zh, en: l.en, hint: '',
+      run: () => { if (l.href.startsWith('#')) location.hash = l.href.slice(1); else location.href = l.href; },
+    }));
+    (data.notes ?? []).forEach((n) => commands.push({
+      group: 'note', icon: '✦', zh: n.title, en: n.title,
+      hint: (n.tags ?? []).slice(0, 3).join(' · '),
+      keywords: `${n.title} ${(n.tags ?? []).join(' ')} ${n.summary ?? ''}`.toLowerCase(),
+      run: () => { location.href = `/notes/${n.id}/`; },
+    }));
+    commands.push(
+      { group: 'action', icon: '◑', zh: '切换明暗主题', en: 'Toggle theme', keywords: 'theme dark light 深色 浅色 黑暗', run: () => { const t = document.getElementById('theme-toggle'); if (t) t.click(); else fallbackTheme(); } },
+      { group: 'action', icon: '文', zh: '切换中 / 英文', en: 'Toggle language', keywords: 'lang language english 中文 i18n', run: () => { const t = document.getElementById('lang-toggle'); if (t) t.click(); else fallbackLang(); } },
+      { group: 'action', icon: '↗', zh: '打开 GitHub', en: 'Open GitHub', keywords: 'github 仓库 repo', run: () => window.open('https://github.com/zgy0715', '_blank', 'noreferrer') },
+      { group: 'action', icon: '⧉', zh: '复制本页链接', en: 'Copy page link', keywords: 'copy link url 复制 链接 分享', run: async () => {
+        const done = () => showToast(getLang() === 'en' ? 'Link copied.' : '链接已复制。');
+        try { await navigator.clipboard.writeText(location.href); done(); }
+        catch { const ta = document.createElement('textarea'); ta.value = location.href; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+      } },
+      { group: 'action', icon: '↑', zh: '回到顶部', en: 'Back to top', keywords: 'top scroll 顶部 回到', run: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    );
+    // 笔记视图命令仅在有视图切换按钮的页面出现
+    const viewToggle = document.getElementById('view-toggle');
+    if (viewToggle) {
+      [['list', '列表视图', 'List view'], ['cards', '卡片视图', 'Cards view'], ['grid', '网格视图', 'Grid view'], ['timeline', '时间线视图', 'Timeline view']].forEach(([v, zh, en]) => {
+        commands.push({ group: 'action', icon: '▦', zh, en, keywords: 'view notes 笔记 视图', run: () => viewToggle.querySelector(`[data-view="${v}"]`)?.click() });
+      });
+    }
+
+    // ---- 渲染与选择 ----
+    let visible = [];
+    let sel = 0;
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const mark = (label, q) => {
+      const idx = q ? label.toLowerCase().indexOf(q) : -1;
+      if (idx < 0) return esc(label);
+      return esc(label.slice(0, idx)) + '<mark>' + esc(label.slice(idx, idx + q.length)) + '</mark>' + esc(label.slice(idx + q.length));
+    };
+    const render = (query) => {
+      const lang = getLang();
+      const q = query.trim().toLowerCase();
+      const match = (c) => !q || `${c.zh} ${c.en} ${c.keywords ?? ''}`.toLowerCase().includes(q);
+      const nav = commands.filter((c) => c.group === 'nav' && match(c));
+      const notes = commands.filter((c) => c.group === 'note' && match(c)).slice(0, 12);
+      const acts = commands.filter((c) => c.group === 'action' && match(c));
+      visible = [...nav, ...notes, ...acts].slice(0, 30);
+      sel = 0;
+      const groups = [['nav', lang === 'en' ? 'PAGES' : '页面'], ['note', lang === 'en' ? 'NOTES' : '笔记'], ['action', lang === 'en' ? 'ACTIONS' : '动作']];
+      let html = '';
+      for (const [g, label] of groups) {
+        const items = visible.map((c, idx) => ({ c, idx })).filter(({ c }) => c.group === g);
+        if (!items.length) continue;
+        html += `<li class="cmdk-group" role="presentation">${esc(label)}</li>`;
+        for (const { c, idx } of items) {
+          html += `<li class="cmdk-item${idx === 0 ? ' active' : ''}" role="option" aria-selected="${idx === 0}" id="cmdk-opt-${idx}" data-idx="${idx}"><span class="cmdk-mark" aria-hidden="true">${esc(c.icon)}</span><b>${mark(lang === 'en' ? c.en : c.zh, q)}</b>${c.hint ? `<small>${esc(c.hint)}</small>` : ''}</li>`;
+        }
+      }
+      list.innerHTML = html || `<li class="cmdk-empty">${lang === 'en' ? 'No matches.' : '没有匹配的命令。'}</li>`;
+      input.setAttribute('aria-activedescendant', visible.length ? 'cmdk-opt-0' : '');
+    };
+    const move = (d) => {
+      if (!visible.length) return;
+      sel = (sel + d + visible.length) % visible.length;
+      list.querySelectorAll('.cmdk-item').forEach((el) => {
+        const on = Number(el.dataset.idx) === sel;
+        el.classList.toggle('active', on);
+        el.setAttribute('aria-selected', String(on));
+        if (on) {
+          el.scrollIntoView({ block: 'nearest' });
+          input.setAttribute('aria-activedescendant', el.id);
+        }
+      });
+    };
+
+    // ---- 开关 ----
+    let lastFocus = null;
+    const isOpen = () => panel.classList.contains('open');
+    const open = () => {
+      lastFocus = document.activeElement;
+      panel.classList.add('open');
+      backdrop.classList.add('open');
+      document.body.classList.add('cmdk-open');
+      input.value = '';
+      render('');
+      input.focus();
+    };
+    const close = () => {
+      panel.classList.remove('open');
+      backdrop.classList.remove('open');
+      document.body.classList.remove('cmdk-open');
+      if (lastFocus?.focus) lastFocus.focus();
+    };
+    const run = (c) => { close(); c?.run(); };
+
+    input.addEventListener('input', () => render(input.value));
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+      else if (e.key === 'Enter') { e.preventDefault(); run(visible[sel]); }
+    });
+    list.addEventListener('click', (e) => {
+      const el = e.target.closest('.cmdk-item');
+      if (el) run(visible[Number(el.dataset.idx)]);
+    });
+    backdrop.addEventListener('click', close);
+    // 页面上任何 [data-cmdk-open] 元素都可以呼出面板
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-cmdk-open]')) { e.preventDefault(); open(); }
+    });
+
+    // ---- 全局快捷键：Ctrl/Cmd+K 开关、Esc 关闭、Konami 彩蛋 ----
+    const KONAMI = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+    let kIdx = 0;
+    let konamiDone = false;
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        isOpen() ? close() : open();
+        return;
+      }
+      if (e.key === 'Escape' && isOpen()) { close(); return; }
+      if (konamiDone || e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      kIdx = k === KONAMI[kIdx] ? kIdx + 1 : (k === KONAMI[0] ? 1 : 0);
+      if (kIdx !== KONAMI.length) return;
+      konamiDone = true;
+      kIdx = 0;
+      const zh = getLang() === 'zh';
+      showToast(zh ? '🛸 秘密指令已接收——陨石雨！' : '🛸 Secret code accepted — meteor shower!');
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (typeof window.__solarShower === 'function') window.__solarShower();
+        else {
+          for (let i = 0; i < 12; i++) {
+            const m = document.createElement('i');
+            m.className = 'cmdk-meteor';
+            m.style.left = `${Math.random() * 100}vw`;
+            m.style.animationDelay = `${Math.random() * 6}s`;
+            m.style.animationDuration = `${1.2 + Math.random() * 1.4}s`;
+            document.body.appendChild(m);
+            setTimeout(() => m.remove(), 8500);
+          }
+        }
+      }
+    });
+  })();
+</script>

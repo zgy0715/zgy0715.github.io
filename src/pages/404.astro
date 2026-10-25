@@ -1,8 +1,11 @@
 ---
----
----
 import '@fontsource/bebas-neue';
 import '@ibm/plex-sans-sc/css/yzb-subset.css';
+import CommandPalette from '../components/CommandPalette.astro';
+
+const paletteData = {
+  links: [{ zh: '主页', en: 'Home', href: '/' }, { zh: '学习笔记', en: 'Notes', href: '/notes/' }],
+};
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -58,5 +61,7 @@ import '@ibm/plex-sans-sc/css/yzb-subset.css';
         }
       } catch (e) {}
     </script>
+    <script type="application/json" id="palette-data" set:html={JSON.stringify(paletteData)} />
+    <CommandPalette />
   </body>
 </html>
