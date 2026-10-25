@@ -205,6 +205,26 @@ const paletteData = {
       .view-grid .note-tags { margin-top: auto; padding-top: 14px; gap: 6px; }
       .view-grid .note-tags span { padding: 4px 7px; font-size: 7.5px; }
 
+      /* —— 时间线视图：按年份归档，左竖线 + 节点圆点（学习轨迹）—— */
+      .note-list:not(.view-timeline) .tl-year { display: none; }
+      .view-timeline { position: relative; gap: 0; padding-left: 6px; }
+      .view-timeline::before { content: ''; position: absolute; left: 15px; top: 10px; bottom: 10px; width: 1px; background: linear-gradient(to bottom, var(--blue), rgba(51, 136, 187, .12)); }
+      .view-timeline .tl-year { display: flex; align-items: baseline; gap: 12px; padding: 30px 0 12px 34px; }
+      .view-timeline .tl-year:first-child { padding-top: 4px; }
+      .view-timeline .tl-year b { font: 400 2.1rem/1 var(--display); letter-spacing: .05em; color: var(--blue-dark); }
+      .view-timeline .tl-year span { font: 9px var(--mono); letter-spacing: .18em; color: #888; }
+      .view-timeline .note-item { border: 0; }
+      .view-timeline .note-item > a { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding: 13px 10px 13px 34px; text-decoration: none; }
+      .view-timeline .note-item > a::before { content: ''; position: absolute; left: 11px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--accent-color, var(--blue)); box-shadow: 0 0 0 3px rgba(51, 136, 187, .16); transition: transform .2s, box-shadow .2s; }
+      .view-timeline .note-item > a:hover::before { transform: scale(1.35); box-shadow: 0 0 0 5px rgba(51, 136, 187, .22); }
+      .view-timeline .note-item .accent { display: none; }
+      .view-timeline .note-item .note-title { order: 1; font-size: 1.18rem; }
+      .view-timeline .note-item .note-meta { order: 2; margin-top: 3px; }
+      .view-timeline .note-item .note-summary { display: none; }
+      .view-timeline .note-item .note-tags { order: 3; margin: 7px 0 0; }
+      .view-timeline .note-item .note-foot { display: none; }
+      .view-timeline .note-item > a:hover .note-title { color: var(--blue); }
+
       .empty { padding: 60px 0; color: #666; font-size: 14px; line-height: 2; }
 
       .page-footer { margin-top: auto; padding-top: 50px; font: 9px var(--mono); letter-spacing: .2em; color: #999; }
@@ -253,6 +273,10 @@ const paletteData = {
       [data-theme="dark"] .search-box:focus-within { border-color: #fff; }
       [data-theme="dark"] .skip-link { background: #fff; color: #000; }
       [data-theme="dark"] .page-footer { color: #777; }
+      [data-theme="dark"] .view-timeline::before { background: linear-gradient(to bottom, var(--blue-light), rgba(119, 187, 221, .1)); }
+      [data-theme="dark"] .view-timeline .tl-year b { color: var(--blue-light); }
+      [data-theme="dark"] .view-timeline .tl-year span { color: #777; }
+      [data-theme="dark"] .view-timeline .note-item > a::before { box-shadow: 0 0 0 3px rgba(119, 187, 221, .2); }
     </style>
   </head>
   <body>
@@ -296,6 +320,9 @@ const paletteData = {
           <button type="button" data-view="grid" aria-label="网格视图" title="网格视图">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></svg>
           </button>
+          <button type="button" data-view="timeline" aria-label="时间线视图" title="时间线视图">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="7" y1="4" x2="7" y2="20"/><circle cx="7" cy="8.5" r="1.7" fill="currentColor" stroke="none"/><circle cx="7" cy="15.5" r="1.7" fill="currentColor" stroke="none"/><line x1="11.5" y1="8.5" x2="20" y2="8.5"/><line x1="11.5" y1="15.5" x2="17.5" y2="15.5"/></svg>
+          </button>
         </div>
       </div>
 
@@ -306,7 +333,7 @@ const paletteData = {
         })))} />
         <ul class="note-list view-list" id="note-list">
           {notes.map((note) => (
-            <li class="note-item" style={`--accent-color:${note.color}`} data-id={note.id} data-tags={note.data.tags.join('|')} data-star={note.data.star ? '1' : '0'}>
+            <li class="note-item" style={`--accent-color:${note.color}`} data-id={note.id} data-tags={note.data.tags.join('|')} data-star={note.data.star ? '1' : '0'} data-year={note.data.date.getFullYear()}>
               <a href={`/notes/${note.id}/`}>
                 <i class="accent" aria-hidden="true"></i>
                 <p class="note-meta">
@@ -335,7 +362,7 @@ const paletteData = {
       const list = document.querySelector('#note-list');
       const viewBox = document.querySelector('#view-toggle');
       const applyView = (view) => {
-        list.classList.remove('view-list', 'view-cards', 'view-grid');
+        list.classList.remove('view-list', 'view-cards', 'view-grid', 'view-timeline');
         list.classList.add('view-' + view);
         [...viewBox.querySelectorAll('button')].forEach((b) => b.classList.toggle('active', b.dataset.view === view));
         try { localStorage.setItem('notes-view', view); } catch (e) {}
@@ -348,6 +375,25 @@ const paletteData = {
 
       // ===== 标签筛选 + 搜索（合并过滤）=====
       const items = [...list.querySelectorAll('.note-item')];
+
+      // 时间线视图的年份分隔条：只插入一次，非时间线视图由 CSS 隐藏
+      const yearCounts = {};
+      items.forEach((item) => {
+        const y = item.dataset.year;
+        if (y) yearCounts[y] = (yearCounts[y] ?? 0) + 1;
+      });
+      let lastYear = null;
+      items.forEach((item) => {
+        const year = item.dataset.year;
+        if (year && year !== lastYear) {
+          const y = document.createElement('li');
+          y.className = 'tl-year';
+          y.innerHTML = `<b>${year}</b><span>${yearCounts[year]} <span class="i18n-zh">篇</span><span class="i18n-en">POSTS</span></span>`;
+          list.insertBefore(y, item);
+          lastYear = year;
+        }
+      });
+
       const filterBox = document.querySelector('#tag-filter');
       const searchInput = document.querySelector('#note-search');
       const noResult = document.querySelector('#no-result');
@@ -366,6 +412,16 @@ const paletteData = {
           if (ok) visible += 1;
         });
         filterBox.querySelectorAll('.chip').forEach((chip) => chip.classList.toggle('active', chip.dataset.tag === activeTag));
+        // 时间线视图：某年没有任何可见条目时隐藏该年份分隔条
+        list.querySelectorAll('.tl-year').forEach((yearEl) => {
+          let anyVisible = false;
+          let el = yearEl.nextElementSibling;
+          while (el && !el.classList.contains('tl-year')) {
+            if (el.classList.contains('note-item') && el.style.display === '') anyVisible = true;
+            el = el.nextElementSibling;
+          }
+          yearEl.style.display = anyVisible ? '' : 'none';
+        });
         if (noResult) noResult.style.display = visible === 0 ? '' : 'none';
       };
       filterBox?.addEventListener('click', (event) => {
