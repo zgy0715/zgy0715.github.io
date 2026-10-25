@@ -419,8 +419,8 @@ const minutes = Math.max(1, Math.ceil((note.body ?? '').replace(/\s/g, '').lengt
       document.querySelectorAll('.prose pre').forEach((pre) => {
         if (pre.closest('.code-block')) return;
         const code = pre.querySelector('code');
-        const langMatch = /language-([\w+-]+)/.exec((code ?? pre).className);
-        const lang = langMatch ? langMatch[1].toUpperCase() : 'CODE';
+        const langFromData = pre.dataset.language || /language-([\w+-]+)/.exec((code ?? pre).className)?.[1];
+        const lang = (langFromData || 'code').toUpperCase();
         const wrap = document.createElement('div');
         wrap.className = 'code-block';
         pre.replaceWith(wrap);
