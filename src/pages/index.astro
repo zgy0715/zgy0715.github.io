@@ -31,6 +31,26 @@ const SITE_BIRTH = '2026-10-15T00:00:00+08:00';
 
 const activity = [
   {
+    date: '2026.11.05',
+    title: 'AI 助手打通云端大模型',
+    titleEn: 'Cloud LLM wired into the assistant',
+    detail: 'DeepSeek 走云端 OpenAI 协议流式可用：三个客户端统一进 LlmSupport、补鉴权头与 tool_calls 增量拼接；复读 bug 靠人格会话隔离 + 历史去重 + 幂等落库根治。',
+    detailEn: 'DeepSeek works over the cloud OpenAI protocol: three clients unified into LlmSupport, auth headers and tool_calls deltas handled; the repeat-loop bug fixed via per-persona sessions, dedup and idempotent persistence.',
+    href: 'https://github.com/zgy0715/ave-mygo',
+    link: '查看项目仓库',
+    linkEn: 'VIEW REPO',
+  },
+  {
+    date: '2026.11.02',
+    title: 'ave-mygo 工程化大整理',
+    titleEn: 'ave-mygo: engineering cleanup',
+    detail: '目录重整进 backend/、check 基线脚本（后端 + Vitest + E2E）、148 行幂等种子数据；测试口径刷新为 JUnit 149 / Vitest 82 / E2E 20。',
+    detailEn: 'Repo restructured into backend/, a check baseline script and a 148-line idempotent seed; test counts refreshed to JUnit 149 / Vitest 82 / E2E 20.',
+    href: 'https://github.com/zgy0715/ave-mygo',
+    link: '查看项目仓库',
+    linkEn: 'VIEW REPO',
+  },
+  {
     date: '2026.10.22',
     title: '粉丝站更名 BanG Dream! Live，演示部署上线',
     titleEn: 'BanG Dream! Live: renamed and demo-deployed',
@@ -49,16 +69,6 @@ const activity = [
     href: '/notes/canvas-solar-system/',
     link: '阅读实现笔记',
     linkEn: 'READ THE NOTE',
-  },
-  {
-    date: '2026.10.21',
-    title: 'AI 助手学会流式回答',
-    titleEn: 'AI assistant learned to stream',
-    detail: '/chat/stream SSE 分片推送 + done 事件，独立线程池；LLM 掉线时规则引擎按人格口吻兜底。',
-    detailEn: 'SSE chunked replies on /chat/stream with a dedicated thread pool; a rule engine answers in-character when the LLM is down.',
-    href: 'https://github.com/zgy0715/ave-mygo/commit/89332f5',
-    link: '查看这次提交',
-    linkEn: 'VIEW COMMIT',
   },
 ];
 
