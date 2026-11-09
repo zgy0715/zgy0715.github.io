@@ -1,0 +1,36 @@
+name: Deploy to Tencent VPS
+
+# 手动触发：Actions 页面点 Run workflow。
+# 等 Secrets（VPS_HOST / VPS_USER / VPS_KEY）配好、服务器初始化完成后，
+# 想改成 push 自动部署，把 on 块换成：
+#   on:
+#     push:
+#       branches: [main]
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install & build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Rsync dist/ to VPS
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete
+          path: dist/
+          remote_path: /var/www/yzbzgy/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.VPS_KEY }}
