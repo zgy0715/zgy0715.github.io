@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
-# 腾讯云轻量服务器（Ubuntu 24.04）一次性初始化：nginx 托管 Astro 静态站
-# 用法：把本脚本传到服务器后执行  bash setup-server.sh
+# 腾讯云轻量服务器（Ubuntu 24.04）：把个人网站加为独立站点，不影响已有项目
+# 用法：bash setup-server.sh [端口]   默认 8080
+# 安全设计：不占用 80、不设 default_server、不删除任何已有站点配置
 set -euo pipefail
 
 WEB_ROOT=/var/www/yzbzgy
+PORT="${1:-8080}"
+
+# 端口占用预检
+if ss -tln | grep -q ":${PORT} "; then
+  echo "❌ 端口 ${PORT} 已被占用。换一个端口重试，例如：bash setup-server.sh 9090"
+  ss -tlnp | grep LISTEN | head -10
+  exit 1
+fi
 
 sudo apt update
 sudo apt install -y nginx rsync
@@ -11,12 +20,13 @@ sudo apt install -y nginx rsync
 sudo mkdir -p "$WEB_ROOT"
 sudo chown -R "$USER":www-data "$WEB_ROOT"
 
+# 写站点配置（__PORT__ 占位符后面替换，避免 heredoc 展开 $uri 等 nginx 变量）
 sudo tee /etc/nginx/sites-available/yzbzgy >/dev/null <<'EOF'
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+    listen __PORT__;
+    listen [::]:__PORT__;
     server_name _;
-    root /var/www/yzbzgy;
+    root __WEB_ROOT__;
     index index.html;
 
     # Astro 静态站：/xxx/ → /xxx/index.html
@@ -35,13 +45,15 @@ server {
 }
 EOF
 
+sudo sed -i "s/__PORT__/${PORT}/; s|__WEB_ROOT__|${WEB_ROOT}|" /etc/nginx/sites-available/yzbzgy
+
 sudo ln -sf /etc/nginx/sites-available/yzbzgy /etc/nginx/sites-enabled/yzbzgy
-sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t
 sudo systemctl enable --now nginx
 sudo systemctl reload nginx
 
 echo ""
-echo "✅ nginx 就绪，站点根目录：$WEB_ROOT"
-echo "⚠️  别忘了去腾讯云控制台 → 轻量应用服务器 → 防火墙，放行 TCP 80 端口"
-echo "⚠️  以后如果域名备好了：把 server_name 改成域名，再跑 certbot --nginx -d 域名 上 HTTPS"
+echo "✅ 个人网站已挂到 ${PORT} 端口（独立 server 块，未动任何已有站点）"
+echo "⚠️  去腾讯云控制台 → 轻量应用服务器 → 防火墙，放行 TCP ${PORT}"
+echo "🌐 访问地址：http://服务器公网IP:${PORT}"
+echo "已有项目不受影响；以后想换端口，改 /etc/nginx/sites-available/yzbzgy 后 systemctl reload nginx"
